@@ -2,6 +2,7 @@
 #include "cslib/std/string.h"
 #include <stdio.h>
 
+
 int main()
 {
     size_t hash = cslib_hashmap_hashfunc_1("name", 128);
