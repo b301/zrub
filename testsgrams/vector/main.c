@@ -11,14 +11,14 @@ int main()
 
     // check pushing
     printf("%d | %d | %d | %d\n",
-        cslib_push_vector(v1, cslib_allocate_string("Hello", 128)),
-        cslib_push_vector(v1, cslib_allocate_string("Friendo.", 128)),
-        cslib_push_vector(v1, cslib_allocate_string("What is your problem?", 128)),
-        cslib_push_vector(v1, cslib_allocate_string("Nothing.", 128))
+        cslib_vector_push(v1, cslib_create_string("Hello", 128)),
+        cslib_vector_push(v1, cslib_create_string("Friendo.", 128)),
+        cslib_vector_push(v1, cslib_create_string("What is your problem?", 128)),
+        cslib_vector_push(v1, cslib_create_string("Nothing.", 128))
     );
 
     // check popping
-    char *item = (char*)cslib_pop_vector(v1, 2);
+    char *item = (char*)cslib_vector_pop(v1, 2);
 
     printf("The item I popped is: %s\n", item);
 
@@ -27,10 +27,10 @@ int main()
         printf("popped successfully!\n");
     }
 
-    cslib_naivefree_vector(v1);
+    cslib_vector_naivefree(v1);
     free(item);
 
-    cslib_dumbfree_vector(v1);
+    cslib_vector_dumbfree(v1);
 
     return 0;
 }

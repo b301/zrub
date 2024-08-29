@@ -4,8 +4,8 @@
 
 int main()
 {
-    char *string = cslib_allocate_string("Hello There!", 128);
-    char *prefix = cslib_allocate_string("Hell", 128);
+    char *string = cslib_create_string("Hello There!", 128);
+    char *prefix = cslib_create_string("Hell", 128);
 
     printf("Before: `%s` `%s`\n", string, prefix);  
     printf("Your boolean variable is: %s\n",
