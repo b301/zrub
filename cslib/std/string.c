@@ -45,7 +45,7 @@ bool cslib_check_prefix(char *string, const char *prefix)
 /*
 Allocates memory for a string from a literal
 */
-char* cslib_allocate_string(char *data, size_t min_size)
+char* cslib_create_string(char *data, size_t min_size)
 {
     size_t datasize = strlen(data);
     size_t alloc_size = min_size > datasize ? min_size : datasize;
