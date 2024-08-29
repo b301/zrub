@@ -22,7 +22,7 @@ bool cslib_allocate_hashmap(cslib_hashmap_t *map, size_t capacity)
     return true;
 }
 
-void cslib_testfree_hashmap(cslib_hashmap_t *map, bool naive)
+void cslib_hashmap_naivefree(cslib_hashmap_t *map, bool naive)
 {
     cslib_hashmap_item_t *item, *node_item;
     cslib_linked_node_t *node, *temp;
@@ -70,13 +70,13 @@ void cslib_testfree_hashmap(cslib_hashmap_t *map, bool naive)
     }
 }
 
-void cslib_dumbfree_hashmap(cslib_hashmap_t *map)
+void cslib_hashmap_dumbfree(cslib_hashmap_t *map)
 {
     free(map->items);
     free(map);
 }
 
-bool cslib_set_hashmap(cslib_hashmap_t *map, char *key, void *value)
+bool cslib_hashmap_set(cslib_hashmap_t *map, char *key, void *value)
 {
     size_t hashed = cslib_hashmap_hashfunc_1(key, map->capacity);
 
@@ -175,4 +175,64 @@ size_t cslib_hashmap_hashfunc_1(char *key, size_t capacity)
     }
 
     return hash;
+}
+
+void cslib_hashmap_print(cslib_hashmap_t *map)
+{
+    cslib_hashmap_item_t *item;
+    cslib_linked_node_t *node;
+
+    for (size_t i = 0; i < map->capacity; i++)
+    {
+        if (map->items[i] != NULL)
+        {
+            item = map->items[i];
+
+            if (item->type == REGULAR)
+            {
+                printf("%s: %s\n",
+                    item->key,
+                    item->value
+                );
+            }
+
+            else if (item->type == LINKED_LIST)
+            {
+                node = item->value;
+
+                while (node != NULL)
+                {
+                    printf("%s: %s\n",
+                        ((cslib_hashmap_item_t*)(node->value))->key,
+                        ((cslib_hashmap_item_t*)(node->value))->value
+                    );
+
+                    node = node->next;
+                }
+            }
+
+            else
+            {
+                printf("Type not implemented.\n");
+            }
+        }
+    }
+}
+
+bool cslib_hashmap_remove(cslib_hashmap_t *map, char *key)
+{
+    size_t hash = cslib_hashmap_hashfunc_1(key, map->capacity);
+
+    if (map->items[hash] == NULL)
+    {
+        return false;
+    }
+
+    cslib_hashmap_item_t *item = map->items[hash];
+
+    free(item->key);
+    free(item->value);
+    free(item);
+
+    map->items[hash] = NULL;
 }
