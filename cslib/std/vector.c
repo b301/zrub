@@ -28,13 +28,13 @@ bool cslib_reallocate_vector(cslib_vector_t *vec, size_t capacity)
     return false;
 }
 
-void cslib_dumbfree_vector(cslib_vector_t *vec)
+void cslib_vector_dumbfree(cslib_vector_t *vec)
 {
     free(vec->items);
     free(vec);
 }
 
-void cslib_naivefree_vector(cslib_vector_t *vec)
+void cslib_vector_naivefree(cslib_vector_t *vec)
 {
     for (size_t i = 0; i < vec->capacity; i++)
     {
@@ -46,7 +46,7 @@ void cslib_naivefree_vector(cslib_vector_t *vec)
     }
 }
 
-size_t cslib_push_vector(cslib_vector_t *vec, void *item)
+size_t cslib_vector_push(cslib_vector_t *vec, void *item)
 {
     size_t vec_size = vec->capacity;
 
@@ -62,7 +62,7 @@ size_t cslib_push_vector(cslib_vector_t *vec, void *item)
     return -1;
 }
 
-void* cslib_pop_vector(cslib_vector_t *vec, size_t index)
+void* cslib_vector_pop(cslib_vector_t *vec, size_t index)
 {
     if (vec->capacity <= index)
     {

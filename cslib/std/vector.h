@@ -17,11 +17,11 @@ typedef struct Vector {
 
 bool cslib_allocate_vector(cslib_vector_t *vec, size_t capacity);
 bool cslib_reallocate_vector(cslib_vector_t *vec, size_t capacity);
-void cslib_dumbfree_vector(cslib_vector_t *vec);
-void cslib_naivefree_vector(cslib_vector_t *vec);
+void cslib_vector_dumbfree(cslib_vector_t *vec);
+void cslib_vector_naivefree(cslib_vector_t *vec);
 
-size_t cslib_push_vector(cslib_vector_t *vec, void *item);
-void* cslib_pop_vector(cslib_vector_t *vec, size_t index);
+size_t cslib_vector_push(cslib_vector_t *vec, void *item);
+void* cslib_vector_pop(cslib_vector_t *vec, size_t index);
 
 
 #endif // _CSLIB_VECTOR_H
