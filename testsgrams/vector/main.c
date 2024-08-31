@@ -11,10 +11,10 @@ int main()
 
     // check pushing
     printf("%d | %d | %d | %d\n",
-        cslib_vector_push(v1, cslib_create_string("Hello", 128)),
-        cslib_vector_push(v1, cslib_create_string("Friendo.", 128)),
-        cslib_vector_push(v1, cslib_create_string("What is your problem?", 128)),
-        cslib_vector_push(v1, cslib_create_string("Nothing.", 128))
+        cslib_vector_push(v1, cslib_string_create("Hello", 128)),
+        cslib_vector_push(v1, cslib_string_create("Friendo.", 128)),
+        cslib_vector_push(v1, cslib_string_create("What is your problem?", 128)),
+        cslib_vector_push(v1, cslib_string_create("Nothing.", 128))
     );
 
     // check popping

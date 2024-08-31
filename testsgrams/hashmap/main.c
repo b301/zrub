@@ -11,26 +11,26 @@ int main()
 
     cslib_hashmap_set(
         map, 
-        cslib_create_string("name", 128), 
-        cslib_create_string("oded zrubavel", 128)
+        cslib_string_create("name", 128), 
+        cslib_string_create("oded zrubavel", 128)
     );
 
     cslib_hashmap_set(
         map, 
-        cslib_create_string("eman", 128), 
-        cslib_create_string("flub zrubavel", 128)
+        cslib_string_create("eman", 128), 
+        cslib_string_create("flub zrubavel", 128)
     );
 
     cslib_hashmap_set(
         map, 
-        cslib_create_string("first_name", 128), 
-        cslib_create_string("oded", 128)
+        cslib_string_create("first_name", 128), 
+        cslib_string_create("oded", 128)
     );
 
     cslib_hashmap_set(
         map, 
-        cslib_create_string("last_name", 128), 
-        cslib_create_string("zrubavel", 128)
+        cslib_string_create("last_name", 128), 
+        cslib_string_create("zrubavel", 128)
     );
 
     cslib_hashmap_print(map);
