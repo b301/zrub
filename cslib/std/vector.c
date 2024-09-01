@@ -46,6 +46,33 @@ void cslib_vector_naivefree(cslib_vector_t *vec)
     }
 }
 
+bool cslib_vector_resize(cslib_vector_t *vec, size_t new_capacity)
+{
+    void **items = (void**)malloc(sizeof( void*) * new_capacity);
+
+    if (items == NULL)
+    {
+        return false;
+    }
+
+    for (size_t i = 0; i < vec->capacity; i++)
+    {
+        items[i] = vec->items[i];
+    }
+
+    for (size_t i = vec->capacity; i < new_capacity;i ++)
+    {
+        items[i] = NULL;
+    }
+
+    free(vec->items);
+
+    vec->items = items;
+    vec->capacity = new_capacity;
+
+    return true;
+}
+
 ssize_t cslib_vector_push(cslib_vector_t *vec, void *item)
 {
     size_t vec_size = vec->capacity;

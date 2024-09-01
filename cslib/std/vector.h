@@ -23,6 +23,8 @@ bool cslib_reallocate_vector(cslib_vector_t *vec, size_t capacity);
 void cslib_vector_dumbfree(cslib_vector_t *vec);
 void cslib_vector_naivefree(cslib_vector_t *vec);
 
+bool cslib_vector_resize(cslib_vector_t *vec, size_t new_capacity);
+
 ssize_t cslib_vector_push(cslib_vector_t *vec, void *item);
 void* cslib_vector_pop(cslib_vector_t *vec, size_t index);
 
