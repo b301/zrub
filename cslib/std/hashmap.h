@@ -2,6 +2,8 @@
 #define _CSLIB_HASHMAP_H
 
 #include "cslib/std/linked_list.h"
+#include "cslib/std/vector.h"
+#include "cslib/pub.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,12 +24,17 @@ typedef struct HashmapItem {
 typedef struct LinkedHashMap {
     cslib_hashmap_item_t **items;
     size_t capacity;
+    size_t length;
 } cslib_hashmap_t;
 
 
 bool cslib_allocate_hashmap(cslib_hashmap_t *map, size_t capacity);
 void cslib_hashmap_naivefree(cslib_hashmap_t *map, bool naive);
 void cslib_hashmap_dumbfree(cslib_hashmap_t *map);
+
+bool cslib_hashmap_resize(cslib_hashmap_t *map, size_t new_capacity);
+
+cslib_hashmap_item_t *_cslib_hashmap_item(char *key, void *value, cslib_hashmap_item_type_t type);
 
 bool cslib_hashmap_set(cslib_hashmap_t *map, char *key, void *value);
 void* cslib_get_hashmap(cslib_hashmap_t *map, char *key);

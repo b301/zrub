@@ -1,8 +1,8 @@
 #include "cslib/std/string.h"
+#include "cslib/pub.h"
+
 #include <stdio.h>
 #include <assert.h>
-
-#define CHECK(statement, func) if (!(statement)) { printf("%s failed\n", func); return 1; } printf("%s passed\n", func)
 
 
 int main()
