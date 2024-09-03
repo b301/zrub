@@ -4,7 +4,6 @@
 set -x
 set -e
 
-[[ ! -e tests ]] && mkdir -p tests
 [[ ! -e build ]] && mkdir -p build
 [[ ! -e build/tests ]] && mkdir -p build/tests
 [[ ! -e build/bin/tests ]] && mkdir -p build/bin/tests

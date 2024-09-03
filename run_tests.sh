@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -x
 set -e
 
 ./build/bin/tests/string_tests
@@ -8,3 +7,5 @@ set -e
 ./build/bin/tests/vector_tests
 ./build/bin/tests/hashmap_tests
 ./build/bin/tests/iterator_tests
+
+echo "[+] ALL TESTS PASSED! [+]"
