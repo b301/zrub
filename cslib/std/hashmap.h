@@ -2,7 +2,6 @@
 #define _CSLIB_HASHMAP_H
 
 #include "cslib/std/linked_list.h"
-#include "cslib/std/vector.h"
 #include "cslib/pub.h"
 
 #include <stdio.h>
@@ -37,6 +36,7 @@ bool cslib_hashmap_resize(cslib_hashmap_t *map, size_t new_capacity);
 cslib_hashmap_item_t *_cslib_hashmap_item(char *key, void *value, cslib_hashmap_item_type_t type);
 
 bool cslib_hashmap_set(cslib_hashmap_t *map, char *key, void *value);
+void _cslib_hashmap_set(cslib_hashmap_t *map, cslib_hashmap_item_t *item);
 void* cslib_get_hashmap(cslib_hashmap_t *map, char *key);
 
 bool cslib_hashmap_remove(cslib_hashmap_t *map, char *key);
@@ -44,6 +44,6 @@ bool cslib_hashmap_remove(cslib_hashmap_t *map, char *key);
 size_t cslib_hashmap_hashfunc_1(char *key, size_t capacity);
 
 void cslib_hashmap_print(cslib_hashmap_t *map);
-
+void cslib_hashmap_print_verbose(cslib_hashmap_t *map);
 
 #endif // _CSLIB_HASHMAP_H
