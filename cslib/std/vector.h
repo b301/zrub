@@ -1,6 +1,7 @@
 #ifndef _CSLIB_VECTOR_H
 #define _CSLIB_VECTOR_H
 
+#include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -16,7 +17,7 @@ typedef struct Vector {
 } cslib_vector_t;
 
 #define VECTOR_CAPACITY_REACHED -1
-
+#define VECTOR_UNDEFINED_BEHAVIOR -2
 
 bool cslib_allocate_vector(cslib_vector_t *vec, size_t capacity);
 bool cslib_reallocate_vector(cslib_vector_t *vec, size_t capacity);

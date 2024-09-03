@@ -91,6 +91,9 @@ ssize_t cslib_vector_push(cslib_vector_t *vec, void *item)
             return i;
         }
     }
+
+    fprintf(stderr, "ssize_t cslib_vector_push(cslib_vector_t *vec, void *item) reached undefined behavior");
+    return VECTOR_UNDEFINED_BEHAVIOR;
 }
 
 void* cslib_vector_pop(cslib_vector_t *vec, size_t index)
