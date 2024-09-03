@@ -10,7 +10,8 @@
 This is a dumb vector implementation, every item allocated in this must
 be deallocated by the user!
 */
-typedef struct Vector {
+typedef struct Vector
+{
     void **items;
     size_t capacity;
     size_t length;
@@ -27,7 +28,6 @@ void cslib_vector_naivefree(cslib_vector_t *vec);
 bool cslib_vector_resize(cslib_vector_t *vec, size_t new_capacity);
 
 ssize_t cslib_vector_push(cslib_vector_t *vec, void *item);
-void* cslib_vector_pop(cslib_vector_t *vec, size_t index);
-
+void *cslib_vector_pop(cslib_vector_t *vec, size_t index);
 
 #endif // _CSLIB_VECTOR_H

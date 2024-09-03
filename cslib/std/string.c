@@ -153,6 +153,8 @@ size_t cslib_string_count_substring(const char *str, const char *sub)
 char *cslib_string_leftpad(const char *str, const char *pad, size_t count)
 {
     /* exmaple case:
+    NOTE: this function delimiter is the newline character!
+
     str = "hello \nworld", pad = '*', count = 2
 
     expected output: str = "**hello \n**world";

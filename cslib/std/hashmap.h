@@ -9,23 +9,25 @@
 #include <string.h>
 #include <stdbool.h>
 
-typedef enum HashmapItemType {
+typedef enum HashmapItemType
+{
     REGULAR,
     LINKED_LIST
 } cslib_hashmap_item_type_t;
 
-typedef struct HashmapItem {
+typedef struct HashmapItem
+{
     char *key;
     void *value;
     cslib_hashmap_item_type_t type;
 } cslib_hashmap_item_t;
 
-typedef struct LinkedHashMap {
+typedef struct LinkedHashMap
+{
     cslib_hashmap_item_t **items;
     size_t capacity;
     size_t length;
 } cslib_hashmap_t;
-
 
 bool cslib_allocate_hashmap(cslib_hashmap_t *map, size_t capacity);
 void cslib_hashmap_naivefree(cslib_hashmap_t *map, bool naive);
@@ -37,7 +39,7 @@ cslib_hashmap_item_t *_cslib_hashmap_item(char *key, void *value, cslib_hashmap_
 
 bool cslib_hashmap_set(cslib_hashmap_t *map, char *key, void *value);
 void _cslib_hashmap_set(cslib_hashmap_t *map, cslib_hashmap_item_t *item);
-void* cslib_get_hashmap(cslib_hashmap_t *map, char *key);
+void *cslib_get_hashmap(cslib_hashmap_t *map, char *key);
 
 bool cslib_hashmap_remove(cslib_hashmap_t *map, char *key);
 

@@ -27,6 +27,33 @@ int main()
         cslib_vector_dumbfree(vec);
     }
 
+    /* test 2 */
+    {
+        cslib_hashmap_t *map = ALLOC_OBJECT(cslib_hashmap_t);
+        cslib_allocate_hashmap(map, 8);
+
+        cslib_hashmap_set(map, cslib_string_create("name", 8), cslib_string_create("hey there delilah", 8));
+        cslib_hashmap_set(map, cslib_string_create("language", 8), cslib_string_create("english", 8));
+        cslib_hashmap_set(map, cslib_string_create("author", 8), cslib_string_create("white plain t-shirts", 8));
+
+        cslib_iterator_t keys, values;
+        cslib_hashmap_keys_iterator(&keys, map);
+        cslib_hashmap_values_iterator(&values, map);
+
+        for (size_t i = 0; i < keys.length; i++)
+        {
+            printf("%s: %s\n", (char*)(keys.items[i]), (char*)(values.items[i]));
+        }
+
+        CHECK(keys.length == 3, "test 2: checking iterator length");
+        CHECK(strncmp(keys.items[2], "language", 8) == 0, "test 2: checking index 2 value");
+
+        free(keys.items);
+        free(values.items);
+
+        cslib_hashmap_naivefree(map, true);
+        cslib_hashmap_dumbfree(map);
+    }
 
     return 0;
 }
