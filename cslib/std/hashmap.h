@@ -11,8 +11,8 @@
 
 typedef enum HashmapItemType
 {
-    REGULAR,
-    LINKED_LIST
+    HASHMAP_REGULAR,
+    HASHMAP_LINKED_LIST
 } cslib_hashmap_item_type_t;
 
 typedef struct HashmapItem

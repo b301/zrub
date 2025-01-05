@@ -37,12 +37,12 @@ void cslib_hashmap_keys_iterator(cslib_iterator_t *iterator, const cslib_hashmap
         {
             item = map->items[i];
 
-            if (item->type == REGULAR)
+            if (item->type == HASHMAP_REGULAR)
             {
                 keys[c] = item->key;
                 c++;
             }
-            else if (item->type == LINKED_LIST)
+            else if (item->type == HASHMAP_LINKED_LIST)
             {
                 cslib_linked_node_t *node = item->value;
 
@@ -79,12 +79,12 @@ void cslib_hashmap_values_iterator(cslib_iterator_t *iterator, const cslib_hashm
         {
             item = map->items[i];
 
-            if (item->type == REGULAR)
+            if (item->type == HASHMAP_REGULAR)
             {
                 values[c] = item->value;
                 c++;
             }
-            else if (item->type == LINKED_LIST)
+            else if (item->type == HASHMAP_LINKED_LIST)
             {
                 cslib_linked_node_t *node = item->value;
 

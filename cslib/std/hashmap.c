@@ -36,7 +36,7 @@ void cslib_hashmap_naivefree(cslib_hashmap_t *map, bool naive)
         {
             item = map->items[i];
 
-            if (item->type == REGULAR)
+            if (item->type == HASHMAP_REGULAR)
             {
                 if (naive)
                 {
@@ -45,7 +45,7 @@ void cslib_hashmap_naivefree(cslib_hashmap_t *map, bool naive)
                 }
             }
 
-            else if (item->type == LINKED_LIST)
+            else if (item->type == HASHMAP_LINKED_LIST)
             {
                 /* free the nodes */
                 node = item->value;
@@ -109,11 +109,11 @@ bool cslib_hashmap_resize(cslib_hashmap_t *map, size_t new_capacity)
         {
             item = map->items[i];
 
-            if (item->type == REGULAR)
+            if (item->type == HASHMAP_REGULAR)
             {
                 _cslib_hashmap_set(new_map, item);
             }
-            else if (item->type == LINKED_LIST)
+            else if (item->type == HASHMAP_LINKED_LIST)
             {
                 cslib_linked_node_t *root = item->value;
 
@@ -147,7 +147,7 @@ bool cslib_hashmap_set(cslib_hashmap_t *map, char *key, void *value)
     size_t hashed = cslib_hashmap_hashfunc_1(key, map->capacity);
 
     /* If it is to replace, maybe allocate only in later parts .. later optimization */
-    cslib_hashmap_item_t *item = _cslib_hashmap_item(key, value, REGULAR);
+    cslib_hashmap_item_t *item = _cslib_hashmap_item(key, value, HASHMAP_REGULAR);
 
     if (map->items[hashed] == NULL)
     {
@@ -159,19 +159,19 @@ bool cslib_hashmap_set(cslib_hashmap_t *map, char *key, void *value)
 
     cslib_hashmap_item_t *set_item = map->items[hashed];
 
-    if (set_item->type == REGULAR)
+    if (set_item->type == HASHMAP_REGULAR)
     {
         void *s1 = cslib_initialize_linked_node(set_item, NULL);
         void *s2 = cslib_initialize_linked_node(item, s1);
 
         /* create item for the linked list */
-        cslib_hashmap_item_t *list_item = _cslib_hashmap_item(NULL, s2, LINKED_LIST);
+        cslib_hashmap_item_t *list_item = _cslib_hashmap_item(NULL, s2, HASHMAP_LINKED_LIST);
         map->items[hashed] = list_item;
         map->length++;
 
         return true;
     }
-    else if (set_item->type == LINKED_LIST)
+    else if (set_item->type == HASHMAP_LINKED_LIST)
     {
         void *s1 = cslib_initialize_linked_node(item, set_item->value);
         set_item->value = s1;
@@ -188,7 +188,7 @@ bool cslib_hashmap_set(cslib_hashmap_t *map, char *key, void *value)
 
 void _cslib_hashmap_set(cslib_hashmap_t *map, cslib_hashmap_item_t *item)
 {
-    if (item->type != REGULAR)
+    if (item->type != HASHMAP_REGULAR)
     {
         return;
     }
@@ -205,17 +205,17 @@ void _cslib_hashmap_set(cslib_hashmap_t *map, cslib_hashmap_item_t *item)
 
     cslib_hashmap_item_t *set_item = map->items[hashed];
 
-    if (set_item->type == REGULAR)
+    if (set_item->type == HASHMAP_REGULAR)
     {
         void *s1 = cslib_initialize_linked_node(set_item, NULL);
         void *s2 = cslib_initialize_linked_node(item, s1);
 
         /* create item for the linked list */
-        cslib_hashmap_item_t *list_item = _cslib_hashmap_item(NULL, s2, LINKED_LIST);
+        cslib_hashmap_item_t *list_item = _cslib_hashmap_item(NULL, s2, HASHMAP_LINKED_LIST);
         map->items[hashed] = list_item;
         map->length++;
     }
-    else if (set_item->type == LINKED_LIST)
+    else if (set_item->type == HASHMAP_LINKED_LIST)
     {
         void *s1 = cslib_initialize_linked_node(item, set_item->value);
         set_item->value = s1;
@@ -234,7 +234,7 @@ void* cslib_get_hashmap(cslib_hashmap_t *map, char *key)
         return NULL;
     }
 
-    if (item->type == REGULAR)
+    if (item->type == HASHMAP_REGULAR)
     {
         if (strncmp( key, item->key, strlen(key) ) == 0)
         {
@@ -243,7 +243,7 @@ void* cslib_get_hashmap(cslib_hashmap_t *map, char *key)
 
         return NULL;
     }
-    else if (item->type == LINKED_LIST)
+    else if (item->type == HASHMAP_LINKED_LIST)
     {
         cslib_hashmap_item_t *node_item;
         cslib_linked_node_t *node = item->value;
@@ -289,7 +289,7 @@ void cslib_hashmap_print(cslib_hashmap_t *map)
         {
             item = map->items[i];
 
-            if (item->type == REGULAR)
+            if (item->type == HASHMAP_REGULAR)
             {
                 printf("\"%s\": \"%s\",",
                     (char*)(item->key),
@@ -297,7 +297,7 @@ void cslib_hashmap_print(cslib_hashmap_t *map)
                 );
             }
 
-            else if (item->type == LINKED_LIST)
+            else if (item->type == HASHMAP_LINKED_LIST)
             {
                 node = item->value;
 
@@ -334,7 +334,7 @@ void cslib_hashmap_print_verbose(cslib_hashmap_t *map)
         {
             item = map->items[i];
 
-            if (item->type == REGULAR)
+            if (item->type == HASHMAP_REGULAR)
             {
                 printf("(%zu) \"%s\": \"%s\",",
                     i,
@@ -343,7 +343,7 @@ void cslib_hashmap_print_verbose(cslib_hashmap_t *map)
                 );
             }
 
-            else if (item->type == LINKED_LIST)
+            else if (item->type == HASHMAP_LINKED_LIST)
             {
                 node = item->value;
 
