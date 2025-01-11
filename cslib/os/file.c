@@ -62,7 +62,7 @@ bool cslib_list_directory(cslib_vector_t *vec, char *path, size_t depth)
             file->type = OS_FILE_REGULAR;
         }
 
-        cslib_vector_push(vec, file);
+        cslib_vector_insert(vec, file);
     }
     while (FindNextFile(hFind, &ffd) != 0);
 

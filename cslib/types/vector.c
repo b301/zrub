@@ -92,7 +92,7 @@ ssize_t cslib_vector_insert(cslib_vector_t *vec, void *item)
         }
     }
 
-    fprintf(stderr, "ssize_t cslib_vector_push(cslib_vector_t *vec, void *item) reached undefined behavior");
+    fprintf(stderr, "ssize_t cslib_vector_insert(cslib_vector_t *vec, void *item) reached undefined behavior");
     return VECTOR_UNDEFINED_BEHAVIOR;
 }
 
