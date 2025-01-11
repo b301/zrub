@@ -1,5 +1,5 @@
-#include "cslib/std/hashmap.h"
-#include "cslib/std/string.h"
+#include "cslib/types/hashmap.h"
+#include "cslib/types/string.h"
 #include "cslib/pub.h"
 #include <stdio.h>
 

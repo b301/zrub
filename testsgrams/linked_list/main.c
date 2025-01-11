@@ -1,4 +1,4 @@
-#include "cslib/std/linked_list.h"
+#include "cslib/types/linked_list.h"
 #include "cslib/pub.h"
 #include <stdio.h>
 

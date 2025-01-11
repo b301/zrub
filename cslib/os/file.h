@@ -1,8 +1,8 @@
-#ifndef _CSLIB_GEN_H
-#define _CSLIB_GEN_H
+#ifndef _CSLIB_FILE_H
+#define _CSLIB_FILE_H
 
-#include "cslib/std/string.h"
-#include "cslib/std/vector.h"
+#include "cslib/types/string.h"
+#include "cslib/types/vector.h"
 #include "cslib/pub.h"
 
 #include <stdio.h>
@@ -24,7 +24,7 @@ typedef struct OsFile {
     cslib_os_file_type_t type;
 } cslib_os_file_t;
 
-void cslib_list_directory(cslib_vector_t *vec, char *path, size_t depth);
+bool cslib_list_directory(cslib_vector_t *vec, char *path, size_t depth);
 /* example output
 
 Vector::[
@@ -44,4 +44,4 @@ Vector::[
 
 */
 
-#endif // _CSLIB_GEN_H
+#endif // _CSLIB_FILE_H

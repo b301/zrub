@@ -1,5 +1,5 @@
-#include "cslib/std/iterator.h"
-#include "cslib/std/string.h"
+#include "cslib/types/iterator.h"
+#include "cslib/types/string.h"
 #include "cslib/pub.h"
 
 
@@ -12,8 +12,8 @@ int main()
         cslib_vector_t *vec = ALLOC_OBJECT(cslib_vector_t);
         cslib_allocate_vector(vec, 4);
 
-        cslib_vector_push(vec, cslib_string_create("hello", 8));
-        cslib_vector_push(vec, cslib_string_create("there", 8));
+        cslib_vector_insert(vec, cslib_string_create("hello", 8));
+        cslib_vector_insert(vec, cslib_string_create("there", 8));
 
         cslib_iterator_t iterator; 
         cslib_vector_iterator(&iterator, vec);

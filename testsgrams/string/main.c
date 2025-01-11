@@ -1,4 +1,4 @@
-#include "cslib/std/string.h"
+#include "cslib/types/string.h"
 #include "cslib/pub.h"
 
 #include <stdio.h>
@@ -56,7 +56,6 @@ int main()
         //     printf("(%zu) `%s`\n", i, vec->items[i]);
         // }
 
-        /* TODO: CHECK */
         CHECK(strncmp(vec->items[0], "the world is round and the world is ", 36) == 0, 
             "test 4: checking string first half");
         CHECK(strncmp(vec->items[1], " and the world sucks. the ears of giants.", 36) == 0, 

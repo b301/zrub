@@ -1,7 +1,7 @@
 #include "cslib/os/file.h"
 
 
-void cslib_list_directory(cslib_vector_t *vec, char *path, size_t depth)
+bool cslib_list_directory(cslib_vector_t *vec, char *path, size_t depth)
 {
     // TODO: IMPL LINUX
     #if defined(_WIN32) || defined(WIN32)
@@ -13,7 +13,7 @@ void cslib_list_directory(cslib_vector_t *vec, char *path, size_t depth)
     if (strlen(path) >= MAX_PATH - 3)
     {
         fprintf(stderr, "cslib_list_directory::path length exceeds MAX_PATH (%d)\n", MAX_PATH);
-        return;
+        return false;
     }
 
     StringCchCopy(dirname, MAX_PATH, path);
@@ -25,7 +25,7 @@ void cslib_list_directory(cslib_vector_t *vec, char *path, size_t depth)
     if (INVALID_HANDLE_VALUE == hFind)
     {
         fprintf(stderr, "cslib_list_directory::FindFirstFile error %ld", GetLastError());
-        return;
+        return false;
     }
 
     // List all the files in the directory with some info about them.
@@ -74,4 +74,6 @@ void cslib_list_directory(cslib_vector_t *vec, char *path, size_t depth)
     FindClose(hFind);
 
     #endif // WIN32
+
+    return false;
 }
