@@ -2,7 +2,6 @@
 #include "cslib/pub.h"
 
 #include <stdio.h>
-#include <assert.h>
 
 
 int main()

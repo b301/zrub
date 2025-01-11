@@ -9,11 +9,10 @@ void cslib_list_directory(cslib_vector_t *vec, char *path, size_t depth)
     WIN32_FIND_DATA ffd;
     TCHAR dirname[MAX_PATH];
     HANDLE hFind = INVALID_HANDLE_VALUE;
-    DWORD dword_error = 0;
 
-    if (strlen(path) - 3 >= MAX_PATH)
+    if (strlen(path) >= MAX_PATH - 3)
     {
-        fprintf(stderr, "cslib_list_directory::path length cannot be larger than %d\n", MAX_PATH);
+        fprintf(stderr, "cslib_list_directory::path length exceeds MAX_PATH (%d)\n", MAX_PATH);
         return;
     }
 
@@ -25,7 +24,7 @@ void cslib_list_directory(cslib_vector_t *vec, char *path, size_t depth)
 
     if (INVALID_HANDLE_VALUE == hFind)
     {
-        fprintf(stderr, "cslib_list_directory::FindFirstFile error %ld", dword_error);
+        fprintf(stderr, "cslib_list_directory::FindFirstFile error %ld", GetLastError());
         return;
     }
 
@@ -67,10 +66,9 @@ void cslib_list_directory(cslib_vector_t *vec, char *path, size_t depth)
     }
     while (FindNextFile(hFind, &ffd) != 0);
 
-    dword_error = GetLastError();
-    if (dword_error != ERROR_NO_MORE_FILES)
+    if (GetLastError() != ERROR_NO_MORE_FILES)
     {
-        fprintf(stderr, "cslib_list_directory::FindFirstFile error %ld", dword_error);
+        fprintf(stderr, "cslib_list_directory::FindFirstFile error %ld", GetLastError());
     }
 
     FindClose(hFind);

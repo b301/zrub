@@ -24,3 +24,4 @@ gcc build/cslib.o build/tests/vector.o -o build/bin/tests/vector_tests
 gcc build/cslib.o build/tests/hashmap.o -o build/bin/tests/hashmap_tests
 gcc build/cslib.o build/tests/iterator.o -o build/bin/tests/iterator_tests
 gcc build/cslib.o build/tests/file.o -o build/bin/tests/file_tests
+

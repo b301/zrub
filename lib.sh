@@ -15,7 +15,6 @@ gcc ${EXTRA_ARGS} -c cslib/std/linked_list.c -o build/linked_list.o
 gcc ${EXTRA_ARGS} -c cslib/std/hashmap.c -o build/hashmap.o
 gcc ${EXTRA_ARGS} -c cslib/std/vector.c -o build/vector.o
 
-
 # combine base types object files to one
 ld -relocatable build/hashmap.o \
     build/linked_list.o \
@@ -32,3 +31,4 @@ ld -relocatable build/cslib_types.o \
     build/iterator.o \
     build/file.o \
     -o build/cslib.o
+

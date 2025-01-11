@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 
         cslib_os_file_t *file = NULL;
 
-        printf("iterator length: %lld\n", iterator.length);
+        printf("iterator length: %ld\n", iterator.length);
         for (size_t i = 0; i < iterator.length; i++)
         {
             file = iterator.items[i];
