@@ -7,7 +7,7 @@ set -e
 [[ ! -e build/tests ]] && mkdir -p build/tests
 [[ ! -e build/bin/tests ]] && mkdir -p build/bin/tests
 
-EXTRA_ARGS="-I${PWD} -Wall -s"
+EXTRA_ARGS="-I${PWD} -Wall -Wextra -pedantic -O3 -s"
 
 # compile src to obj
 gcc ${EXTRA_ARGS} -c cslib/types/string.c -o build/string.o
@@ -28,11 +28,13 @@ ld -relocatable build/hashmap.o \
 gcc ${EXTRA_ARGS} -c cslib/types/iterator.c build/cslib_types.o -o build/iterator.o
 gcc ${EXTRA_ARGS} -c cslib/os/file.c build/cslib_types.o -o build/file.o
 gcc ${EXTRA_ARGS} -c cslib/os/time.c build/cslib_types.o -o build/time.o
+gcc ${EXTRA_ARGS} -c cslib/cipher/classic.c build/cslib_types.o -o build/cipher_classic.o
 
 # combine all into cslib.o
 ld -relocatable build/cslib_types.o \
     build/iterator.o \
     build/file.o \
     build/time.o \
+    build/cipher_classic.o \
     -o build/cslib.o
 

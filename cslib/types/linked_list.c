@@ -1,5 +1,6 @@
 #include "cslib/types/linked_list.h"
 
+
 size_t cslib_linked_list_length(cslib_linked_node_t *node)
 {
     if (node->next == NULL)
@@ -12,7 +13,7 @@ size_t cslib_linked_list_length(cslib_linked_node_t *node)
 
 cslib_linked_node_t *cslib_initialize_linked_node(void *value, cslib_linked_node_t *next)
 {
-    cslib_linked_node_t *node = (cslib_linked_node_t *)malloc(sizeof(cslib_linked_node_t));
+    cslib_linked_node_t *node = (cslib_linked_node_t *)CSLIB_MALLOC(sizeof(cslib_linked_node_t));
 
     node->value = value;
     node->next = next;

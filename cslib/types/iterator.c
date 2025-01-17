@@ -1,9 +1,10 @@
 #include "cslib/types/iterator.h"
 #include "iterator.h"
 
+
 void cslib_vector_iterator(cslib_iterator_t *iterator, const cslib_vector_t *vec)
 {
-    void **items = (void **)malloc(sizeof(void *) * vec->length);
+    void **items = (void **)CSLIB_MALLOC(sizeof(void *) * vec->length);
     size_t c = 0;
 
     for (size_t i = 0; i < vec->capacity; i++)
@@ -26,7 +27,7 @@ void cslib_vector_iterator(cslib_iterator_t *iterator, const cslib_vector_t *vec
 
 void cslib_hashmap_keys_iterator(cslib_iterator_t *iterator, const cslib_hashmap_t *map)
 {
-    void **keys = (void **)malloc(sizeof(void *) * map->length);
+    void **keys = (void **)CSLIB_MALLOC(sizeof(void *) * map->length);
     size_t c = 0;
 
     cslib_hashmap_item_t *item;
@@ -68,7 +69,7 @@ void cslib_hashmap_keys_iterator(cslib_iterator_t *iterator, const cslib_hashmap
 
 void cslib_hashmap_values_iterator(cslib_iterator_t *iterator, const cslib_hashmap_t *map)
 {
-    void **values = (void **)malloc(sizeof(void *) * map->length);
+    void **values = (void **)CSLIB_MALLOC(sizeof(void *) * map->length);
     size_t c = 0;
 
     cslib_hashmap_item_t *item;

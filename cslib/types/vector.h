@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
+#include "cslib/pub.h"
+
 /*
 This is a dumb vector implementation, every item allocated in this must
 be deallocated by the user!
@@ -29,5 +31,7 @@ bool cslib_vector_resize(cslib_vector_t *vec, size_t new_capacity);
 
 ssize_t cslib_vector_insert(cslib_vector_t *vec, void *item);
 void *cslib_vector_remove(cslib_vector_t *vec, size_t index);
+void *cslib_vector_get(cslib_vector_t *vec, ssize_t index);
+
 
 #endif // _CSLIB_VECTOR_H

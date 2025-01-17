@@ -7,8 +7,9 @@ int main()
 {
     printf("testing hashmap\n");
 
+    /* test 1 */
     {
-        cslib_hashmap_t *map = (cslib_hashmap_t *)malloc(sizeof(cslib_hashmap_t));
+        cslib_hashmap_t *map = (cslib_hashmap_t *)CSLIB_MALLOC(sizeof(cslib_hashmap_t));
 
         cslib_allocate_hashmap(map, 16);
 

@@ -1,4 +1,6 @@
 #include "cslib/os/time.h"
+#include "time.h"
+
 
 static int64_t cslib_time_to_int64(cslib_time_t time)
 {
@@ -10,7 +12,27 @@ static int64_t cslib_time_to_int64(cslib_time_t time)
            (int64_t)time.sec;
 }
 
-bool cslib_time_utcnow(cslib_time_t *time_data)
+bool cslib_time_from_time_t(cslib_time_t *time_data, time_t time_t_data)
+{
+    struct tm *t = gmtime(&time_t_data);
+
+    if (t == NULL) {
+        fprintf(stderr, "cslib_time_from_time_t::failed to convert to utc\n");
+        return false;
+    }
+
+    time_data->day = (short)(t->tm_mday);
+    time_data->month = (short)(t->tm_mon + 1);
+    time_data->year = (short)(t->tm_year + 1900);
+    
+    time_data->sec = (short)(t->tm_sec);
+    time_data->min = (short)(t->tm_min);
+    time_data->hour = (short)(t->tm_hour);
+
+    return true;
+}
+
+bool cslib_time_utcnow(cslib_time_t *time_data) 
 {
     time_t ct = time(NULL);
     if (ct == -1) {
@@ -18,19 +40,9 @@ bool cslib_time_utcnow(cslib_time_t *time_data)
         return false;
     }
 
-    struct tm *utc = gmtime(&ct);
-    if (utc == NULL) {
-        fprintf(stderr, "cslib_time_utc::failed to convert to utc\n");
+    if (!cslib_time_from_time_t(time_data, ct)) {
         return false;
     }
-
-    time_data->day = (short)(utc->tm_mday);
-    time_data->month = (short)(utc->tm_mon + 1);
-    time_data->year = (short)(utc->tm_year + 1900);
-    
-    time_data->sec = (short)(utc->tm_sec);
-    time_data->min = (short)(utc->tm_min);
-    time_data->hour = (short)(utc->tm_hour);
 
     return true;
 }

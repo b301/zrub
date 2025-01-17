@@ -1,13 +1,14 @@
 #ifndef _CSLIB_HASHMAP_H
 #define _CSLIB_HASHMAP_H
 
-#include "cslib/types/linked_list.h"
-#include "cslib/pub.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+
+#include "cslib/pub.h"
+#include "cslib/types/linked_list.h"
+
 
 typedef enum HashmapItemType
 {

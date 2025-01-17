@@ -1,10 +1,11 @@
 #ifndef _CSLIB_QUEUE_T
 #define _CSLIB_QUEUE_T
 
-#include "cslib/pub.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+
+#include "cslib/pub.h"
 
 typedef struct Queue {
     void **items;

@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include "cslib/pub.h"
 #include "cslib/types/vector.h"
 
 bool cslib_string_remove_prefix(char *str, const char *prefix);

@@ -21,7 +21,7 @@ int main()
         for (size_t i = 0; i < ql; i++)
         {
             void *item = cslib_queue_pop(q);
-            printf("%02lld %s\n", i, (char*)item);
+            printf("%02lld: %s\n", i, (char*)item);
 
             free(item);
         }

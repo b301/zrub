@@ -1,8 +1,9 @@
 #include "queue.h"
 
+
 bool cslib_allocate_queue(cslib_queue_t *queue, size_t capacity)
 {
-    void **items = (void**)malloc(sizeof( void*) * capacity);
+    void **items = (void**)CSLIB_MALLOC(sizeof( void*) * capacity);
 
     if (items == NULL)
     {

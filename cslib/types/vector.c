@@ -1,9 +1,10 @@
 #include "cslib/types/vector.h"
+#include "vector.h"
 
 
 bool cslib_allocate_vector(cslib_vector_t *vec, size_t capacity)
 {
-    void **items = (void**)malloc(sizeof( void*) * capacity);
+    void **items = (void**)CSLIB_MALLOC(sizeof( void*) * capacity);
 
     if (items == NULL)
     {
@@ -48,7 +49,7 @@ void cslib_vector_naivefree(cslib_vector_t *vec)
 
 bool cslib_vector_resize(cslib_vector_t *vec, size_t new_capacity)
 {
-    void **items = (void**)malloc(sizeof( void*) * new_capacity);
+    void **items = (void**)CSLIB_MALLOC(sizeof( void*) * new_capacity);
 
     if (items == NULL)
     {
@@ -82,7 +83,7 @@ ssize_t cslib_vector_insert(cslib_vector_t *vec, void *item)
         return VECTOR_CAPACITY_REACHED;
     }
 
-    for (ssize_t i = 0; i < vec_size; i++)
+    for (size_t i = 0; i < vec_size; i++)
     {
         if (vec->items[i] == NULL)
         {
@@ -113,4 +114,15 @@ void* cslib_vector_remove(cslib_vector_t *vec, size_t index)
     vec->length--;
 
     return item;
+}
+
+void *cslib_vector_get(cslib_vector_t *vec, ssize_t index)
+{
+    if (vec->length < index ||
+        (index < 0 && vec->length < index * -1)) 
+    {
+        return NULL;
+    }
+
+    return vec->items[index];
 }

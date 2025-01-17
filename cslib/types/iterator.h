@@ -5,6 +5,9 @@
 #include "cslib/basic_types.h"
 #include <stdlib.h>
 
+#include "cslib/pub.h"
+
+/* only need to free the items array, not the items themselves! */
 typedef struct Iterator
 {
     void **items;

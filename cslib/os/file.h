@@ -14,6 +14,9 @@
 
 #endif
 
+#include "cslib/pub.h"
+
+
 typedef enum OsFileType {
     OS_FILE_REGULAR,
     OS_FILE_DIRECTORY

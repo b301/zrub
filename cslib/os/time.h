@@ -26,6 +26,7 @@ typedef struct Time {
     short hour;
 } cslib_time_t;
 
+bool cslib_time_from_time_t(cslib_time_t *time_data, time_t time_t_data);
 bool cslib_time_utcnow(cslib_time_t *time_data);
 char *cslib_time_as_str(cslib_time_t time_data);
 void cslib_time_sleep(int seconds);

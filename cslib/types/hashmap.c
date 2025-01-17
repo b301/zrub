@@ -4,7 +4,7 @@
 
 bool cslib_allocate_hashmap(cslib_hashmap_t *map, size_t capacity)
 {
-    cslib_hashmap_item_t **items = (cslib_hashmap_item_t**)malloc(
+    cslib_hashmap_item_t **items = (cslib_hashmap_item_t**)CSLIB_MALLOC(
         sizeof(cslib_hashmap_item_t*) * capacity);
 
     if (items == NULL)

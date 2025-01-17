@@ -1,6 +1,7 @@
 #include "cslib/types/string.h"
 #include <stdio.h>
 
+
 /*
 This function removes the prefix (beginning of the string) if the prefix is in it.
 Make sure to pass a modifiable string! char *literal = ".." does not count.
@@ -64,7 +65,7 @@ char *cslib_string_create(const char *data, size_t min_size)
     const size_t alloc_size = min_size > datasize ? min_size : datasize;
 
     // +1 for the null terminator
-    char *s = (char *)malloc(sizeof(char) * alloc_size + 1);
+    char *s = (char *)CSLIB_MALLOC(sizeof(char) * alloc_size + 1);
     strncpy(s, data, datasize + 1);
 
     return s;
@@ -81,14 +82,12 @@ char *cslib_string_slice(const char *str, size_t begin, size_t end)
 
     if (length < end ||
         length < begin ||
-        end < 0 ||
-        begin < 0 ||
         begin >= end)
     {
         return NULL;
     }
 
-    char *new_string = (char *)malloc(sizeof(char) * (end - begin) + 1);
+    char *new_string = (char *)CSLIB_MALLOC(sizeof(char) * (end - begin) + 1);
     strncpy(new_string, str + begin, end - begin);
     memset(new_string + end - begin, '\0', 1);
 
@@ -109,8 +108,6 @@ void cslib_string_slice2(char *str, const char *data, size_t begin, size_t end)
 
     if (length < end ||
         length < begin ||
-        end < 0 ||
-        begin < 0 ||
         begin >= end)
     {
         return;
@@ -133,7 +130,7 @@ size_t cslib_string_count_substring(const char *str, const char *sub)
     so 5 - 4 + 1 cases to check ("hell", "ello")
     */
 
-    char *tmp = (char *)malloc(sizeof(char) * (sub_length + 1));
+    char *tmp = (char *)CSLIB_MALLOC(sizeof(char) * (sub_length + 1));
 
     for (size_t i = 0; i <= str_length - sub_length; i++)
     {
@@ -162,11 +159,12 @@ char *cslib_string_leftpad(const char *str, const char *pad, size_t count)
     cslib_vector_t *lines = cslib_string_split(str, "\n");
     const size_t str_length = strlen(str);
 
-    char *padded = (char *)malloc(str_length + sizeof(char) * count * lines->length + 1);
+    size_t buffersize = str_length + sizeof(char) * count * lines->length + 1;
+    char *padded = (char *)CSLIB_MALLOC(buffersize);
 
     if (padded == NULL)
     {
-        fprintf(stderr, "failed to malloc string\n");
+        fprintf(stderr, "failed to CSLIB_MALLOC string\n");
         exit(1);
     }
 
@@ -182,7 +180,8 @@ char *cslib_string_leftpad(const char *str, const char *pad, size_t count)
             memset(padded + offset, pad[0], count);
             offset += count;
 
-            strncpy(padded + offset, item, strlen(item));
+            snprintf(padded + offset, buffersize - offset, "%s", item);
+
             offset += strlen(item);
 
             memset(padded + offset, '\n', 1);
@@ -203,7 +202,7 @@ cslib_vector_t *cslib_string_split(const char *str, const char *delimiter)
     const size_t str_length = strlen(str);
     const size_t sub_length = strlen(delimiter);
     size_t offset = 0;
-    int counter = 0;
+    size_t counter = 0;
 
     bool delim_is_suffix = false;
 
@@ -212,7 +211,7 @@ cslib_vector_t *cslib_string_split(const char *str, const char *delimiter)
         return NULL;
     }
 
-    cslib_vector_t *vec = (cslib_vector_t *)malloc(sizeof(cslib_vector_t));
+    cslib_vector_t *vec = (cslib_vector_t *)CSLIB_MALLOC(sizeof(cslib_vector_t));
 
     if (str_length <= sub_length)
     {
@@ -259,7 +258,7 @@ cslib_vector_t *cslib_string_split(const char *str, const char *delimiter)
         so 5 - 4 + 1 cases to check ("hell", "ello")
         */
 
-        // char *tmp = (char *)malloc(sizeof(char) * (sub_length + 1));
+        // char *tmp = (char *)CSLIB_MALLOC(sizeof(char) * (sub_length + 1));
         char *tmp = cslib_string_create(delimiter, sub_length + 1);
 
         for (size_t i = 0; i <= str_length - sub_length; i++)
