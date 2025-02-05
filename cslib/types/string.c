@@ -11,6 +11,11 @@ NOTE: To just check if the prefix exists use the cslib_isprefix function.
 */
 bool cslib_string_remove_prefix(char *str, const char *prefix)
 {
+    if (str == NULL || prefix == NULL)
+    {
+        return false;
+    }
+
     // checks if the string has that prefix
     if (!cslib_string_check_prefix(str, prefix))
     {
@@ -33,11 +38,21 @@ Returns true if yes, else false.
 */
 bool cslib_string_check_prefix(const char *str, const char *prefix)
 {
+    if (str == NULL || prefix == NULL)
+    {
+        return false;
+    }
+
     return memcmp(prefix, str, strlen(prefix)) == 0;
 }
 
 bool cslib_string_remove_suffix(char *str, const char *suffix)
 {
+    if (str == NULL || suffix == NULL)
+    {
+        return false;
+    }
+
     if (!cslib_string_check_suffix(str, suffix))
     {
         return false;
@@ -50,6 +65,11 @@ bool cslib_string_remove_suffix(char *str, const char *suffix)
 
 bool cslib_string_check_suffix(const char *str, const char *suffix)
 {
+    if (str == NULL || suffix == NULL)
+    {
+        return false;
+    }
+
     const size_t str_length = strlen(str);
     const size_t suf_length = strlen(suffix);
 
@@ -61,6 +81,11 @@ Allocates memory for a string from a literal
 */
 char *cslib_string_create(const char *data, size_t min_size)
 {
+    if (data == NULL)
+    {
+        return NULL;
+    }
+
     const size_t datasize = strlen(data);
     const size_t alloc_size = min_size > datasize ? min_size : datasize;
 
@@ -78,6 +103,11 @@ char *cslib_string_slice(const char *str, size_t begin, size_t end)
 
     would produce "all".
     */
+    if (str == NULL)
+    {
+        return NULL;
+    }
+
     const size_t length = strlen(str);
 
     if (length < end ||
@@ -96,6 +126,11 @@ char *cslib_string_slice(const char *str, size_t begin, size_t end)
 
 void cslib_string_slice2(char *str, const char *data, size_t begin, size_t end)
 {
+    if (str == NULL || data == NULL)
+    {
+        return NULL;
+    }
+
     /*
     cslib_string_slice(slice, "for all the years", 5, 7);
 
@@ -120,6 +155,11 @@ void cslib_string_slice2(char *str, const char *data, size_t begin, size_t end)
 
 size_t cslib_string_count_substring(const char *str, const char *sub)
 {
+    if (str == NULL || sub == NULL)
+    {
+        return NULL;
+    }
+
     const size_t str_length = strlen(str);
     const size_t sub_length = strlen(sub);
     size_t counter = 0;
@@ -156,6 +196,11 @@ char *cslib_string_leftpad(const char *str, const char *pad, size_t count)
 
     expected output: str = "**hello \n**world";
     */
+    if (str == NULL || pad == NULL || count <= 0)
+    {
+        return NULL;
+    }
+
     cslib_vector_t *lines = cslib_string_split(str, "\n");
     const size_t str_length = strlen(str);
 
@@ -199,6 +244,11 @@ char *cslib_string_leftpad(const char *str, const char *pad, size_t count)
 
 cslib_vector_t *cslib_string_split(const char *str, const char *delimiter)
 {
+    if (str == NULL || delimiter == NULL)
+    {
+        return NULL;
+    }
+
     const size_t str_length = strlen(str);
     const size_t sub_length = strlen(delimiter);
     size_t offset = 0;
@@ -304,4 +354,18 @@ cslib_vector_t *cslib_string_split(const char *str, const char *delimiter)
     }
 
     return vec;
+}
+
+void cslib_string_lowercase(char *str)
+{
+    if (str == NULL) return;
+
+    for (; *str; ++str) *str = tolower(*str); 
+}
+
+void cslib_string_uppercase(char *str)
+{
+    if (str == NULL) return;
+
+    for (; *str; ++str) *str = toupper(*str);
 }
