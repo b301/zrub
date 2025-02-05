@@ -79,6 +79,24 @@ int main()
         free(padded);
     }
 
+    /* test 6: lower and upper */
+    {
+        char *lowerit = cslib_string_create("My Name is Oded", 32);
+        char *upperit = cslib_string_create("mY nAME iS oDED", 32);
+
+        cslib_string_lowercase(lowerit);
+
+        printf("lower failed\n");
+        cslib_string_uppercase(upperit);
+        
+        printf("upper failed\n");
+        CHECK(strncmp(lowerit, "my name is oded", strlen(lowerit)) == 0, "test 6: checking string lower");
+        CHECK(strncmp(upperit, "MY NAME IS ODED", strlen(upperit)) == 0, "test 6: checking string upper");
+
+        free(lowerit);
+        free(upperit);
+    }
+
 
     return 0;
 }

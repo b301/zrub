@@ -29,8 +29,8 @@ typedef struct Time {
 bool cslib_time_from_time_t(cslib_time_t *time_data, time_t time_t_data);
 bool cslib_time_utcnow(cslib_time_t *time_data);
 
-void cslib_time_set_str(char *dest, cslib_time_t time_data);
-char *cslib_time_get_str(cslib_time_t time_data);
+void cslib_time_set_str(char *dest, const cslib_time_t time_data);
+char *cslib_time_get_str(const cslib_time_t time_data);
 
 void cslib_time_sleep(int seconds);
 

@@ -360,12 +360,18 @@ void cslib_string_lowercase(char *str)
 {
     if (str == NULL) return;
 
-    for (; *str; ++str) *str = tolower(*str); 
+    for (size_t i = 0; str[i] != '\0'; i++)
+    {
+        str[i] = (char)tolower((unsigned char)str[i]);
+    } 
 }
 
 void cslib_string_uppercase(char *str)
 {
     if (str == NULL) return;
 
-    for (; *str; ++str) *str = toupper(*str);
+    for (size_t i = 0; str[i] != '\0'; i++)
+    {
+        str[i] = (char)toupper((unsigned char)str[i]);
+    }
 }

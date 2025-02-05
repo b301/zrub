@@ -47,7 +47,7 @@ bool cslib_time_utcnow(cslib_time_t *time_data)
     return true;
 }
 
-void cslib_time_set_str(char *dest, cslib_time_t time_data)
+void cslib_time_set_str(char *dest, const cslib_time_t time_data)
 {
     snprintf(dest, 128, "%02d-%02d-%04d %02d:%02d:%02d", 
         time_data.day,
@@ -58,7 +58,7 @@ void cslib_time_set_str(char *dest, cslib_time_t time_data)
         time_data.sec);
 }
 
-char *cslib_time_get_str(cslib_time_t time_data)
+char *cslib_time_get_str(const cslib_time_t time_data)
 {
     /* FIXME: ensure cslib_time_t is valid! */
     char *str = cslib_string_create("\0", 128);
