@@ -1,7 +1,7 @@
 #include "classic.h"
 
 
-void cslib_caesar_encipher(char *message, short steps)
+void zrublib_caesar_encipher(char *message, short steps)
 {
     /* capital: (A)65-(Z)90 */
     /* lowercase: (a)97-(z)122 */
@@ -46,7 +46,7 @@ void cslib_caesar_encipher(char *message, short steps)
     }    
 }
 
-void cslib_caesar_decipher(char *message, short steps)
+void zrublib_caesar_decipher(char *message, short steps)
 {
-    cslib_caesar_encipher(message, 26 - steps);
+    zrublib_caesar_encipher(message, 26 - steps);
 }

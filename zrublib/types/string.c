@@ -1,4 +1,4 @@
-#include "cslib/types/string.h"
+#include "zrublib/types/string.h"
 #include <stdio.h>
 
 
@@ -7,12 +7,17 @@ This function removes the prefix (beginning of the string) if the prefix is in i
 Make sure to pass a modifiable string! char *literal = ".." does not count.
 Returns true if removed the prefix, else returns false.
 
-NOTE: To just check if the prefix exists use the cslib_isprefix function.
+NOTE: To just check if the prefix exists use the zrublib_isprefix function.
 */
-bool cslib_string_remove_prefix(char *str, const char *prefix)
+bool zrublib_string_remove_prefix(char *str, const char *prefix)
 {
+    if (str == NULL || prefix == NULL)
+    {
+        return false;
+    }
+
     // checks if the string has that prefix
-    if (!cslib_string_check_prefix(str, prefix))
+    if (!zrublib_string_check_prefix(str, prefix))
     {
         return false;
     }
@@ -31,14 +36,24 @@ Checks if it is the prefix of string
 
 Returns true if yes, else false.
 */
-bool cslib_string_check_prefix(const char *str, const char *prefix)
+bool zrublib_string_check_prefix(const char *str, const char *prefix)
 {
+    if (str == NULL || prefix == NULL)
+    {
+        return false;
+    }
+
     return memcmp(prefix, str, strlen(prefix)) == 0;
 }
 
-bool cslib_string_remove_suffix(char *str, const char *suffix)
+bool zrublib_string_remove_suffix(char *str, const char *suffix)
 {
-    if (!cslib_string_check_suffix(str, suffix))
+    if (str == NULL || suffix == NULL)
+    {
+        return false;
+    }
+
+    if (!zrublib_string_check_suffix(str, suffix))
     {
         return false;
     }
@@ -48,8 +63,13 @@ bool cslib_string_remove_suffix(char *str, const char *suffix)
     return true;
 }
 
-bool cslib_string_check_suffix(const char *str, const char *suffix)
+bool zrublib_string_check_suffix(const char *str, const char *suffix)
 {
+    if (str == NULL || suffix == NULL)
+    {
+        return false;
+    }
+
     const size_t str_length = strlen(str);
     const size_t suf_length = strlen(suffix);
 
@@ -59,25 +79,35 @@ bool cslib_string_check_suffix(const char *str, const char *suffix)
 /*
 Allocates memory for a string from a literal
 */
-char *cslib_string_create(const char *data, size_t min_size)
+char *zrublib_string_create(const char *data, size_t min_size)
 {
+    if (data == NULL)
+    {
+        return NULL;
+    }
+
     const size_t datasize = strlen(data);
     const size_t alloc_size = min_size > datasize ? min_size : datasize;
 
     // +1 for the null terminator
-    char *s = (char *)CSLIB_MALLOC(sizeof(char) * alloc_size + 1);
+    char *s = (char *)ZRUBLIB_MALLOC(sizeof(char) * alloc_size + 1);
     strncpy(s, data, datasize + 1);
 
     return s;
 }
 
-char *cslib_string_slice(const char *str, size_t begin, size_t end)
+char *zrublib_string_slice(const char *str, size_t begin, size_t end)
 {
     /*
-    cslib_string_slice("for all the years", 5, 7);
+    zrublib_string_slice("for all the years", 5, 7);
 
     would produce "all".
     */
+    if (str == NULL)
+    {
+        return NULL;
+    }
+
     const size_t length = strlen(str);
 
     if (length < end ||
@@ -87,17 +117,22 @@ char *cslib_string_slice(const char *str, size_t begin, size_t end)
         return NULL;
     }
 
-    char *new_string = (char *)CSLIB_MALLOC(sizeof(char) * (end - begin) + 1);
+    char *new_string = (char *)ZRUBLIB_MALLOC(sizeof(char) * (end - begin) + 1);
     strncpy(new_string, str + begin, end - begin);
     memset(new_string + end - begin, '\0', 1);
 
     return new_string;
 }
 
-void cslib_string_slice2(char *str, const char *data, size_t begin, size_t end)
+void zrublib_string_slice2(char *str, const char *data, size_t begin, size_t end)
 {
+    if (str == NULL || data == NULL)
+    {
+        return;
+    }
+
     /*
-    cslib_string_slice(slice, "for all the years", 5, 7);
+    zrublib_string_slice(slice, "for all the years", 5, 7);
 
     would produce "all".
 
@@ -118,8 +153,13 @@ void cslib_string_slice2(char *str, const char *data, size_t begin, size_t end)
     memset(str + end - begin, '\0', 1);
 }
 
-size_t cslib_string_count_substring(const char *str, const char *sub)
+size_t zrublib_string_count_substring(const char *str, const char *sub)
 {
+    if (str == NULL || sub == NULL)
+    {
+        return -1;
+    }
+
     const size_t str_length = strlen(str);
     const size_t sub_length = strlen(sub);
     size_t counter = 0;
@@ -130,11 +170,11 @@ size_t cslib_string_count_substring(const char *str, const char *sub)
     so 5 - 4 + 1 cases to check ("hell", "ello")
     */
 
-    char *tmp = (char *)CSLIB_MALLOC(sizeof(char) * (sub_length + 1));
+    char *tmp = (char *)ZRUBLIB_MALLOC(sizeof(char) * (sub_length + 1));
 
     for (size_t i = 0; i <= str_length - sub_length; i++)
     {
-        cslib_string_slice2(tmp, str, i, i + sub_length);
+        zrublib_string_slice2(tmp, str, i, i + sub_length);
 
         if (strncmp(tmp, sub, sub_length) == 0)
         {
@@ -147,7 +187,7 @@ size_t cslib_string_count_substring(const char *str, const char *sub)
     return counter;
 }
 
-char *cslib_string_leftpad(const char *str, const char *pad, size_t count)
+char *zrublib_string_leftpad(const char *str, const char *pad, size_t count)
 {
     /* exmaple case:
     NOTE: this function delimiter is the newline character!
@@ -156,15 +196,20 @@ char *cslib_string_leftpad(const char *str, const char *pad, size_t count)
 
     expected output: str = "**hello \n**world";
     */
-    cslib_vector_t *lines = cslib_string_split(str, "\n");
+    if (str == NULL || pad == NULL || count <= 0)
+    {
+        return NULL;
+    }
+
+    zrublib_vector_t *lines = zrublib_string_split(str, "\n");
     const size_t str_length = strlen(str);
 
     size_t buffersize = str_length + sizeof(char) * count * lines->length + 1;
-    char *padded = (char *)CSLIB_MALLOC(buffersize);
+    char *padded = (char *)ZRUBLIB_MALLOC(buffersize);
 
     if (padded == NULL)
     {
-        fprintf(stderr, "failed to CSLIB_MALLOC string\n");
+        fprintf(stderr, "failed to ZRUBLIB_MALLOC string\n");
         exit(1);
     }
 
@@ -191,14 +236,19 @@ char *cslib_string_leftpad(const char *str, const char *pad, size_t count)
 
     memset(padded + offset, '\0', 1);
 
-    cslib_vector_naivefree(lines);
-    cslib_vector_dumbfree(lines);
+    zrublib_vector_naivefree(lines);
+    zrublib_vector_dumbfree(lines);
 
     return padded;
 }
 
-cslib_vector_t *cslib_string_split(const char *str, const char *delimiter)
+zrublib_vector_t *zrublib_string_split(const char *str, const char *delimiter)
 {
+    if (str == NULL || delimiter == NULL)
+    {
+        return NULL;
+    }
+
     const size_t str_length = strlen(str);
     const size_t sub_length = strlen(delimiter);
     size_t offset = 0;
@@ -211,42 +261,42 @@ cslib_vector_t *cslib_string_split(const char *str, const char *delimiter)
         return NULL;
     }
 
-    cslib_vector_t *vec = (cslib_vector_t *)CSLIB_MALLOC(sizeof(cslib_vector_t));
+    zrublib_vector_t *vec = (zrublib_vector_t *)ZRUBLIB_MALLOC(sizeof(zrublib_vector_t));
 
     if (str_length <= sub_length)
     {
-        cslib_allocate_vector(vec, 0);
+        zrublib_allocate_vector(vec, 0);
 
         return vec;
     }
 
-    size_t occurences = cslib_string_count_substring(str, delimiter);
+    size_t occurences = zrublib_string_count_substring(str, delimiter);
     // printf("found %zu occurences of the delimiter `%s`\n", occurences, delimiter);
 
     /* checks if str ends with delim */
-    char *end = cslib_string_slice(str, str_length - sub_length, str_length);
-    char *start = cslib_string_slice(str, 0, sub_length);
+    char *end = zrublib_string_slice(str, str_length - sub_length, str_length);
+    char *start = zrublib_string_slice(str, 0, sub_length);
 
-    if (cslib_string_check_prefix(str, delimiter))
+    if (zrublib_string_check_prefix(str, delimiter))
     {
         occurences--;
     }
 
-    if (cslib_string_check_suffix(str, delimiter))
+    if (zrublib_string_check_suffix(str, delimiter))
     {
         delim_is_suffix = true;
         occurences--;
     }
 
-    cslib_allocate_vector(vec, occurences + 1);
+    zrublib_allocate_vector(vec, occurences + 1);
 
     free(start);
     free(end);
 
     if (occurences == 0)
     {
-        char *sub = cslib_string_create(str, str_length);
-        cslib_vector_insert(vec, sub);
+        char *sub = zrublib_string_create(str, str_length);
+        zrublib_vector_insert(vec, sub);
     }
     else
     {
@@ -258,21 +308,21 @@ cslib_vector_t *cslib_string_split(const char *str, const char *delimiter)
         so 5 - 4 + 1 cases to check ("hell", "ello")
         */
 
-        // char *tmp = (char *)CSLIB_MALLOC(sizeof(char) * (sub_length + 1));
-        char *tmp = cslib_string_create(delimiter, sub_length + 1);
+        // char *tmp = (char *)ZRUBLIB_MALLOC(sizeof(char) * (sub_length + 1));
+        char *tmp = zrublib_string_create(delimiter, sub_length + 1);
 
         for (size_t i = 0; i <= str_length - sub_length; i++)
         {
-            cslib_string_slice2(tmp, str, i, i + sub_length);
+            zrublib_string_slice2(tmp, str, i, i + sub_length);
             // printf("%zu %zu %zu %s\n", counter, offset, i, tmp);
 
             if (strncmp(tmp, delimiter, sub_length) == 0 &&
                 offset != i && i != 0)
             {
-                char *sub = cslib_string_slice(str, offset, i);
+                char *sub = zrublib_string_slice(str, offset, i);
                 // printf("pushing `%s`\n", sub);
 
-                cslib_vector_insert(vec, sub);
+                zrublib_vector_insert(vec, sub);
 
                 offset = i + sub_length;
                 i += sub_length - 1;
@@ -281,7 +331,7 @@ cslib_vector_t *cslib_string_split(const char *str, const char *delimiter)
                 if (counter == occurences)
                 {
                     // printf("offset: %zu, str_length: %zu\n", offset, str_length);
-                    char *final = cslib_string_slice(
+                    char *final = zrublib_string_slice(
                         str,
                         offset,
                         delim_is_suffix == true ? str_length - sub_length : str_length);
@@ -292,7 +342,7 @@ cslib_vector_t *cslib_string_split(const char *str, const char *delimiter)
                     else
                     {
                         // printf("pushing `%s`\n", final);
-                        cslib_vector_insert(vec, final);
+                        zrublib_vector_insert(vec, final);
                     }
 
                     break;
@@ -304,4 +354,24 @@ cslib_vector_t *cslib_string_split(const char *str, const char *delimiter)
     }
 
     return vec;
+}
+
+void zrublib_string_lowercase(char *str)
+{
+    if (str == NULL) return;
+
+    for (size_t i = 0; str[i] != '\0'; i++)
+    {
+        str[i] = (char)tolower((unsigned char)str[i]);
+    } 
+}
+
+void zrublib_string_uppercase(char *str)
+{
+    if (str == NULL) return;
+
+    for (size_t i = 0; str[i] != '\0'; i++)
+    {
+        str[i] = (char)toupper((unsigned char)str[i]);
+    }
 }
