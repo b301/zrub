@@ -128,7 +128,7 @@ void cslib_string_slice2(char *str, const char *data, size_t begin, size_t end)
 {
     if (str == NULL || data == NULL)
     {
-        return NULL;
+        return;
     }
 
     /*
@@ -157,7 +157,7 @@ size_t cslib_string_count_substring(const char *str, const char *sub)
 {
     if (str == NULL || sub == NULL)
     {
-        return NULL;
+        return -1;
     }
 
     const size_t str_length = strlen(str);

@@ -23,11 +23,11 @@ bool cslib_allocate_vector(cslib_vector_t *vec, size_t capacity)
     return true;
 }
 
-bool cslib_reallocate_vector(cslib_vector_t *vec, size_t capacity)
-{
-    // TODO: IMPL
-    return false;
-}
+// bool cslib_reallocate_vector(cslib_vector_t *vec, size_t capacity)
+// {
+//     // TODO: IMPL
+//     return false;
+// }
 
 void cslib_vector_dumbfree(cslib_vector_t *vec)
 {
@@ -118,8 +118,7 @@ void* cslib_vector_remove(cslib_vector_t *vec, size_t index)
 
 void *cslib_vector_get(cslib_vector_t *vec, ssize_t index)
 {
-    if (vec->length < index ||
-        (index < 0 && vec->length < index * -1)) 
+    if (index < 0 && vec->length < (size_t)(index * -1)) 
     {
         return NULL;
     }

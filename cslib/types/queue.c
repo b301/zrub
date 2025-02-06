@@ -24,10 +24,11 @@ bool cslib_allocate_queue(cslib_queue_t *queue, size_t capacity)
     return true;
 }
 
-bool cslib_reallocate_queue(cslib_queue_t *queue, size_t capacity)
-{
-    return false;
-}
+// bool cslib_reallocate_queue(cslib_queue_t *queue, size_t capacity)
+// {
+//     // TODO: IMPL
+//     return false;
+// }
 
 void cslib_queue_dumbfree(cslib_queue_t *queue)
 {

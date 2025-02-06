@@ -47,30 +47,44 @@ bool cslib_time_utcnow(cslib_time_t *time_data)
     return true;
 }
 
-void cslib_time_set_str(char *dest, const cslib_time_t time_data)
+void cslib_time_set_str(const cslib_time_t time_data, short time_format, char *dest)
 {
-    snprintf(dest, 128, "%02d-%02d-%04d %02d:%02d:%02d", 
-        time_data.day,
-        time_data.month,
-        time_data.year,
-        time_data.hour,
-        time_data.min,
-        time_data.sec);
+    switch (time_format)
+    {
+        case CSLIB_TIME_DEFAULT:
+            snprintf(dest, 128, __CSLIB_TIME_FORMAT_DEFAULT, 
+                time_data.day,
+                time_data.month,
+                time_data.year,
+                time_data.hour,
+                time_data.min,
+                time_data.sec);
+            break;
+
+        case CSLIB_TIME_DATEONLY:
+            snprintf(dest, 128, __CSLIB_TIME_FORMAT_DATEONLY, 
+                time_data.day,
+                time_data.month,
+                time_data.year);
+            break;
+
+        case CSLIB_TIME_TIMEONLY:
+            snprintf(dest, 128, __CSLIB_TIME_FORMAT_TIMEONLY, 
+                time_data.hour,
+                time_data.min,
+                time_data.sec);
+            break;
+
+        default:
+            break;
+    }
 }
 
-char *cslib_time_get_str(const cslib_time_t time_data)
+char *cslib_time_get_str(const cslib_time_t time_data, short time_format)
 {
     /* FIXME: ensure cslib_time_t is valid! */
     char *str = cslib_string_create("\0", 128);
-
-    snprintf(str, 128, "%02d-%02d-%04d %02d:%02d:%02d", 
-        time_data.day,
-        time_data.month,
-        time_data.year,
-        time_data.hour,
-        time_data.min,
-        time_data.sec);
-
+    cslib_time_set_str(time_data, time_format, str);
     return str;
 }
 
@@ -101,4 +115,15 @@ void cslib_time_sleep(int seconds)
     Sleep(1000 * seconds);
 
     #endif
+}
+
+void cslib_time_set(cslib_time_t *time_data, short day, short month, 
+    short year, short min, short sec, short hour)
+{
+    time_data->day = day;
+    time_data->month = month;
+    time_data->year = year;
+    time_data->min = min;
+    time_data->sec = sec;
+    time_data->hour = hour;
 }

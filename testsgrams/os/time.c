@@ -9,7 +9,7 @@ int main()
         cslib_time_utcnow(&t1);
         cslib_time_utcnow(&ts);
 
-        char *st1 = cslib_time_get_str(t1);
+        char *st1 = cslib_time_get_str(t1, CSLIB_TIME_DEFAULT);
         printf("test 1: time is %s\n", st1);
 
         cslib_time_sleep(2);
@@ -17,7 +17,7 @@ int main()
         cslib_time_t t2;
         cslib_time_utcnow(&t2);
 
-        char *st2 = cslib_time_get_str(t2);
+        char *st2 = cslib_time_get_str(t2, CSLIB_TIME_DEFAULT);
         printf("test 1: time is %s\n", st2);
 
         CHECK(cslib_time_gt(t2, t1), "test 1: t2 is greater than t1");
@@ -34,7 +34,7 @@ int main()
         cslib_time_utcnow(&t1);
 
         char str[128];
-        cslib_time_set_str(str, t1);
+        cslib_time_set_str(t1, CSLIB_TIME_DEFAULT, str);
 
         printf("test 2: time is %s\n", str);
     }

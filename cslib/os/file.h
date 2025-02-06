@@ -12,22 +12,28 @@
 #include <tchar.h>
 #include <strsafe.h>
 
-#endif
-
+#elif defined(__linux__)
+#include <dirent.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "cslib/pub.h"
 
+#endif
 
-typedef enum OsFileType {
+
+typedef enum OsFileType 
+{
     OS_FILE_REGULAR,
     OS_FILE_DIRECTORY
 } cslib_os_file_type_t;
 
-typedef struct OsFile {
+typedef struct OsFile 
+{
     char *name;
     cslib_os_file_type_t type;
 } cslib_os_file_t;
 
-bool cslib_list_directory(cslib_vector_t *vec, char *path, size_t depth);
+bool cslib_list_directory(cslib_vector_t *vec, char *path, ssize_t depth);
 /* example output
 
 Vector::[

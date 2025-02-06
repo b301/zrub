@@ -9,7 +9,7 @@ set -x
 ./build/bin/tests/hashmap_tests
 ./build/bin/tests/queue_tests
 ./build/bin/tests/iterator_tests
-./build/bin/tests/file_tests
+./build/bin/tests/file_tests ${HOME}/.ssh
 ./build/bin/tests/time_tests
 
 echo "[+] ALL TESTS PASSED! [+]"

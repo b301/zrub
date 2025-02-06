@@ -23,12 +23,12 @@ int main(int argc, char **argv)
 
             if (file->type == OS_FILE_DIRECTORY)
             {
-                printf("directory: %s\n", file->name);
+                printf("___dirt___ %s\n", file->name);
             }
 
             if (file->type == OS_FILE_REGULAR)
             {
-                printf("file: %s\n", file->name);
+                printf("___file___ %s\n", file->name);
             }
         }
 
@@ -41,6 +41,7 @@ int main(int argc, char **argv)
             free(file);
         }
 
+        free(iterator.items);
         cslib_vector_dumbfree(vec);
     }
 
