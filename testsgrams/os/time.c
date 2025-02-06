@@ -1,4 +1,5 @@
 #include "zrub/os/time.h"
+#include "zrub/pub.h"
 
 
 int main()
@@ -20,9 +21,9 @@ int main()
         char *st2 = zrub_time_get_str(t2, ZRUB_TIME_DEFAULT);
         printf("test 1: time is %s\n", st2);
 
-        CHECK(zrub_time_gt(t2, t1), "test 1: t2 is greater than t1");
-        CHECK(zrub_time_lt(t1, t2), "test 1: t1 is lesser than t2");
-        CHECK(zrub_time_eq(t1, ts), "test 1: t1 is equal to ts");
+        TESTS_CHECK(zrub_time_gt(t2, t1), "test 1: t2 is greater than t1");
+        TESTS_CHECK(zrub_time_lt(t1, t2), "test 1: t1 is lesser than t2");
+        TESTS_CHECK(zrub_time_eq(t1, ts), "test 1: t1 is equal to ts");
 
         free(st1);
         free(st2);

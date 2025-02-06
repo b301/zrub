@@ -1,29 +1,64 @@
 #include "logger.h"
 
 
+zrub_logger_t _zrub_global_logger;
+
+__attribute__((constructor))
+static void _zrub_global_logger_initialize()
+{
+    if (!zrub_logger_initialize(&_zrub_global_logger, NULL, ZRUB_LOGGER_OUTPUT_ONLY))
+    {
+        fprintf(stderr, "Failed to initialize global logger\n");
+    }
+}
+
+__attribute__((destructor))
+static void _zrub_global_logger_finalize()
+{
+    zrub_logger_finalize(&_zrub_global_logger);
+}
+
+
 bool zrub_logger_initialize(zrub_logger_t *logger, char *logfile, int flags)
 {
-    // open logfile with append
-    FILE *fptr;
-    fptr = fopen(logfile, "a");
+    logger->output_only = (flags & ZRUB_LOGGER_OUTPUT_ONLY) != 0;
 
-    if (fptr == NULL)
+    if (logger->output_only)
     {
-        fprintf(stderr, "failed to open logfile %s\n", logfile);
-        return false;
+        logger->file = NULL;
+    }
+    else
+    {
+        // open logfile with append
+        FILE *fptr;
+        fptr = fopen(logfile, "a");
+
+        if (fptr == NULL)
+        {
+            fprintf(stderr, "failed to open logfile %s\n", logfile);
+            return false;
+        }
+
+        logger->file = fptr;
     }
 
-    logger->file = fptr;
-    logger->debug_mode = (flags & ZRUB_LOGGER_DEBUG_MODE) == 0;
-    logger->verbose_mode = (flags & ZRUB_LOGGER_DEBUG_MODE) == 0;
+    logger->debug_mode = (flags & ZRUB_LOGGER_DEBUG_MODE) != 0;
+    logger->verbose_mode = (flags & ZRUB_LOGGER_VERBOSE_MODE) != 0;
 
     return true;
 }
 
 void zrub_log(zrub_logger_t *logger, short level, char *format, ...)
 {
-    if (logger == NULL || logger->file == NULL)
+    if (logger == NULL)
+    {
         return;
+    }
+
+    if (logger->output_only == false && logger->file == NULL)
+    {
+        return;
+    }
 
     if (logger->debug_mode == false && level == ZRUB_LOG_DEBUG)
     {
@@ -69,11 +104,12 @@ void zrub_log(zrub_logger_t *logger, short level, char *format, ...)
             return;
     }
 
-    fprintf(logger->file, "[%s]::[%s]::", time_str, level_str);
-    vfprintf(logger->file, format, args);
-    fprintf(logger->file, "\n");
-
-    printf("Wrote to file\n");
+    if (!logger->output_only)
+    {
+        fprintf(logger->file, "[%s]::[%s]::", time_str, level_str);
+        vfprintf(logger->file, format, args);
+        fprintf(logger->file, "\n");
+    }
 
     va_list args_copy;
     va_copy(args_copy, args);
@@ -89,5 +125,8 @@ void zrub_logger_finalize(zrub_logger_t *logger)
 {
     if (!logger) return;
 
-    fclose(logger->file);
+    if (!logger->output_only)
+    {
+        fclose(logger->file);
+    }
 }

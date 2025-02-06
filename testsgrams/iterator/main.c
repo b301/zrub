@@ -18,9 +18,9 @@ int main()
         zrub_iterator_t iterator; 
         zrub_vector_iterator(&iterator, vec);
 
-        CHECK(iterator.length == 2, "test 1: ensuring iterator is of length 2");
-        CHECK(strncmp(iterator.items[0], "hello", 5) == 0, "test 1: ensuring items are correct");
-        CHECK(strncmp(iterator.items[1], "there", 5) == 0, "test 1: ensuring items are correct");
+        TESTS_CHECK(iterator.length == 2, "test 1: ensuring iterator is of length 2");
+        TESTS_CHECK(strncmp(iterator.items[0], "hello", 5) == 0, "test 1: ensuring items are correct");
+        TESTS_CHECK(strncmp(iterator.items[1], "there", 5) == 0, "test 1: ensuring items are correct");
 
         free(iterator.items);
         zrub_vector_naivefree(vec);
@@ -45,8 +45,8 @@ int main()
             printf("%s: %s\n", (char*)(keys.items[i]), (char*)(values.items[i]));
         }
 
-        CHECK(keys.length == 3, "test 2: checking iterator length");
-        CHECK(strncmp(keys.items[2], "language", 8) == 0, "test 2: checking index 2 value");
+        TESTS_CHECK(keys.length == 3, "test 2: checking iterator length");
+        TESTS_CHECK(strncmp(keys.items[2], "language", 8) == 0, "test 2: checking index 2 value");
 
         free(keys.items);
         free(values.items);

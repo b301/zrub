@@ -15,7 +15,7 @@ int main()
         void *s4 = zrub_initialize_linked_node(NULL, s3);
 
         size_t length = zrub_linked_list_length(s4);
-        CHECK(length == 4, "test 1: ensuring the list size is the expected size");
+        TESTS_CHECK(length == 4, "test 1: ensuring the list size is the expected size");
 
         free(s1);
         free(s2);

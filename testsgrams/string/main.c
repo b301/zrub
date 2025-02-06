@@ -14,7 +14,7 @@ int main()
         char *prefix = zrub_string_create("Hell", 128);
 
         bool remove_prefix = zrub_string_remove_prefix(string, prefix);
-        CHECK(remove_prefix, "test 1: checking if prefix was correctly removed");
+        TESTS_CHECK(remove_prefix, "test 1: checking if prefix was correctly removed");
 
         free(string);
         free(prefix);
@@ -25,7 +25,7 @@ int main()
         char *origin = "Hello, My Name is Oded Zrubavel";
         char *name = zrub_string_slice(origin, 18, 31);
 
-        CHECK(
+        TESTS_CHECK(
             strcmp(name, "Oded Zrubavel") == 0, 
             "test 2: checking the slice returned the correct string"
         );
@@ -38,7 +38,7 @@ int main()
         char *data = "Hello there I am repeating the word there at least three times there we go!";
         size_t count = zrub_string_count_substring(data, "there");
 
-        CHECK(count == 3, "test 3: ensuring the substring count is correct");
+        TESTS_CHECK(count == 3, "test 3: ensuring the substring count is correct");
     }
 
     /* test 4: zrub_vector_t *zrub_string_split(const char *str, const char *delimiter) */
@@ -47,7 +47,7 @@ int main()
         char *delimiter = "spherical";
 
         zrub_vector_t *vec = zrub_string_split(data, delimiter);
-        CHECK(vec != NULL, "test 4: ensuring the string split function works");
+        TESTS_CHECK(vec != NULL, "test 4: ensuring the string split function works");
         // printf("vec->capacity: %zu\n", vec->capacity);
 
         /* debug */
@@ -56,9 +56,9 @@ int main()
         //     printf("(%zu) `%s`\n", i, vec->items[i]);
         // }
 
-        CHECK(strncmp(vec->items[0], "the world is round and the world is ", 36) == 0, 
+        TESTS_CHECK(strncmp(vec->items[0], "the world is round and the world is ", 36) == 0, 
             "test 4: checking string first half");
-        CHECK(strncmp(vec->items[1], " and the world sucks. the ears of giants.", 36) == 0, 
+        TESTS_CHECK(strncmp(vec->items[1], " and the world sucks. the ears of giants.", 36) == 0, 
             "test 4: checking string second half");
 
         zrub_vector_naivefree(vec);
@@ -73,7 +73,7 @@ int main()
         char *padded = zrub_string_leftpad(data, pad, 4);
         char *expected = "****hello\n****world\n";
 
-        CHECK(strncmp(padded, expected, strlen(expected)) == 0, "test 5: checking the padding is correct");
+        TESTS_CHECK(strncmp(padded, expected, strlen(expected)) == 0, "test 5: checking the padding is correct");
 
         free(data);
         free(padded);
@@ -90,8 +90,8 @@ int main()
         zrub_string_uppercase(upperit);
         
         printf("upper failed\n");
-        CHECK(strncmp(lowerit, "my name is oded", strlen(lowerit)) == 0, "test 6: checking string lower");
-        CHECK(strncmp(upperit, "MY NAME IS ODED", strlen(upperit)) == 0, "test 6: checking string upper");
+        TESTS_CHECK(strncmp(lowerit, "my name is oded", strlen(lowerit)) == 0, "test 6: checking string lower");
+        TESTS_CHECK(strncmp(upperit, "MY NAME IS ODED", strlen(upperit)) == 0, "test 6: checking string upper");
 
         free(lowerit);
         free(upperit);

@@ -1,4 +1,3 @@
-#include "zrub/os/time.h"
 #include "time.h"
 
 
@@ -83,7 +82,7 @@ void zrub_time_set_str(const zrub_time_t time_data, short time_format, char *des
 char *zrub_time_get_str(const zrub_time_t time_data, short time_format)
 {
     /* FIXME: ensure zrub_time_t is valid! */
-    char *str = (char*)ZRUB_MALLOC(sizeof(char) * 128);
+    char *str = (char*)malloc(sizeof(char) * 128);
     zrub_time_set_str(time_data, time_format, str);
     return str;
 }

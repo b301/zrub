@@ -2,22 +2,25 @@
 #define _ZRUB_LOGGER_H
 
 
+// TODO: IMPL THREAD SAFETY?
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdarg.h>
 #include <string.h>
 
 #include "zrub/os/time.h"
-#include "zrub/pub.h"
 
 typedef struct Logger {
     FILE *file;
     bool debug_mode;
     bool verbose_mode;
+    bool output_only;
 } zrub_logger_t;
 
-#define ZRUB_LOGGER_DEBUG_MODE   (1 << 0)
-#define ZRUB_LOGGER_VERBOSE_MODE (1 << 1)
+#define ZRUB_LOGGER_DEBUG_MODE      (1 << 0)
+#define ZRUB_LOGGER_VERBOSE_MODE    (1 << 1)
+#define ZRUB_LOGGER_OUTPUT_ONLY     (1 << 2)
 
 #define ZRUB_LOG_INFO 0
 #define ZRUB_LOG_ERROR 1

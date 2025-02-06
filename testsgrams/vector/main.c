@@ -22,7 +22,7 @@ int main()
 
         // check popping
         char *item = (char*)zrub_vector_remove(v1, 2);
-        CHECK(strncmp(item, "What is your problem?", 21) == 0 && v1->items[2] == NULL, 
+        TESTS_CHECK(strncmp(item, "What is your problem?", 21) == 0 && v1->items[2] == NULL, 
             "test 1: ensuring the right item is popped");
 
         zrub_vector_naivefree(v1);
@@ -34,25 +34,25 @@ int main()
         zrub_vector_t *vec = (zrub_vector_t*)ZRUB_MALLOC(sizeof(zrub_vector_t));
         zrub_allocate_vector(vec, 4);
 
-        CHECK(zrub_vector_insert(vec, zrub_string_create("Hello", 128)) != VECTOR_CAPACITY_REACHED, 
+        TESTS_CHECK(zrub_vector_insert(vec, zrub_string_create("Hello", 128)) != VECTOR_CAPACITY_REACHED, 
             "test 2: ensuring item is pushed");
-        CHECK(zrub_vector_insert(vec, zrub_string_create("darkness,", 128)) != VECTOR_CAPACITY_REACHED, 
+        TESTS_CHECK(zrub_vector_insert(vec, zrub_string_create("darkness,", 128)) != VECTOR_CAPACITY_REACHED, 
             "test 2: ensuring item is pushed");
-        CHECK(zrub_vector_insert(vec, zrub_string_create("my old", 128)) != VECTOR_CAPACITY_REACHED, 
+        TESTS_CHECK(zrub_vector_insert(vec, zrub_string_create("my old", 128)) != VECTOR_CAPACITY_REACHED, 
             "test 2: ensuring item is pushed");
-        CHECK(zrub_vector_insert(vec, zrub_string_create("friend.", 128)) != VECTOR_CAPACITY_REACHED, 
+        TESTS_CHECK(zrub_vector_insert(vec, zrub_string_create("friend.", 128)) != VECTOR_CAPACITY_REACHED, 
             "test 2: ensuring item is pushed");
 
         char *should_not_fit = zrub_string_create("talk", 128);
-        CHECK(zrub_vector_insert(vec, should_not_fit) == VECTOR_CAPACITY_REACHED, "test 2: ensuring vector is at it's capacity");
+        TESTS_CHECK(zrub_vector_insert(vec, should_not_fit) == VECTOR_CAPACITY_REACHED, "test 2: ensuring vector is at it's capacity");
 
         free(should_not_fit);
 
         zrub_vector_resize(vec, 16);
         // printf("capacity: %zu\n", vec->capacity);
 
-        CHECK(zrub_vector_insert(vec, zrub_string_create("And this is it.", 128)) != VECTOR_CAPACITY_REACHED, "test 2: ensuring item is pushed");
-        CHECK(vec->capacity == 16, "test 2: ensuring vector resized to the expected size");
+        TESTS_CHECK(zrub_vector_insert(vec, zrub_string_create("And this is it.", 128)) != VECTOR_CAPACITY_REACHED, "test 2: ensuring item is pushed");
+        TESTS_CHECK(vec->capacity == 16, "test 2: ensuring vector resized to the expected size");
 
         zrub_vector_naivefree(vec);
         zrub_vector_dumbfree(vec);
@@ -72,8 +72,8 @@ int main()
 
         printf("item `%s`\n", item);
 
-        CHECK(item != NULL, "test 3: ensuring the item is not null");
-        CHECK(!strncmp(item, "What is your problem?", strlen(item)), "test 3: ensuring the correct item is selected");
+        TESTS_CHECK(item != NULL, "test 3: ensuring the item is not null");
+        TESTS_CHECK(!strncmp(item, "What is your problem?", strlen(item)), "test 3: ensuring the correct item is selected");
 
         zrub_vector_naivefree(vec);
         zrub_vector_dumbfree(vec);
