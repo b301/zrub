@@ -1,6 +1,6 @@
-#include "cslib/os/file.h"
+#include "zrublib/os/file.h"
 
-bool cslib_list_directory(cslib_vector_t *vec, char *path, ssize_t depth)
+bool zrublib_list_directory(zrublib_vector_t *vec, char *path, ssize_t depth)
 {
 #if defined(_WIN32) || defined(WIN32)
     // TODO: check if vec size is enough for the amount of files in the directory
@@ -10,7 +10,7 @@ bool cslib_list_directory(cslib_vector_t *vec, char *path, ssize_t depth)
 
     if (strlen(path) >= MAX_PATH - 3)
     {
-        fprintf(stderr, "cslib_list_directory::path length exceeds MAX_PATH (%d)\n", MAX_PATH);
+        fprintf(stderr, "zrublib_list_directory::path length exceeds MAX_PATH (%d)\n", MAX_PATH);
         return false;
     }
 
@@ -22,7 +22,7 @@ bool cslib_list_directory(cslib_vector_t *vec, char *path, ssize_t depth)
 
     if (INVALID_HANDLE_VALUE == hFind)
     {
-        fprintf(stderr, "cslib_list_directory::FindFirstFile error %ld", GetLastError());
+        fprintf(stderr, "zrublib_list_directory::FindFirstFile error %ld", GetLastError());
         return false;
     }
 
@@ -31,7 +31,7 @@ bool cslib_list_directory(cslib_vector_t *vec, char *path, ssize_t depth)
     // List all the files in the directory with some info about them.
     do
     {
-        cslib_os_file_t *file = ALLOC_OBJECT(cslib_os_file_t);
+        zrublib_os_file_t *file = ALLOC_OBJECT(zrublib_os_file_t);
 
         if (strncmp(ffd.cFileName, ".", 2) == 0 ||
             strncmp(ffd.cFileName, "..", 3) == 0)
@@ -39,7 +39,7 @@ bool cslib_list_directory(cslib_vector_t *vec, char *path, ssize_t depth)
             continue;
         }
 
-        file->name = cslib_string_create(ffd.cFileName, strlen(ffd.cFileName));
+        file->name = zrublib_string_create(ffd.cFileName, strlen(ffd.cFileName));
 
         if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
         {
@@ -48,11 +48,11 @@ bool cslib_list_directory(cslib_vector_t *vec, char *path, ssize_t depth)
             if (depth > 0)
             {
                 size_t strsize = strlen(ffd.cFileName) + strlen(path) + 4;
-                char *str = cslib_string_create("\0", strsize);
+                char *str = zrublib_string_create("\0", strsize);
 
                 snprintf(str, strsize, "%s\\%s", path, ffd.cFileName);
 
-                cslib_list_directory(vec, str, depth - 1);
+                zrublib_list_directory(vec, str, depth - 1);
 
                 free(str);
             }
@@ -62,15 +62,15 @@ bool cslib_list_directory(cslib_vector_t *vec, char *path, ssize_t depth)
             file->type = OS_FILE_REGULAR;
         }
 
-        rc = cslib_vector_insert(vec, file);
+        rc = zrublib_vector_insert(vec, file);
 
         switch (rc)
         {
         case VECTOR_CAPACITY_REACHED:
-            fprintf(stderr, "cslib_list_directory::Vector Capacity Reached\n");
+            fprintf(stderr, "zrublib_list_directory::Vector Capacity Reached\n");
             break;
         case VECTOR_UNDEFINED_BEHAVIOR:
-            fprintf(stderr, "cslib_list_directory::Vector Undefined Behavior over `%s`\n", file->name);
+            fprintf(stderr, "zrublib_list_directory::Vector Undefined Behavior over `%s`\n", file->name);
             break;
         default:
             break;
@@ -79,7 +79,7 @@ bool cslib_list_directory(cslib_vector_t *vec, char *path, ssize_t depth)
 
     if (GetLastError() != ERROR_NO_MORE_FILES)
     {
-        fprintf(stderr, "cslib_list_directory::FindFirstFile error %ld", GetLastError());
+        fprintf(stderr, "zrublib_list_directory::FindFirstFile error %ld", GetLastError());
     }
 
     FindClose(hFind);
@@ -89,7 +89,7 @@ bool cslib_list_directory(cslib_vector_t *vec, char *path, ssize_t depth)
     DIR *dirptr = opendir(path);
     struct dirent *entry;
     struct stat st;
-    cslib_os_file_t *file = NULL;
+    zrublib_os_file_t *file = NULL;
 
     char path_buffer[255];
     size_t strsize;
@@ -103,8 +103,8 @@ bool cslib_list_directory(cslib_vector_t *vec, char *path, ssize_t depth)
                 !strcmp(entry->d_name, ".."))
                 continue;
 
-            file = ALLOC_OBJECT(cslib_os_file_t);
-            file->name = cslib_string_create(entry->d_name, strlen(entry->d_name));
+            file = ALLOC_OBJECT(zrublib_os_file_t);
+            file->name = zrublib_string_create(entry->d_name, strlen(entry->d_name));
 
             printf("%s/%s\n", path, file->name);
 
@@ -127,18 +127,18 @@ bool cslib_list_directory(cslib_vector_t *vec, char *path, ssize_t depth)
             {
                 strsize = strlen(entry->d_name) + strlen(path) + 4;
                 snprintf(path_buffer, strsize, "%s/%s", path, entry->d_name);
-                cslib_list_directory(vec, path_buffer, depth - 1);
+                zrublib_list_directory(vec, path_buffer, depth - 1);
             }
 
-            rc = cslib_vector_insert(vec, file);
+            rc = zrublib_vector_insert(vec, file);
 
             switch (rc)
             {
             case VECTOR_CAPACITY_REACHED:
-                fprintf(stderr, "cslib_list_directory::Vector Capacity Reached\n");
+                fprintf(stderr, "zrublib_list_directory::Vector Capacity Reached\n");
                 break;
             case VECTOR_UNDEFINED_BEHAVIOR:
-                fprintf(stderr, "cslib_list_directory::Vector Undefined Behavior over `%s`\n", file->name);
+                fprintf(stderr, "zrublib_list_directory::Vector Undefined Behavior over `%s`\n", file->name);
                 break;
             default:
                 break;

@@ -1,20 +1,20 @@
-#include "cslib/os/file.h"
-#include "cslib/types/iterator.h"
+#include "zrublib/os/file.h"
+#include "zrublib/types/iterator.h"
 
 int main(int argc, char **argv)
 {
     {
         char *path = argv[1];
 
-        cslib_vector_t *vec = ALLOC_OBJECT(cslib_vector_t);
-        cslib_allocate_vector(vec, 256);
+        zrublib_vector_t *vec = ALLOC_OBJECT(zrublib_vector_t);
+        zrublib_allocate_vector(vec, 256);
 
-        cslib_list_directory(vec, path, -1);
+        zrublib_list_directory(vec, path, -1);
 
-        cslib_iterator_t iterator;
-        cslib_vector_iterator(&iterator, vec);
+        zrublib_iterator_t iterator;
+        zrublib_vector_iterator(&iterator, vec);
 
-        cslib_os_file_t *file = NULL;
+        zrublib_os_file_t *file = NULL;
 
         printf("iterator length: %lld\n", iterator.length);
         for (size_t i = 0; i < iterator.length; i++)
@@ -42,7 +42,7 @@ int main(int argc, char **argv)
         }
 
         free(iterator.items);
-        cslib_vector_dumbfree(vec);
+        zrublib_vector_dumbfree(vec);
     }
 
     return 0;

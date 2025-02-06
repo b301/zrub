@@ -1,9 +1,9 @@
 #include "queue.h"
 
 
-bool cslib_allocate_queue(cslib_queue_t *queue, size_t capacity)
+bool zrublib_allocate_queue(zrublib_queue_t *queue, size_t capacity)
 {
-    void **items = (void**)CSLIB_MALLOC(sizeof( void*) * capacity);
+    void **items = (void**)ZRUBLIB_MALLOC(sizeof( void*) * capacity);
 
     if (items == NULL)
     {
@@ -24,23 +24,23 @@ bool cslib_allocate_queue(cslib_queue_t *queue, size_t capacity)
     return true;
 }
 
-// bool cslib_reallocate_queue(cslib_queue_t *queue, size_t capacity)
+// bool zrublib_reallocate_queue(zrublib_queue_t *queue, size_t capacity)
 // {
 //     // TODO: IMPL
 //     return false;
 // }
 
-void cslib_queue_dumbfree(cslib_queue_t *queue)
+void zrublib_queue_dumbfree(zrublib_queue_t *queue)
 {
     free(queue->items);
     free(queue);
 }
 
-bool cslib_queue_push(cslib_queue_t *queue, void *item)
+bool zrublib_queue_push(zrublib_queue_t *queue, void *item)
 {
     if (queue->length != 0 && queue->fp == queue->bp)
     {
-        fprintf(stderr, "cslib_queue_push::queue is full\n");
+        fprintf(stderr, "zrublib_queue_push::queue is full\n");
         return false;
     }
 
@@ -51,7 +51,7 @@ bool cslib_queue_push(cslib_queue_t *queue, void *item)
     return true;
 }
 
-void *cslib_queue_pop(cslib_queue_t *queue)
+void *zrublib_queue_pop(zrublib_queue_t *queue)
 {
     if (queue->length == 0)
     {

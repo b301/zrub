@@ -1,10 +1,10 @@
-#include "cslib/types/vector.h"
+#include "zrublib/types/vector.h"
 #include "vector.h"
 
 
-bool cslib_allocate_vector(cslib_vector_t *vec, size_t capacity)
+bool zrublib_allocate_vector(zrublib_vector_t *vec, size_t capacity)
 {
-    void **items = (void**)CSLIB_MALLOC(sizeof( void*) * capacity);
+    void **items = (void**)ZRUBLIB_MALLOC(sizeof( void*) * capacity);
 
     if (items == NULL)
     {
@@ -23,19 +23,19 @@ bool cslib_allocate_vector(cslib_vector_t *vec, size_t capacity)
     return true;
 }
 
-// bool cslib_reallocate_vector(cslib_vector_t *vec, size_t capacity)
+// bool zrublib_reallocate_vector(zrublib_vector_t *vec, size_t capacity)
 // {
 //     // TODO: IMPL
 //     return false;
 // }
 
-void cslib_vector_dumbfree(cslib_vector_t *vec)
+void zrublib_vector_dumbfree(zrublib_vector_t *vec)
 {
     free(vec->items);
     free(vec);
 }
 
-void cslib_vector_naivefree(cslib_vector_t *vec)
+void zrublib_vector_naivefree(zrublib_vector_t *vec)
 {
     for (size_t i = 0; i < vec->capacity; i++)
     {
@@ -47,9 +47,9 @@ void cslib_vector_naivefree(cslib_vector_t *vec)
     }
 }
 
-bool cslib_vector_resize(cslib_vector_t *vec, size_t new_capacity)
+bool zrublib_vector_resize(zrublib_vector_t *vec, size_t new_capacity)
 {
-    void **items = (void**)CSLIB_MALLOC(sizeof( void*) * new_capacity);
+    void **items = (void**)ZRUBLIB_MALLOC(sizeof( void*) * new_capacity);
 
     if (items == NULL)
     {
@@ -74,7 +74,7 @@ bool cslib_vector_resize(cslib_vector_t *vec, size_t new_capacity)
     return true;
 }
 
-ssize_t cslib_vector_insert(cslib_vector_t *vec, void *item)
+ssize_t zrublib_vector_insert(zrublib_vector_t *vec, void *item)
 {
     size_t vec_size = vec->capacity;
 
@@ -93,11 +93,11 @@ ssize_t cslib_vector_insert(cslib_vector_t *vec, void *item)
         }
     }
 
-    fprintf(stderr, "ssize_t cslib_vector_insert(cslib_vector_t *vec, void *item) reached undefined behavior");
+    fprintf(stderr, "ssize_t zrublib_vector_insert(zrublib_vector_t *vec, void *item) reached undefined behavior");
     return VECTOR_UNDEFINED_BEHAVIOR;
 }
 
-void* cslib_vector_remove(cslib_vector_t *vec, size_t index)
+void* zrublib_vector_remove(zrublib_vector_t *vec, size_t index)
 {
     if (vec->capacity <= index)
     {
@@ -116,7 +116,7 @@ void* cslib_vector_remove(cslib_vector_t *vec, size_t index)
     return item;
 }
 
-void *cslib_vector_get(cslib_vector_t *vec, ssize_t index)
+void *zrublib_vector_get(zrublib_vector_t *vec, ssize_t index)
 {
     if (index < 0 && vec->length < (size_t)(index * -1)) 
     {

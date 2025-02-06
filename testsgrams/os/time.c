@@ -1,28 +1,28 @@
-#include "cslib/os/time.h"
+#include "zrublib/os/time.h"
 
 
 int main()
 {
     /* test 1 */
     {
-        cslib_time_t t1, ts;
-        cslib_time_utcnow(&t1);
-        cslib_time_utcnow(&ts);
+        zrublib_time_t t1, ts;
+        zrublib_time_utcnow(&t1);
+        zrublib_time_utcnow(&ts);
 
-        char *st1 = cslib_time_get_str(t1, CSLIB_TIME_DEFAULT);
+        char *st1 = zrublib_time_get_str(t1, ZRUBLIB_TIME_DEFAULT);
         printf("test 1: time is %s\n", st1);
 
-        cslib_time_sleep(2);
+        zrublib_time_sleep(2);
 
-        cslib_time_t t2;
-        cslib_time_utcnow(&t2);
+        zrublib_time_t t2;
+        zrublib_time_utcnow(&t2);
 
-        char *st2 = cslib_time_get_str(t2, CSLIB_TIME_DEFAULT);
+        char *st2 = zrublib_time_get_str(t2, ZRUBLIB_TIME_DEFAULT);
         printf("test 1: time is %s\n", st2);
 
-        CHECK(cslib_time_gt(t2, t1), "test 1: t2 is greater than t1");
-        CHECK(cslib_time_lt(t1, t2), "test 1: t1 is lesser than t2");
-        CHECK(cslib_time_eq(t1, ts), "test 1: t1 is equal to ts");
+        CHECK(zrublib_time_gt(t2, t1), "test 1: t2 is greater than t1");
+        CHECK(zrublib_time_lt(t1, t2), "test 1: t1 is lesser than t2");
+        CHECK(zrublib_time_eq(t1, ts), "test 1: t1 is equal to ts");
 
         free(st1);
         free(st2);
@@ -30,11 +30,11 @@ int main()
 
     /* test 2 */
     {
-        cslib_time_t t1;
-        cslib_time_utcnow(&t1);
+        zrublib_time_t t1;
+        zrublib_time_utcnow(&t1);
 
         char str[128];
-        cslib_time_set_str(t1, CSLIB_TIME_DEFAULT, str);
+        zrublib_time_set_str(t1, ZRUBLIB_TIME_DEFAULT, str);
 
         printf("test 2: time is %s\n", str);
     }

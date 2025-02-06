@@ -1,18 +1,18 @@
-#include "cslib/types/queue.h"
-#include "cslib/types/string.h"
-#include "cslib/pub.h"
+#include "zrublib/types/queue.h"
+#include "zrublib/types/string.h"
+#include "zrublib/pub.h"
 
 int main()
 {
     {
-        cslib_queue_t *q = ALLOC_OBJECT(cslib_queue_t);
-        cslib_allocate_queue(q, 256);
+        zrublib_queue_t *q = ALLOC_OBJECT(zrublib_queue_t);
+        zrublib_allocate_queue(q, 256);
 
-        CHECK(cslib_queue_push(q, cslib_string_create("Hello", 8)), "test 1: queue push item");
-        CHECK(cslib_queue_push(q, cslib_string_create("My", 8)), "test 1: queue push item");
-        CHECK(cslib_queue_push(q, cslib_string_create("Name", 8)), "test 1: queue push item");
-        CHECK(cslib_queue_push(q, cslib_string_create("Is", 8)), "test 1: queue push item");
-        CHECK(cslib_queue_push(q, cslib_string_create("Oded", 8)), "test 1: queue push item");
+        CHECK(zrublib_queue_push(q, zrublib_string_create("Hello", 8)), "test 1: queue push item");
+        CHECK(zrublib_queue_push(q, zrublib_string_create("My", 8)), "test 1: queue push item");
+        CHECK(zrublib_queue_push(q, zrublib_string_create("Name", 8)), "test 1: queue push item");
+        CHECK(zrublib_queue_push(q, zrublib_string_create("Is", 8)), "test 1: queue push item");
+        CHECK(zrublib_queue_push(q, zrublib_string_create("Oded", 8)), "test 1: queue push item");
 
         CHECK(q->fp == 5, "test 1: fp == 5");
         CHECK(q->bp == 0, "test 1: bp == 0");
@@ -20,14 +20,14 @@ int main()
         size_t ql = q->length;
         for (size_t i = 0; i < ql; i++)
         {
-            void *item = cslib_queue_pop(q);
+            void *item = zrublib_queue_pop(q);
             printf("%02lld: %s\n", i, (char*)item);
 
             free(item);
         }
 
         CHECK(q->fp == q->bp, "test 1: fp == bp");
-        cslib_queue_dumbfree(q);
+        zrublib_queue_dumbfree(q);
     }
 
     return 0;
