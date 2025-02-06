@@ -1,8 +1,8 @@
-#include "zrublib/os/time.h"
+#include "zrub/os/time.h"
 #include "time.h"
 
 
-static int64_t zrublib_time_to_int64(zrublib_time_t time)
+static int64_t zrub_time_to_int64(zrub_time_t time)
 {
     return ((int64_t)time.year * 10000000000LL) +
            ((int64_t)time.month * 100000000LL) +
@@ -12,12 +12,12 @@ static int64_t zrublib_time_to_int64(zrublib_time_t time)
            (int64_t)time.sec;
 }
 
-bool zrublib_time_from_time_t(zrublib_time_t *time_data, time_t time_t_data)
+bool zrub_time_from_time_t(zrub_time_t *time_data, time_t time_t_data)
 {
     struct tm *t = gmtime(&time_t_data);
 
     if (t == NULL) {
-        fprintf(stderr, "zrublib_time_from_time_t::failed to convert to utc\n");
+        fprintf(stderr, "zrub_time_from_time_t::failed to convert to utc\n");
         return false;
     }
 
@@ -32,27 +32,27 @@ bool zrublib_time_from_time_t(zrublib_time_t *time_data, time_t time_t_data)
     return true;
 }
 
-bool zrublib_time_utcnow(zrublib_time_t *time_data) 
+bool zrub_time_utcnow(zrub_time_t *time_data) 
 {
     time_t ct = time(NULL);
     if (ct == -1) {
-        fprintf(stderr, "zrublib_time_utc::failed to get the current time\n");
+        fprintf(stderr, "zrub_time_utc::failed to get the current time\n");
         return false;
     }
 
-    if (!zrublib_time_from_time_t(time_data, ct)) {
+    if (!zrub_time_from_time_t(time_data, ct)) {
         return false;
     }
 
     return true;
 }
 
-void zrublib_time_set_str(const zrublib_time_t time_data, short time_format, char *dest)
+void zrub_time_set_str(const zrub_time_t time_data, short time_format, char *dest)
 {
     switch (time_format)
     {
-        case ZRUBLIB_TIME_DEFAULT:
-            snprintf(dest, 128, __ZRUBLIB_TIME_FORMAT_DEFAULT, 
+        case ZRUB_TIME_DEFAULT:
+            snprintf(dest, 128, __ZRUB_TIME_FORMAT_DEFAULT, 
                 time_data.day,
                 time_data.month,
                 time_data.year,
@@ -61,15 +61,15 @@ void zrublib_time_set_str(const zrublib_time_t time_data, short time_format, cha
                 time_data.sec);
             break;
 
-        case ZRUBLIB_TIME_DATEONLY:
-            snprintf(dest, 128, __ZRUBLIB_TIME_FORMAT_DATEONLY, 
+        case ZRUB_TIME_DATEONLY:
+            snprintf(dest, 128, __ZRUB_TIME_FORMAT_DATEONLY, 
                 time_data.day,
                 time_data.month,
                 time_data.year);
             break;
 
-        case ZRUBLIB_TIME_TIMEONLY:
-            snprintf(dest, 128, __ZRUBLIB_TIME_FORMAT_TIMEONLY, 
+        case ZRUB_TIME_TIMEONLY:
+            snprintf(dest, 128, __ZRUB_TIME_FORMAT_TIMEONLY, 
                 time_data.hour,
                 time_data.min,
                 time_data.sec);
@@ -80,33 +80,33 @@ void zrublib_time_set_str(const zrublib_time_t time_data, short time_format, cha
     }
 }
 
-char *zrublib_time_get_str(const zrublib_time_t time_data, short time_format)
+char *zrub_time_get_str(const zrub_time_t time_data, short time_format)
 {
-    /* FIXME: ensure zrublib_time_t is valid! */
-    char *str = zrublib_string_create("\0", 128);
-    zrublib_time_set_str(time_data, time_format, str);
+    /* FIXME: ensure zrub_time_t is valid! */
+    char *str = (char*)ZRUB_MALLOC(sizeof(char) * 128);
+    zrub_time_set_str(time_data, time_format, str);
     return str;
 }
 
 /* Check if t1 > t2 */
-bool zrublib_time_gt(zrublib_time_t t1, zrublib_time_t t2)
+bool zrub_time_gt(zrub_time_t t1, zrub_time_t t2)
 {
-    return zrublib_time_to_int64(t1) > zrublib_time_to_int64(t2);
+    return zrub_time_to_int64(t1) > zrub_time_to_int64(t2);
 }
 
 /* Check if t1 < t2 */
-bool zrublib_time_lt(zrublib_time_t t1, zrublib_time_t t2)
+bool zrub_time_lt(zrub_time_t t1, zrub_time_t t2)
 {
-    return zrublib_time_to_int64(t1) < zrublib_time_to_int64(t2);
+    return zrub_time_to_int64(t1) < zrub_time_to_int64(t2);
 }
 
 /* Check if t1 == t2 */
-bool zrublib_time_eq(zrublib_time_t t1, zrublib_time_t t2)
+bool zrub_time_eq(zrub_time_t t1, zrub_time_t t2)
 {
-    return zrublib_time_to_int64(t1) == zrublib_time_to_int64(t2);
+    return zrub_time_to_int64(t1) == zrub_time_to_int64(t2);
 }
 
-void zrublib_time_sleep(int seconds)
+void zrub_time_sleep(int seconds)
 {
     #if defined(__linux__)
     sleep(seconds);
@@ -117,7 +117,7 @@ void zrublib_time_sleep(int seconds)
     #endif
 }
 
-void zrublib_time_set(zrublib_time_t *time_data, short day, short month, 
+void zrub_time_set(zrub_time_t *time_data, short day, short month, 
     short year, short min, short sec, short hour)
 {
     time_data->day = day;

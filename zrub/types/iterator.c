@@ -1,10 +1,10 @@
-#include "zrublib/types/iterator.h"
+#include "zrub/types/iterator.h"
 #include "iterator.h"
 
 
-void zrublib_vector_iterator(zrublib_iterator_t *iterator, const zrublib_vector_t *vec)
+void zrub_vector_iterator(zrub_iterator_t *iterator, const zrub_vector_t *vec)
 {
-    void **items = (void **)ZRUBLIB_MALLOC(sizeof(void *) * vec->length);
+    void **items = (void **)ZRUB_MALLOC(sizeof(void *) * vec->length);
     size_t c = 0;
 
     for (size_t i = 0; i < vec->capacity; i++)
@@ -25,12 +25,12 @@ void zrublib_vector_iterator(zrublib_iterator_t *iterator, const zrublib_vector_
     iterator->length = c;
 }
 
-void zrublib_hashmap_keys_iterator(zrublib_iterator_t *iterator, const zrublib_hashmap_t *map)
+void zrub_hashmap_keys_iterator(zrub_iterator_t *iterator, const zrub_hashmap_t *map)
 {
-    void **keys = (void **)ZRUBLIB_MALLOC(sizeof(void *) * map->length);
+    void **keys = (void **)ZRUB_MALLOC(sizeof(void *) * map->length);
     size_t c = 0;
 
-    zrublib_hashmap_item_t *item;
+    zrub_hashmap_item_t *item;
 
     for (size_t i = 0; i < map->capacity; i++)
     {
@@ -45,11 +45,11 @@ void zrublib_hashmap_keys_iterator(zrublib_iterator_t *iterator, const zrublib_h
             }
             else if (item->type == HASHMAP_LINKED_LIST)
             {
-                zrublib_linked_node_t *node = item->value;
+                zrub_linked_node_t *node = item->value;
 
                 while (node != NULL)
                 {
-                    keys[c] = ((zrublib_hashmap_item_t *)(node->value))->key;
+                    keys[c] = ((zrub_hashmap_item_t *)(node->value))->key;
                     c++;
 
                     node = node->next;
@@ -67,12 +67,12 @@ void zrublib_hashmap_keys_iterator(zrublib_iterator_t *iterator, const zrublib_h
     iterator->length = map->length;
 }
 
-void zrublib_hashmap_values_iterator(zrublib_iterator_t *iterator, const zrublib_hashmap_t *map)
+void zrub_hashmap_values_iterator(zrub_iterator_t *iterator, const zrub_hashmap_t *map)
 {
-    void **values = (void **)ZRUBLIB_MALLOC(sizeof(void *) * map->length);
+    void **values = (void **)ZRUB_MALLOC(sizeof(void *) * map->length);
     size_t c = 0;
 
-    zrublib_hashmap_item_t *item;
+    zrub_hashmap_item_t *item;
 
     for (size_t i = 0; i < map->capacity; i++)
     {
@@ -87,11 +87,11 @@ void zrublib_hashmap_values_iterator(zrublib_iterator_t *iterator, const zrublib
             }
             else if (item->type == HASHMAP_LINKED_LIST)
             {
-                zrublib_linked_node_t *node = item->value;
+                zrub_linked_node_t *node = item->value;
 
                 while (node != NULL)
                 {
-                    values[c] = ((zrublib_hashmap_item_t *)(node->value))->value;
+                    values[c] = ((zrub_hashmap_item_t *)(node->value))->value;
                     c++;
 
                     node = node->next;

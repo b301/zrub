@@ -1,10 +1,11 @@
-#ifndef _ZRUBLIB_PUB_H
-#define _ZRUBLIB_PUB_H
+#ifndef _ZRUB_PUB_H
+#define _ZRUB_PUB_H
 
 #include <stdio.h>
+#include <stdlib.h>
 
-#define ZRUBLIB_MALLOC malloc
+#define ZRUB_MALLOC malloc
 #define CHECK(statement, message) if (!(statement)) { printf("%s failed\n", message); return 1; } printf("%s passed\n", message)
-#define ALLOC_OBJECT(type) (type*)ZRUBLIB_MALLOC(sizeof(type))
+#define ALLOC_OBJECT(type) (type*)ZRUB_MALLOC(sizeof(type))
 
 #endif

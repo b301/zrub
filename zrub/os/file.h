@@ -1,9 +1,9 @@
-#ifndef _ZRUBLIB_FILE_H
-#define _ZRUBLIB_FILE_H
+#ifndef _ZRUB_FILE_H
+#define _ZRUB_FILE_H
 
-#include "zrublib/types/string.h"
-#include "zrublib/types/vector.h"
-#include "zrublib/pub.h"
+#include "zrub/types/string.h"
+#include "zrub/types/vector.h"
+#include "zrub/pub.h"
 
 #include <stdio.h>
 
@@ -16,7 +16,6 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include "zrublib/pub.h"
 
 #endif
 
@@ -25,15 +24,15 @@ typedef enum OsFileType
 {
     OS_FILE_REGULAR,
     OS_FILE_DIRECTORY
-} zrublib_os_file_type_t;
+} zrub_os_file_type_t;
 
 typedef struct OsFile 
 {
     char *name;
-    zrublib_os_file_type_t type;
-} zrublib_os_file_t;
+    zrub_os_file_type_t type;
+} zrub_os_file_t;
 
-bool zrublib_list_directory(zrublib_vector_t *vec, char *path, ssize_t depth);
+bool zrub_list_directory(zrub_vector_t *vec, char *path, ssize_t depth);
 /* example output
 
 Vector::[
@@ -46,11 +45,11 @@ Vector::[
         "type": "regular"
     },
     OsFileType::{
-        "name": "zrublib",
+        "name": "zrub",
         "type": "directory"
     }
 ]
 
 */
 
-#endif // _ZRUBLIB_FILE_H
+#endif // _ZRUB_FILE_H

@@ -20,12 +20,12 @@ gcc ${EXTRA_ARGS} -c testsgrams/os/file.c -o build/tests/file.o
 gcc ${EXTRA_ARGS} -c testsgrams/os/time.c -o build/tests/time.o
 
 # link testsgrams
-gcc build/zrublib.o build/tests/string.o -o build/bin/tests/string_tests
-gcc build/zrublib.o build/tests/linked_list.o -o build/bin/tests/linked_list_tests
-gcc build/zrublib.o build/tests/vector.o -o build/bin/tests/vector_tests
-gcc build/zrublib.o build/tests/hashmap.o -o build/bin/tests/hashmap_tests
-gcc build/zrublib.o build/tests/queue.o -o build/bin/tests/queue_tests
-gcc build/zrublib.o build/tests/iterator.o -o build/bin/tests/iterator_tests
-gcc build/zrublib.o build/tests/file.o -o build/bin/tests/file_tests
-gcc build/zrublib.o build/tests/time.o -o build/bin/tests/time_tests
+gcc build/zrub.o build/tests/string.o -o build/bin/tests/string_tests
+gcc build/zrub.o build/tests/linked_list.o -o build/bin/tests/linked_list_tests
+gcc build/zrub.o build/tests/vector.o -o build/bin/tests/vector_tests
+gcc build/zrub.o build/tests/hashmap.o -o build/bin/tests/hashmap_tests
+gcc build/zrub.o build/tests/queue.o -o build/bin/tests/queue_tests
+gcc build/zrub.o build/tests/iterator.o -o build/bin/tests/iterator_tests
+gcc build/zrub.o build/tests/file.o -o build/bin/tests/file_tests
+gcc build/zrub.o build/tests/time.o -o build/bin/tests/time_tests
 

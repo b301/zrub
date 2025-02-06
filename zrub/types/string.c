@@ -1,4 +1,4 @@
-#include "zrublib/types/string.h"
+#include "zrub/types/string.h"
 #include <stdio.h>
 
 
@@ -7,9 +7,9 @@ This function removes the prefix (beginning of the string) if the prefix is in i
 Make sure to pass a modifiable string! char *literal = ".." does not count.
 Returns true if removed the prefix, else returns false.
 
-NOTE: To just check if the prefix exists use the zrublib_isprefix function.
+NOTE: To just check if the prefix exists use the zrub_isprefix function.
 */
-bool zrublib_string_remove_prefix(char *str, const char *prefix)
+bool zrub_string_remove_prefix(char *str, const char *prefix)
 {
     if (str == NULL || prefix == NULL)
     {
@@ -17,7 +17,7 @@ bool zrublib_string_remove_prefix(char *str, const char *prefix)
     }
 
     // checks if the string has that prefix
-    if (!zrublib_string_check_prefix(str, prefix))
+    if (!zrub_string_check_prefix(str, prefix))
     {
         return false;
     }
@@ -36,7 +36,7 @@ Checks if it is the prefix of string
 
 Returns true if yes, else false.
 */
-bool zrublib_string_check_prefix(const char *str, const char *prefix)
+bool zrub_string_check_prefix(const char *str, const char *prefix)
 {
     if (str == NULL || prefix == NULL)
     {
@@ -46,14 +46,14 @@ bool zrublib_string_check_prefix(const char *str, const char *prefix)
     return memcmp(prefix, str, strlen(prefix)) == 0;
 }
 
-bool zrublib_string_remove_suffix(char *str, const char *suffix)
+bool zrub_string_remove_suffix(char *str, const char *suffix)
 {
     if (str == NULL || suffix == NULL)
     {
         return false;
     }
 
-    if (!zrublib_string_check_suffix(str, suffix))
+    if (!zrub_string_check_suffix(str, suffix))
     {
         return false;
     }
@@ -63,7 +63,7 @@ bool zrublib_string_remove_suffix(char *str, const char *suffix)
     return true;
 }
 
-bool zrublib_string_check_suffix(const char *str, const char *suffix)
+bool zrub_string_check_suffix(const char *str, const char *suffix)
 {
     if (str == NULL || suffix == NULL)
     {
@@ -79,7 +79,7 @@ bool zrublib_string_check_suffix(const char *str, const char *suffix)
 /*
 Allocates memory for a string from a literal
 */
-char *zrublib_string_create(const char *data, size_t min_size)
+char *zrub_string_create(const char *data, size_t min_size)
 {
     if (data == NULL)
     {
@@ -90,16 +90,16 @@ char *zrublib_string_create(const char *data, size_t min_size)
     const size_t alloc_size = min_size > datasize ? min_size : datasize;
 
     // +1 for the null terminator
-    char *s = (char *)ZRUBLIB_MALLOC(sizeof(char) * alloc_size + 1);
+    char *s = (char *)ZRUB_MALLOC(sizeof(char) * alloc_size + 1);
     strncpy(s, data, datasize + 1);
 
     return s;
 }
 
-char *zrublib_string_slice(const char *str, size_t begin, size_t end)
+char *zrub_string_slice(const char *str, size_t begin, size_t end)
 {
     /*
-    zrublib_string_slice("for all the years", 5, 7);
+    zrub_string_slice("for all the years", 5, 7);
 
     would produce "all".
     */
@@ -117,14 +117,14 @@ char *zrublib_string_slice(const char *str, size_t begin, size_t end)
         return NULL;
     }
 
-    char *new_string = (char *)ZRUBLIB_MALLOC(sizeof(char) * (end - begin) + 1);
+    char *new_string = (char *)ZRUB_MALLOC(sizeof(char) * (end - begin) + 1);
     strncpy(new_string, str + begin, end - begin);
     memset(new_string + end - begin, '\0', 1);
 
     return new_string;
 }
 
-void zrublib_string_slice2(char *str, const char *data, size_t begin, size_t end)
+void zrub_string_slice2(char *str, const char *data, size_t begin, size_t end)
 {
     if (str == NULL || data == NULL)
     {
@@ -132,7 +132,7 @@ void zrublib_string_slice2(char *str, const char *data, size_t begin, size_t end
     }
 
     /*
-    zrublib_string_slice(slice, "for all the years", 5, 7);
+    zrub_string_slice(slice, "for all the years", 5, 7);
 
     would produce "all".
 
@@ -153,7 +153,7 @@ void zrublib_string_slice2(char *str, const char *data, size_t begin, size_t end
     memset(str + end - begin, '\0', 1);
 }
 
-size_t zrublib_string_count_substring(const char *str, const char *sub)
+size_t zrub_string_count_substring(const char *str, const char *sub)
 {
     if (str == NULL || sub == NULL)
     {
@@ -170,11 +170,11 @@ size_t zrublib_string_count_substring(const char *str, const char *sub)
     so 5 - 4 + 1 cases to check ("hell", "ello")
     */
 
-    char *tmp = (char *)ZRUBLIB_MALLOC(sizeof(char) * (sub_length + 1));
+    char *tmp = (char *)ZRUB_MALLOC(sizeof(char) * (sub_length + 1));
 
     for (size_t i = 0; i <= str_length - sub_length; i++)
     {
-        zrublib_string_slice2(tmp, str, i, i + sub_length);
+        zrub_string_slice2(tmp, str, i, i + sub_length);
 
         if (strncmp(tmp, sub, sub_length) == 0)
         {
@@ -187,7 +187,7 @@ size_t zrublib_string_count_substring(const char *str, const char *sub)
     return counter;
 }
 
-char *zrublib_string_leftpad(const char *str, const char *pad, size_t count)
+char *zrub_string_leftpad(const char *str, const char *pad, size_t count)
 {
     /* exmaple case:
     NOTE: this function delimiter is the newline character!
@@ -201,15 +201,15 @@ char *zrublib_string_leftpad(const char *str, const char *pad, size_t count)
         return NULL;
     }
 
-    zrublib_vector_t *lines = zrublib_string_split(str, "\n");
+    zrub_vector_t *lines = zrub_string_split(str, "\n");
     const size_t str_length = strlen(str);
 
     size_t buffersize = str_length + sizeof(char) * count * lines->length + 1;
-    char *padded = (char *)ZRUBLIB_MALLOC(buffersize);
+    char *padded = (char *)ZRUB_MALLOC(buffersize);
 
     if (padded == NULL)
     {
-        fprintf(stderr, "failed to ZRUBLIB_MALLOC string\n");
+        fprintf(stderr, "failed to ZRUB_MALLOC string\n");
         exit(1);
     }
 
@@ -236,13 +236,13 @@ char *zrublib_string_leftpad(const char *str, const char *pad, size_t count)
 
     memset(padded + offset, '\0', 1);
 
-    zrublib_vector_naivefree(lines);
-    zrublib_vector_dumbfree(lines);
+    zrub_vector_naivefree(lines);
+    zrub_vector_dumbfree(lines);
 
     return padded;
 }
 
-zrublib_vector_t *zrublib_string_split(const char *str, const char *delimiter)
+zrub_vector_t *zrub_string_split(const char *str, const char *delimiter)
 {
     if (str == NULL || delimiter == NULL)
     {
@@ -261,42 +261,42 @@ zrublib_vector_t *zrublib_string_split(const char *str, const char *delimiter)
         return NULL;
     }
 
-    zrublib_vector_t *vec = (zrublib_vector_t *)ZRUBLIB_MALLOC(sizeof(zrublib_vector_t));
+    zrub_vector_t *vec = (zrub_vector_t *)ZRUB_MALLOC(sizeof(zrub_vector_t));
 
     if (str_length <= sub_length)
     {
-        zrublib_allocate_vector(vec, 0);
+        zrub_allocate_vector(vec, 0);
 
         return vec;
     }
 
-    size_t occurences = zrublib_string_count_substring(str, delimiter);
+    size_t occurences = zrub_string_count_substring(str, delimiter);
     // printf("found %zu occurences of the delimiter `%s`\n", occurences, delimiter);
 
     /* checks if str ends with delim */
-    char *end = zrublib_string_slice(str, str_length - sub_length, str_length);
-    char *start = zrublib_string_slice(str, 0, sub_length);
+    char *end = zrub_string_slice(str, str_length - sub_length, str_length);
+    char *start = zrub_string_slice(str, 0, sub_length);
 
-    if (zrublib_string_check_prefix(str, delimiter))
+    if (zrub_string_check_prefix(str, delimiter))
     {
         occurences--;
     }
 
-    if (zrublib_string_check_suffix(str, delimiter))
+    if (zrub_string_check_suffix(str, delimiter))
     {
         delim_is_suffix = true;
         occurences--;
     }
 
-    zrublib_allocate_vector(vec, occurences + 1);
+    zrub_allocate_vector(vec, occurences + 1);
 
     free(start);
     free(end);
 
     if (occurences == 0)
     {
-        char *sub = zrublib_string_create(str, str_length);
-        zrublib_vector_insert(vec, sub);
+        char *sub = zrub_string_create(str, str_length);
+        zrub_vector_insert(vec, sub);
     }
     else
     {
@@ -308,21 +308,21 @@ zrublib_vector_t *zrublib_string_split(const char *str, const char *delimiter)
         so 5 - 4 + 1 cases to check ("hell", "ello")
         */
 
-        // char *tmp = (char *)ZRUBLIB_MALLOC(sizeof(char) * (sub_length + 1));
-        char *tmp = zrublib_string_create(delimiter, sub_length + 1);
+        // char *tmp = (char *)ZRUB_MALLOC(sizeof(char) * (sub_length + 1));
+        char *tmp = zrub_string_create(delimiter, sub_length + 1);
 
         for (size_t i = 0; i <= str_length - sub_length; i++)
         {
-            zrublib_string_slice2(tmp, str, i, i + sub_length);
+            zrub_string_slice2(tmp, str, i, i + sub_length);
             // printf("%zu %zu %zu %s\n", counter, offset, i, tmp);
 
             if (strncmp(tmp, delimiter, sub_length) == 0 &&
                 offset != i && i != 0)
             {
-                char *sub = zrublib_string_slice(str, offset, i);
+                char *sub = zrub_string_slice(str, offset, i);
                 // printf("pushing `%s`\n", sub);
 
-                zrublib_vector_insert(vec, sub);
+                zrub_vector_insert(vec, sub);
 
                 offset = i + sub_length;
                 i += sub_length - 1;
@@ -331,7 +331,7 @@ zrublib_vector_t *zrublib_string_split(const char *str, const char *delimiter)
                 if (counter == occurences)
                 {
                     // printf("offset: %zu, str_length: %zu\n", offset, str_length);
-                    char *final = zrublib_string_slice(
+                    char *final = zrub_string_slice(
                         str,
                         offset,
                         delim_is_suffix == true ? str_length - sub_length : str_length);
@@ -342,7 +342,7 @@ zrublib_vector_t *zrublib_string_split(const char *str, const char *delimiter)
                     else
                     {
                         // printf("pushing `%s`\n", final);
-                        zrublib_vector_insert(vec, final);
+                        zrub_vector_insert(vec, final);
                     }
 
                     break;
@@ -356,7 +356,7 @@ zrublib_vector_t *zrublib_string_split(const char *str, const char *delimiter)
     return vec;
 }
 
-void zrublib_string_lowercase(char *str)
+void zrub_string_lowercase(char *str)
 {
     if (str == NULL) return;
 
@@ -366,7 +366,7 @@ void zrublib_string_lowercase(char *str)
     } 
 }
 
-void zrublib_string_uppercase(char *str)
+void zrub_string_uppercase(char *str)
 {
     if (str == NULL) return;
 
