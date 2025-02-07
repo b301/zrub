@@ -80,11 +80,8 @@ static void test_6(void)
     char *upperit = zrub_string_create("mY nAME iS oDED", 32);
 
     zrub_string_lowercase(lowerit);
-
-    printf("lower failed\n");
     zrub_string_uppercase(upperit);
-    
-    printf("upper failed\n");
+
     TESTS_CHECK(strncmp(lowerit, "my name is oded", strlen(lowerit)) == 0, "checking string lower");
     TESTS_CHECK(strncmp(upperit, "MY NAME IS ODED", strlen(upperit)) == 0, "checking string upper");
 
