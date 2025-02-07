@@ -10,7 +10,7 @@ bool zrub_list_directory(zrub_vector_t *vec, char *path, ssize_t depth)
 
     if (strlen(path) >= MAX_PATH - 3)
     {
-        fprintf(stderr, "zrub_list_directory::path length exceeds MAX_PATH (%d)\n", MAX_PATH);
+        ZRUB_LOG_ERROR("path length exceeds MAX_PATH (%d)", MAX_PATH);
         return false;
     }
 
@@ -22,7 +22,7 @@ bool zrub_list_directory(zrub_vector_t *vec, char *path, ssize_t depth)
 
     if (INVALID_HANDLE_VALUE == hFind)
     {
-        fprintf(stderr, "zrub_list_directory::FindFirstFile error %ld", GetLastError());
+        ZRUB_LOG_ERROR("the function FindFirstFile(...) returned error code %ld", GetLastError());
         return false;
     }
 
@@ -43,7 +43,7 @@ bool zrub_list_directory(zrub_vector_t *vec, char *path, ssize_t depth)
 
         if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
         {
-            file->type = OS_FILE_DIRECTORY;
+            file->type = ZRUB_OS_FILE_DIRECTORY;
 
             if (depth > 0)
             {
@@ -59,27 +59,29 @@ bool zrub_list_directory(zrub_vector_t *vec, char *path, ssize_t depth)
         }
         else
         {
-            file->type = OS_FILE_REGULAR;
+            file->type = ZRUB_OS_FILE_REGULAR;
         }
 
         rc = zrub_vector_insert(vec, file);
 
         switch (rc)
         {
-        case VECTOR_CAPACITY_REACHED:
-            fprintf(stderr, "zrub_list_directory::Vector Capacity Reached\n");
-            break;
-        case VECTOR_UNDEFINED_BEHAVIOR:
-            fprintf(stderr, "zrub_list_directory::Vector Undefined Behavior over `%s`\n", file->name);
-            break;
-        default:
-            break;
+            case ZRUB_VECTOR_CAPACITY_REACHED:
+                ZRUB_LOG_ERROR("vector capacity reached");
+                break;
+
+            case ZRUB_VECTOR_UNDEFINED_BEHAVIOR:
+                ZRUB_LOG_ERROR("vector undefined behaviro over '%s'", file->name);
+                break;
+
+            default:
+                break;
         }
     } while (FindNextFile(hFind, &ffd) != 0);
 
     if (GetLastError() != ERROR_NO_MORE_FILES)
     {
-        fprintf(stderr, "zrub_list_directory::FindFirstFile error %ld", GetLastError());
+        ZRUB_LOG_ERROR("the function FindFirstFile(...) returned error code %ld", GetLastError());
     }
 
     FindClose(hFind);
@@ -99,9 +101,10 @@ bool zrub_list_directory(zrub_vector_t *vec, char *path, ssize_t depth)
     {
         while ((entry = readdir(dirptr)) != NULL)
         {
-            if (!strcmp(entry->d_name, ".") ||
-                !strcmp(entry->d_name, ".."))
+            if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, ".."))
+            {
                 continue;
+            }
 
             file = ALLOC_OBJECT(zrub_os_file_t);
             file->name = zrub_string_create(entry->d_name, strlen(entry->d_name));
@@ -110,20 +113,20 @@ bool zrub_list_directory(zrub_vector_t *vec, char *path, ssize_t depth)
 
             if (fstatat(dirfd(dirptr), entry->d_name, &st, 0) < 0)
             {
-                fprintf(stderr, "Error: %s\n", entry->d_name);
+                ZRUB_LOG_ERROR("failed to get file (%s) stat relative to directory file descriptor (%s)", entry->d_name, path);
                 continue;
             }
 
             if (S_ISDIR(st.st_mode))
             {
-                file->type = OS_FILE_DIRECTORY;
+                file->type = ZRUB_OS_FILE_DIRECTORY;
             }
             else if (S_ISREG(st.st_mode))
             {
-                file->type = OS_FILE_REGULAR;
+                file->type = ZRUB_OS_FILE_REGULAR;
             }
 
-            if (file->type == OS_FILE_DIRECTORY && depth != 0)
+            if (file->type == ZRUB_OS_FILE_DIRECTORY && depth != 0)
             {
                 strsize = strlen(entry->d_name) + strlen(path) + 4;
                 snprintf(path_buffer, strsize, "%s/%s", path, entry->d_name);
@@ -134,14 +137,16 @@ bool zrub_list_directory(zrub_vector_t *vec, char *path, ssize_t depth)
 
             switch (rc)
             {
-            case VECTOR_CAPACITY_REACHED:
-                fprintf(stderr, "zrub_list_directory::Vector Capacity Reached\n");
-                break;
-            case VECTOR_UNDEFINED_BEHAVIOR:
-                fprintf(stderr, "zrub_list_directory::Vector Undefined Behavior over `%s`\n", file->name);
-                break;
-            default:
-                break;
+                case ZRUB_VECTOR_CAPACITY_REACHED:
+                    ZRUB_LOG_ERROR("vector capacity reached");
+                    break;
+
+                case ZRUB_VECTOR_UNDEFINED_BEHAVIOR:
+                    ZRUB_LOG_ERROR("vector undefined behaviro over '%s'", file->name);
+                    break;
+
+                default:
+                    break;
             }
         }
 
@@ -149,5 +154,6 @@ bool zrub_list_directory(zrub_vector_t *vec, char *path, ssize_t depth)
     }
 #endif
 
+    ZRUB_LOG_DEBUG("zrub_list_directory executed successfully");
     return true;
 }

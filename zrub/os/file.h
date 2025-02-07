@@ -22,8 +22,8 @@
 
 typedef enum OsFileType 
 {
-    OS_FILE_REGULAR,
-    OS_FILE_DIRECTORY
+    ZRUB_OS_FILE_REGULAR,
+    ZRUB_OS_FILE_DIRECTORY
 } zrub_os_file_type_t;
 
 typedef struct OsFile 

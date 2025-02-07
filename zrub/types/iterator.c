@@ -38,12 +38,12 @@ void zrub_hashmap_keys_iterator(zrub_iterator_t *iterator, const zrub_hashmap_t 
         {
             item = map->items[i];
 
-            if (item->type == HASHMAP_REGULAR)
+            if (item->type == ZRUB_HASHMAP_REGULAR)
             {
                 keys[c] = item->key;
                 c++;
             }
-            else if (item->type == HASHMAP_LINKED_LIST)
+            else if (item->type == ZRUB_HASHMAP_LINKED_LIST)
             {
                 zrub_linked_node_t *node = item->value;
 
@@ -80,12 +80,12 @@ void zrub_hashmap_values_iterator(zrub_iterator_t *iterator, const zrub_hashmap_
         {
             item = map->items[i];
 
-            if (item->type == HASHMAP_REGULAR)
+            if (item->type == ZRUB_HASHMAP_REGULAR)
             {
                 values[c] = item->value;
                 c++;
             }
-            else if (item->type == HASHMAP_LINKED_LIST)
+            else if (item->type == ZRUB_HASHMAP_LINKED_LIST)
             {
                 zrub_linked_node_t *node = item->value;
 

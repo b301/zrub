@@ -9,7 +9,7 @@ bool zrub_allocate_hashmap(zrub_hashmap_t *map, size_t capacity)
 
     if (items == NULL)
     {
-            fprintf(stderr, "bool zrub_allocate_hashmap(zrub_hashmap_t *map, size_t capacity) failed to allocate hashmap\n");
+        ZRUB_LOG_ERROR("failed to allocate hashmap");
         return false;
     }
 
@@ -36,7 +36,7 @@ void zrub_hashmap_naivefree(zrub_hashmap_t *map, bool naive)
         {
             item = map->items[i];
 
-            if (item->type == HASHMAP_REGULAR)
+            if (item->type == ZRUB_HASHMAP_REGULAR)
             {
                 if (naive)
                 {
@@ -45,7 +45,7 @@ void zrub_hashmap_naivefree(zrub_hashmap_t *map, bool naive)
                 }
             }
 
-            else if (item->type == HASHMAP_LINKED_LIST)
+            else if (item->type == ZRUB_HASHMAP_LINKED_LIST)
             {
                 /* free the nodes */
                 node = item->value;
@@ -109,11 +109,11 @@ bool zrub_hashmap_resize(zrub_hashmap_t *map, size_t new_capacity)
         {
             item = map->items[i];
 
-            if (item->type == HASHMAP_REGULAR)
+            if (item->type == ZRUB_HASHMAP_REGULAR)
             {
                 _zrub_hashmap_set(new_map, item);
             }
-            else if (item->type == HASHMAP_LINKED_LIST)
+            else if (item->type == ZRUB_HASHMAP_LINKED_LIST)
             {
                 zrub_linked_node_t *root = item->value;
 
@@ -147,7 +147,7 @@ bool zrub_hashmap_set(zrub_hashmap_t *map, char *key, void *value)
     size_t hashed = zrub_hashmap_hashfunc_1(key, map->capacity);
 
     /* If it is to replace, maybe allocate only in later parts .. later optimization */
-    zrub_hashmap_item_t *item = _zrub_hashmap_item(key, value, HASHMAP_REGULAR);
+    zrub_hashmap_item_t *item = _zrub_hashmap_item(key, value, ZRUB_HASHMAP_REGULAR);
 
     if (map->items[hashed] == NULL)
     {
@@ -159,19 +159,19 @@ bool zrub_hashmap_set(zrub_hashmap_t *map, char *key, void *value)
 
     zrub_hashmap_item_t *set_item = map->items[hashed];
 
-    if (set_item->type == HASHMAP_REGULAR)
+    if (set_item->type == ZRUB_HASHMAP_REGULAR)
     {
         void *s1 = zrub_initialize_linked_node(set_item, NULL);
         void *s2 = zrub_initialize_linked_node(item, s1);
 
         /* create item for the linked list */
-        zrub_hashmap_item_t *list_item = _zrub_hashmap_item(NULL, s2, HASHMAP_LINKED_LIST);
+        zrub_hashmap_item_t *list_item = _zrub_hashmap_item(NULL, s2, ZRUB_HASHMAP_LINKED_LIST);
         map->items[hashed] = list_item;
         map->length++;
 
         return true;
     }
-    else if (set_item->type == HASHMAP_LINKED_LIST)
+    else if (set_item->type == ZRUB_HASHMAP_LINKED_LIST)
     {
         void *s1 = zrub_initialize_linked_node(item, set_item->value);
         set_item->value = s1;
@@ -188,7 +188,7 @@ bool zrub_hashmap_set(zrub_hashmap_t *map, char *key, void *value)
 
 void _zrub_hashmap_set(zrub_hashmap_t *map, zrub_hashmap_item_t *item)
 {
-    if (item->type != HASHMAP_REGULAR)
+    if (item->type != ZRUB_HASHMAP_REGULAR)
     {
         return;
     }
@@ -205,17 +205,17 @@ void _zrub_hashmap_set(zrub_hashmap_t *map, zrub_hashmap_item_t *item)
 
     zrub_hashmap_item_t *set_item = map->items[hashed];
 
-    if (set_item->type == HASHMAP_REGULAR)
+    if (set_item->type == ZRUB_HASHMAP_REGULAR)
     {
         void *s1 = zrub_initialize_linked_node(set_item, NULL);
         void *s2 = zrub_initialize_linked_node(item, s1);
 
         /* create item for the linked list */
-        zrub_hashmap_item_t *list_item = _zrub_hashmap_item(NULL, s2, HASHMAP_LINKED_LIST);
+        zrub_hashmap_item_t *list_item = _zrub_hashmap_item(NULL, s2, ZRUB_HASHMAP_LINKED_LIST);
         map->items[hashed] = list_item;
         map->length++;
     }
-    else if (set_item->type == HASHMAP_LINKED_LIST)
+    else if (set_item->type == ZRUB_HASHMAP_LINKED_LIST)
     {
         void *s1 = zrub_initialize_linked_node(item, set_item->value);
         set_item->value = s1;
@@ -234,7 +234,7 @@ void* zrub_get_hashmap(zrub_hashmap_t *map, char *key)
         return NULL;
     }
 
-    if (item->type == HASHMAP_REGULAR)
+    if (item->type == ZRUB_HASHMAP_REGULAR)
     {
         if (strncmp( key, item->key, strlen(key) ) == 0)
         {
@@ -243,7 +243,7 @@ void* zrub_get_hashmap(zrub_hashmap_t *map, char *key)
 
         return NULL;
     }
-    else if (item->type == HASHMAP_LINKED_LIST)
+    else if (item->type == ZRUB_HASHMAP_LINKED_LIST)
     {
         zrub_hashmap_item_t *node_item;
         zrub_linked_node_t *node = item->value;
@@ -289,7 +289,7 @@ void zrub_hashmap_print(zrub_hashmap_t *map)
         {
             item = map->items[i];
 
-            if (item->type == HASHMAP_REGULAR)
+            if (item->type == ZRUB_HASHMAP_REGULAR)
             {
                 printf("\"%s\": \"%s\",",
                     (char*)(item->key),
@@ -297,7 +297,7 @@ void zrub_hashmap_print(zrub_hashmap_t *map)
                 );
             }
 
-            else if (item->type == HASHMAP_LINKED_LIST)
+            else if (item->type == ZRUB_HASHMAP_LINKED_LIST)
             {
                 node = item->value;
 
@@ -334,7 +334,7 @@ void zrub_hashmap_print_verbose(zrub_hashmap_t *map)
         {
             item = map->items[i];
 
-            if (item->type == HASHMAP_REGULAR)
+            if (item->type == ZRUB_HASHMAP_REGULAR)
             {
                 printf("(%zu) \"%s\": \"%s\",",
                     i,
@@ -343,7 +343,7 @@ void zrub_hashmap_print_verbose(zrub_hashmap_t *map)
                 );
             }
 
-            else if (item->type == HASHMAP_LINKED_LIST)
+            else if (item->type == ZRUB_HASHMAP_LINKED_LIST)
             {
                 node = item->value;
 
@@ -371,6 +371,11 @@ void zrub_hashmap_print_verbose(zrub_hashmap_t *map)
 
 bool zrub_hashmap_remove(zrub_hashmap_t *map, char *key)
 {
+    if (!map)
+    {
+        
+    }
+
     size_t hash = zrub_hashmap_hashfunc_1(key, map->capacity);
 
     if (map->items[hash] == NULL)

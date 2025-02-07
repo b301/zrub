@@ -19,8 +19,8 @@ typedef struct Vector
     size_t length;
 } zrub_vector_t;
 
-#define VECTOR_CAPACITY_REACHED -1
-#define VECTOR_UNDEFINED_BEHAVIOR -2
+#define ZRUB_VECTOR_CAPACITY_REACHED        -1
+#define ZRUB_VECTOR_UNDEFINED_BEHAVIOR      -2
 
 bool zrub_allocate_vector(zrub_vector_t *vec, size_t capacity);
 bool zrub_reallocate_vector(zrub_vector_t *vec, size_t capacity);

@@ -21,12 +21,12 @@ int main(int argc, char **argv)
         {
             file = iterator.items[i];
 
-            if (file->type == OS_FILE_DIRECTORY)
+            if (file->type == ZRUB_OS_FILE_DIRECTORY)
             {
                 printf("___dirt___ %s\n", file->name);
             }
 
-            if (file->type == OS_FILE_REGULAR)
+            if (file->type == ZRUB_OS_FILE_REGULAR)
             {
                 printf("___file___ %s\n", file->name);
             }

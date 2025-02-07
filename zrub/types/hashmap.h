@@ -6,14 +6,13 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "zrub/pub.h"
 #include "zrub/types/linked_list.h"
-
+#include "zrub/pub.h"
 
 typedef enum HashmapItemType
 {
-    HASHMAP_REGULAR,
-    HASHMAP_LINKED_LIST
+    ZRUB_HASHMAP_REGULAR,
+    ZRUB_HASHMAP_LINKED_LIST
 } zrub_hashmap_item_type_t;
 
 typedef struct HashmapItem

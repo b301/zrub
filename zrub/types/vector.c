@@ -80,7 +80,7 @@ ssize_t zrub_vector_insert(zrub_vector_t *vec, void *item)
 
     if (vec->length == vec->capacity)
     {
-        return VECTOR_CAPACITY_REACHED;
+        return ZRUB_VECTOR_CAPACITY_REACHED;
     }
 
     for (size_t i = 0; i < vec_size; i++)
@@ -94,7 +94,7 @@ ssize_t zrub_vector_insert(zrub_vector_t *vec, void *item)
     }
 
     fprintf(stderr, "ssize_t zrub_vector_insert(zrub_vector_t *vec, void *item) reached undefined behavior");
-    return VECTOR_UNDEFINED_BEHAVIOR;
+    return ZRUB_VECTOR_UNDEFINED_BEHAVIOR;
 }
 
 void* zrub_vector_remove(zrub_vector_t *vec, size_t index)
