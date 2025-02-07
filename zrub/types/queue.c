@@ -1,4 +1,4 @@
-#include "queue.h"
+#include "zrub/types/queue.h"
 
 
 bool zrub_allocate_queue(zrub_queue_t *queue, size_t capacity)

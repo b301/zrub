@@ -1,4 +1,4 @@
-#include "classic.h"
+#include "zrub/cipher/classic.h"
 
 
 void zrub_caesar_encipher(char *message, short steps)
