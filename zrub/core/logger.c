@@ -94,6 +94,11 @@ void _zrub_log(zrub_logger_t *logger, short level, char *format, ...)
             level_str = "debug";
             output_stream = stdout;
             break;
+        
+        case ZRUB_LOG_CHECK_CODE:
+            level_str = "check";
+            output_stream = stdout;
+            break;
 
         default:
             va_end(args);

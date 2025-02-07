@@ -40,7 +40,7 @@ bool zrub_queue_push(zrub_queue_t *queue, void *item)
 {
     if (queue->length != 0 && queue->fp == queue->bp)
     {
-        fprintf(stderr, "zrub_queue_push::queue is full\n");
+        ZRUB_LOG_ERROR("queue is full");
         return false;
     }
 

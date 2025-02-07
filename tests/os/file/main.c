@@ -1,6 +1,7 @@
 #include "zrub/os/file.h"
 #include "zrub/types/iterator.h"
 
+
 int main(int argc, char **argv)
 {
     {
@@ -16,19 +17,19 @@ int main(int argc, char **argv)
 
         zrub_os_file_t *file = NULL;
 
-        printf("iterator length: %lld\n", iterator.length);
+        ZRUB_LOG_CHECK("iterator length: %lld", iterator.length);
         for (size_t i = 0; i < iterator.length; i++)
         {
             file = iterator.items[i];
 
             if (file->type == ZRUB_OS_FILE_DIRECTORY)
             {
-                printf("___dirt___ %s\n", file->name);
+                ZRUB_LOG_CHECK("___dirt___ %s", file->name);
             }
 
             if (file->type == ZRUB_OS_FILE_REGULAR)
             {
-                printf("___file___ %s\n", file->name);
+                ZRUB_LOG_CHECK("___file___ %s", file->name);
             }
         }
 

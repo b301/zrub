@@ -209,7 +209,7 @@ char *zrub_string_leftpad(const char *str, const char *pad, size_t count)
 
     if (padded == NULL)
     {
-        fprintf(stderr, "failed to ZRUB_MALLOC string\n");
+        ZRUB_LOG_ERROR("failed to allocate memory to `padded`");
         exit(1);
     }
 

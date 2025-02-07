@@ -17,6 +17,7 @@ extern zrub_logger_t _zrub_global_logger;
 #define ZRUB_LOG_ERROR(format, ...)     _zrub_log(&_zrub_global_logger, ZRUB_LOG_ERROR_CODE, "[%s]::" format, __func__, ##__VA_ARGS__)
 #define ZRUB_LOG_WARNING(format, ...)   _zrub_log(&_zrub_global_logger, ZRUB_LOG_WARNING_CODE, "[%s]::" format, __func__, ##__VA_ARGS__)
 #define ZRUB_LOG_DEBUG(format, ...)     _zrub_log(&_zrub_global_logger, ZRUB_LOG_DEBUG_CODE, "[%s]::" format, __func__, ##__VA_ARGS__)
+#define ZRUB_LOG_CHECK(format, ...)     _zrub_log(&_zrub_global_logger, ZRUB_LOG_CHECK_CODE, "[%s]::" format, __func__, ##__VA_ARGS__)
 
 
 #define ZRUB_MALLOC malloc
@@ -24,10 +25,10 @@ extern zrub_logger_t _zrub_global_logger;
 
 #define TESTS_CHECK(statement, message)                                             \
 if (!(statement)) {                                                                 \
-    ZRUB_LOG_ERROR("%s failed\n", message);    \
-    return 1;                                                                       \
+    ZRUB_LOG_CHECK("%s didn't pass", message);    \
+    return;                                                                       \
 }                                                                                   \
-ZRUB_LOG_INFO("%s passed", message)
+ZRUB_LOG_CHECK("%s passed", message)
 
 
 #endif

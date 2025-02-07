@@ -28,6 +28,7 @@ typedef struct Logger {
 #define ZRUB_LOG_ERROR_CODE     1
 #define ZRUB_LOG_WARNING_CODE   2
 #define ZRUB_LOG_DEBUG_CODE     3
+#define ZRUB_LOG_CHECK_CODE     4
 
 bool zrub_logger_initialize(zrub_logger_t *logger, char *logfile, int flags);
 void _zrub_log(zrub_logger_t *logger, short level, char *format, ...);

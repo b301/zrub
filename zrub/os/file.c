@@ -109,7 +109,7 @@ bool zrub_list_directory(zrub_vector_t *vec, char *path, ssize_t depth)
             file = ALLOC_OBJECT(zrub_os_file_t);
             file->name = zrub_string_create(entry->d_name, strlen(entry->d_name));
 
-            printf("%s/%s\n", path, file->name);
+            ZRUB_LOG_DEBUG("%s/%s", path, file->name);
 
             if (fstatat(dirfd(dirptr), entry->d_name, &st, 0) < 0)
             {

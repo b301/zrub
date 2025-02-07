@@ -45,7 +45,4 @@ bool zrub_hashmap_remove(zrub_hashmap_t *map, char *key);
 
 size_t zrub_hashmap_hashfunc_1(char *key, size_t capacity);
 
-void zrub_hashmap_print(zrub_hashmap_t *map);
-void zrub_hashmap_print_verbose(zrub_hashmap_t *map);
-
 #endif // _ZRUB_HASHMAP_H
