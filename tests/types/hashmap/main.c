@@ -17,12 +17,12 @@ static test_1(void)
     zrub_hashmap_set(map, zrub_string_create("last_name", 128), zrub_string_create("zrubavel", 128));
 
     // zrub_hashmap_print_verbose(map);
-    TESTS_CHECK(map->length == 5, "test 1: ensure length is 5 after setting 5 items");
+    TESTS_CHECK(map->length == 5, "ensure length is 5 after setting 5 items");
 
     zrub_hashmap_remove(map, "first_name");
 
     // zrub_hashmap_print_verbose(map);
-    TESTS_CHECK(map->length == 4, "test 1: ensure length is 4 after removing an item");
+    TESTS_CHECK(map->length == 4, "ensure length is 4 after removing an item");
 
     zrub_hashmap_naivefree(map, true);
     zrub_hashmap_dumbfree(map);
@@ -32,15 +32,15 @@ static void test_2(void)
 {
     zrub_hashmap_t *map = ALLOC_OBJECT(zrub_hashmap_t);
     zrub_allocate_hashmap(map, 4);
-    TESTS_CHECK(map->capacity == 4, "test 2: ensure the hashmap capacity is 4");
+    TESTS_CHECK(map->capacity == 4, "ensure the hashmap capacity is 4");
 
     zrub_hashmap_set(map, zrub_string_create("hello", 8), zrub_string_create("world", 8));
-    TESTS_CHECK(map->length == 1, "test 2: check setting \"hello\": \"world\"");
+    TESTS_CHECK(map->length == 1, "check setting \"hello\": \"world\"");
 
     // zrub_hashmap_print_verbose(map);
 
     zrub_hashmap_resize(map, 8);
-    TESTS_CHECK(map->capacity == 8, "test 2: ensure the hashmap capacity is correctly resized to 8");
+    TESTS_CHECK(map->capacity == 8, "ensure the hashmap capacity is correctly resized to 8");
 
     // zrub_hashmap_print_verbose(map);
 
