@@ -3,6 +3,7 @@
 
 zrub_logger_t _zrub_global_logger;
 
+#ifdef ZRUBLIB_DEBUG
 __attribute__((constructor))
 static void _zrub_global_logger_initialize()
 {
@@ -17,6 +18,24 @@ static void _zrub_global_logger_finalize()
 {
     zrub_logger_finalize(&_zrub_global_logger);
 }
+
+#else
+__attribute__((constructor))
+static void _zrub_global_logger_initialize()
+{
+    if (!zrub_logger_initialize(&_zrub_global_logger, NULL, ZRUB_LOGGER_OUTPUT_ONLY))
+    {
+        fprintf(stderr, "Failed to initialize global logger\n");
+    }
+}
+
+__attribute__((destructor))
+static void _zrub_global_logger_finalize()
+{
+    zrub_logger_finalize(&_zrub_global_logger);
+}
+
+#endif
 
 
 bool zrub_logger_initialize(zrub_logger_t *logger, char *logfile, int flags)
