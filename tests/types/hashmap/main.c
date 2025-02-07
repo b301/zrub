@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 
-static test_1(void)
+static void test_1(void)
 {
     zrub_hashmap_t *map = (zrub_hashmap_t *)ZRUB_MALLOC(sizeof(zrub_hashmap_t));
 
