@@ -1,6 +1,5 @@
-#ifndef _ZRUB_LOGGER_H
-#define _ZRUB_LOGGER_H
-
+#ifndef __ZRUB_LOGGER_H__
+#define __ZRUB_LOGGER_H__
 
 // TODO: IMPL THREAD SAFETY?
 #include <stdio.h>
@@ -33,4 +32,4 @@ void _zrub_log(zrub_logger_t *logger, short level, char *format, ...);
 void zrub_logger_finalize(zrub_logger_t *logger);
 
 
-#endif // _ZRUB_LOGGER_H
+#endif // __ZRUB_LOGGER_H__

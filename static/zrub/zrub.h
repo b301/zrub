@@ -5,5 +5,7 @@
 #include "zrub/core/logger.h"
 #include "zrub/core/time.h"
 
+#include "zrub/io/file.h"
+
 
 #endif // ZRUBLIB

@@ -1,5 +1,5 @@
-#ifndef _ZRUB_TIME_H
-#define _ZRUB_TIME_H
+#ifndef __ZRUB_TIME_H__
+#define __ZRUB_TIME_H__
 
 #include <time.h>
 #include <stdio.h>
@@ -51,4 +51,4 @@ void zrub_time_set(zrub_time_t *time_data, short day, short month,
     short year, short min, short sec, short hour);
 
 
-#endif // _ZRUB_TIME_H
+#endif // __ZRUB_TIME_H__

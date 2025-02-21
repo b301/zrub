@@ -7,7 +7,7 @@ project(Zrub VERSION 1.0)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -Wextra -pedantic -O3 -s -DZRUBLIB")
 
 # Include directories
-include_directories(${CMAKE_SOURCE_DIR}/static)
+include_directories(${CMAKE_SOURCE_DIR})
 
 # Create the build directories
 set(BUILD_DIR ${CMAKE_BINARY_DIR}/build)
@@ -16,6 +16,7 @@ set(BUILD_DIR ${CMAKE_BINARY_DIR}/build)
 set(SOURCE_FILES
     zrub/core/time.c
     zrub/core/logger.c
+    zrub/io/file.c
 )
 
 # Compile the sources into object files
@@ -25,7 +26,7 @@ foreach(SRC ${SOURCE_FILES})
 endforeach()
 
 # Create the final static library from object files
-add_library(zrub STATIC $<TARGET_OBJECTS:time> $<TARGET_OBJECTS:logger>)
+add_library(zrub STATIC $<TARGET_OBJECTS:time> $<TARGET_OBJECTS:logger> $<TARGET_OBJECTS:file>)
 
 # Install the library
 install(TARGETS zrub DESTINATION lib)
