@@ -8,16 +8,16 @@
 
 #include "time.h"
 
-#define ZRUB_LOGGER_DEBUG_MODE      (1 << 0)
-#define ZRUB_LOGGER_VERBOSE_MODE    (1 << 1)
-#define ZRUB_LOGGER_OUTPUT_ONLY     (1 << 2)
-#define ZRUB_LOGGER_SHOW_TIME       (1 << 3)
+#define ZRUB_LOGGER_FLAG_DEBUG          (1 << 0)
+#define ZRUB_LOGGER_FLAG_VERBOSE        (1 << 1)
+#define ZRUB_LOGGER_FLAG_OUTPUTONLY     (1 << 2)
+#define ZRUB_LOGGER_FLAG_TIME           (1 << 3)
 
-#define ZRUB_LOG_INFO_CODE      0
-#define ZRUB_LOG_ERROR_CODE     1
-#define ZRUB_LOG_WARNING_CODE   2
-#define ZRUB_LOG_DEBUG_CODE     3
-#define ZRUB_LOG_CHECK_CODE     4
+#define ZRUB_LOG_CODE_INFO      0
+#define ZRUB_LOG_CODE_ERROR     1
+#define ZRUB_LOG_CODE_WARNING   2
+#define ZRUB_LOG_CODE_DEBUG     3
+#define ZRUB_LOG_CODE_CHECK     4
 
 typedef struct Logger {
     FILE *file;

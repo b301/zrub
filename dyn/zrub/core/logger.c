@@ -23,7 +23,7 @@ static void _zrub_global_logger_finalize()
 __attribute__((constructor))
 static void _zrub_global_logger_initialize()
 {
-    if (!zrub_logger_initialize(&_zrub_global_logger, NULL, ZRUB_LOGGER_OUTPUT_ONLY))
+    if (!zrub_logger_initialize(&_zrub_global_logger, NULL, ZRUB_LOGGER_FLAG_OUTPUTONLY))
     {
         fprintf(stderr, "Failed to initialize global logger\n");
     }
@@ -40,7 +40,7 @@ static void _zrub_global_logger_finalize()
 
 bool zrub_logger_initialize(zrub_logger_t *logger, char *logfile, int flags)
 {
-    logger->output_only = (flags & ZRUB_LOGGER_OUTPUT_ONLY) != 0;
+    logger->output_only = (flags & ZRUB_LOGGER_FLAG_OUTPUTONLY) != 0;
 
     if (logger->output_only)
     {
@@ -61,9 +61,9 @@ bool zrub_logger_initialize(zrub_logger_t *logger, char *logfile, int flags)
         logger->file = fptr;
     }
 
-    logger->debug_mode = (flags & ZRUB_LOGGER_DEBUG_MODE) != 0;
-    logger->verbose_mode = (flags & ZRUB_LOGGER_VERBOSE_MODE) != 0;
-    logger->show_time = (flags & ZRUB_LOGGER_SHOW_TIME) != 0;
+    logger->debug_mode = (flags & ZRUB_LOGGER_FLAG_DEBUG) != 0;
+    logger->verbose_mode = (flags & ZRUB_LOGGER_FLAG_VERBOSE) != 0;
+    logger->show_time = (flags & ZRUB_LOGGER_FLAG_TIME) != 0;
 
     return true;
 }
@@ -80,7 +80,7 @@ void _zrub_log(zrub_logger_t *logger, short level, char *format, ...)
         return;
     }
 
-    if (logger->debug_mode == false && level == ZRUB_LOG_DEBUG_CODE)
+    if (logger->debug_mode == false && level == ZRUB_LOG_CODE_DEBUG)
     {
         return;
     }
@@ -96,27 +96,27 @@ void _zrub_log(zrub_logger_t *logger, short level, char *format, ...)
 
     switch (level)
     {
-        case ZRUB_LOG_ERROR_CODE:
+        case ZRUB_LOG_CODE_ERROR:
             level_str = "error";
             output_stream = stderr;
             break;
 
-        case ZRUB_LOG_INFO_CODE:
+        case ZRUB_LOG_CODE_INFO:
             level_str = "info";
             output_stream = stdout;
             break;
 
-        case ZRUB_LOG_WARNING_CODE:
+        case ZRUB_LOG_CODE_WARNING:
             level_str = "warning";
             output_stream = stdout;
             break;
 
-        case ZRUB_LOG_DEBUG_CODE:
+        case ZRUB_LOG_CODE_DEBUG:
             level_str = "debug";
             output_stream = stdout;
             break;
         
-        case ZRUB_LOG_CHECK_CODE:
+        case ZRUB_LOG_CODE_CHECK:
             level_str = "check";
             output_stream = stdout;
             break;
