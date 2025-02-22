@@ -3,8 +3,7 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/static"
+                "${workspaceFolder}/**"
             ],
             "defines": [],
             "cStandard": "c17",
