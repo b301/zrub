@@ -2,11 +2,25 @@
 
 
 /**
- * @brief gets the filesize in bytes
+ * @brief gets the size of a directory in bytes
+ * 
+ * @param dirpath       path of the directory
+ * @param size          variable to set size to
+ * @returns true if retrieved the directory size
+ */
+bool zrub_io_dir_size(const char *dirpath, long long *size)
+{
+    ZRUB_LOG_WARNING("not implemented");
+    return false;
+}
+
+
+/**
+ * @brief gets the size of a file in bytes
  * 
  * @param filepath      path of the file
  * @param size          pointer to assign the size to
- * @returns true if retrieved file size
+ * @returns true if retrieved the file size
  */
 bool zrub_io_file_size(const char *filepath, long long *size)
 {
@@ -73,8 +87,8 @@ bool zrub_io_file_size(const char *filepath, long long *size)
     }
 
     if (stat(filepath, &st) != 0)
-    {        
-        ZRUB_LOG_ERROR("failed to retrieve size of `%s`. error: `%s`", filepath, strerror_s(errno));
+    {
+        ZRUB_LOG_ERROR("failed to retrieve size of `%s`. error: `%s`", filepath, strerror(errno));
         *size = -1;
         return false;
     }
