@@ -5,6 +5,7 @@
  * @brief converts zrub_time_t to int64.
  * 
  * @param time      zrub_time_t struct
+ * @returns zrub_time_t object converted to int64
  */
 static long long zrub_time_to_int64(zrub_time_t time)
 {
@@ -21,6 +22,7 @@ static long long zrub_time_to_int64(zrub_time_t time)
  * 
  * @param time_data     zrub_time_t struct
  * @param time_t_data   time_t struct
+ * @returns true if managed to set zrub_time_t
  */
 bool zrub_time_get(zrub_time_t *time_data, time_t time_t_data)
 {
@@ -46,6 +48,7 @@ bool zrub_time_get(zrub_time_t *time_data, time_t time_t_data)
  * @brief gets the universal time coordinated (utc).
  * 
  * @param time_data     zrub_time_t struct
+ * @returns true if managed to retrieve the time
  */
 bool zrub_time_utcnow(zrub_time_t *time_data) 
 {
