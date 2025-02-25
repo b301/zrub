@@ -10,26 +10,47 @@
  */
 bool zrub_io_file_size(const char *filepath, long long *size)
 {
+    // TODO: work on win32
     #if defined(WIN32)
     LARGE_INTEGER fsize;
     HANDLE hFile = CreateFileA(filepath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    DWORD lastError;
 
     if (hFile == INVALID_HANDLE_VALUE)
     {
-        ZRUB_LOG_ERROR("failed to open file `%s`. win32-error-code `%lu`", GetLastError());
+        lastError = GetLastError();
+        
+        switch (lastError)
+        {
+            case ERROR_FILE_NOT_FOUND | ERROR_PATH_NOT_FOUND:
+                ZRUB_LOG_ERROR("%s not found.", filepath);
+                break;
+
+            default:
+                ZRUB_LOG_ERROR("failed to open file `%s`. win32-error-code `%lu`", filepath, lastError);
+                break;
+        }
+
+        return false;
     }
 
+    ZRUB_LOG_DEBUG("here");
     if (!GetFileSizeEx(hFile, &fsize))
     {
-        ZRUB_LOG_ERROR("failed to retrieve size of `%s`. win32-error-code `%lu`", GetLastError());
+        ZRUB_LOG_ERROR("failed to retrieve size of `%s`. win32-error-code `%lu`", filepath, GetLastError());
         CloseHandle(hFile);
 
         *size = -1;
         return false;
     }
 
-    // impl this for win32
-    if (S_ISDIR(st.st_mode))
+    DWORD attributes = GetFileAttributesA(filepath);
+    if (attributes == INVALID_FILE_ATTRIBUTES)
+    {
+        ZRUB_LOG_WARNING("failed to get attributes for `%s`. win32-error-code `%lu`", filepath, GetLastError());
+    }
+
+    if (attributes & FILE_ATTRIBUTE_DIRECTORY)
     {
         ZRUB_LOG_INFO("%s is a directory", filepath);
     }
@@ -52,9 +73,8 @@ bool zrub_io_file_size(const char *filepath, long long *size)
     }
 
     if (stat(filepath, &st) != 0)
-    {
+    {        
         ZRUB_LOG_ERROR("failed to retrieve size of `%s`. error: `%s`", filepath, strerror_s(errno));
-
         *size = -1;
         return false;
     }
@@ -78,6 +98,13 @@ bool zrub_io_file_size(const char *filepath, long long *size)
  */
 bool zrub_io_file_exists(const char *filepath)
 {
+    #if defined(WIN32)
+    ZRUB_LOG_INFO("checking if %s exists", filepath);
+    ZRUB_LOG_ERROR("not implemented");
+
+    return false;
+
+    #elif defined(__linux__)
     if (access(filepath, F_OK) == 0)
     {
         return true;
@@ -106,4 +133,6 @@ bool zrub_io_file_exists(const char *filepath)
     }
 
     return false;
+
+    #endif
 }

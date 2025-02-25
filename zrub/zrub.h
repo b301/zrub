@@ -7,5 +7,7 @@
 
 #include "zrub/io/file.h"
 
+#include "zrub/utils/str.h"
+
 
 #endif // ZRUBLIB
