@@ -10,7 +10,7 @@
  */
 bool zrub_io_dir_size(const char *dirpath, long long *size)
 {
-    ZRUB_LOG_WARNING("not implemented");
+    ZRUB_LOG_ERROR("not implemented");
     return false;
 }
 
