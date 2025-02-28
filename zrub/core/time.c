@@ -7,14 +7,14 @@
  * @param time      zrub_time_t struct
  * @returns zrub_time_t object converted to int64
  */
-static long long zrub_time_to_int64(zrub_time_t time)
+static i64 zrub_time_to_int64(zrub_time_t time)
 {
-    return ((long long)time.year * 10000000000LL) +
-           ((long long)time.month * 100000000LL) +
-           ((long long)time.day * 1000000LL) +
-           ((long long)time.hour * 10000LL) +
-           ((long long)time.min * 100LL) +
-           (long long)time.sec;
+    return ((i64)time.year * 10000000000LL) +
+           ((i64)time.month * 100000000LL) +
+           ((i64)time.day * 1000000LL) +
+           ((i64)time.hour * 10000LL) +
+           ((i64)time.min * 100LL) +
+           (i64)time.sec;
 }
 
 /**
@@ -33,13 +33,13 @@ bool zrub_time_get(zrub_time_t *time_data, time_t time_t_data)
         return false;
     }
 
-    time_data->day = (short)(t->tm_mday);
-    time_data->month = (short)(t->tm_mon + 1);
-    time_data->year = (short)(t->tm_year + 1900);
+    time_data->day = (i16)(t->tm_mday);
+    time_data->month = (i16)(t->tm_mon + 1);
+    time_data->year = (i16)(t->tm_year + 1900);
     
-    time_data->sec = (short)(t->tm_sec);
-    time_data->min = (short)(t->tm_min);
-    time_data->hour = (short)(t->tm_hour);
+    time_data->sec = (i16)(t->tm_sec);
+    time_data->min = (i16)(t->tm_min);
+    time_data->hour = (i16)(t->tm_hour);
 
     return true;
 }
@@ -74,7 +74,7 @@ bool zrub_time_utcnow(zrub_time_t *time_data)
  * @param strlen        length of string buffer
  * @returns true if set the string, false otherwise. 
  */
-bool zrub_time_set_str(const zrub_time_t time_data, short time_format, char *str, size_t strlen)
+bool zrub_time_set_str(const zrub_time_t time_data, i16 time_format, char *str, size_t strlen)
 {
     if (!str) 
     {
@@ -155,7 +155,7 @@ bool zrub_time_eq(zrub_time_t t1, zrub_time_t t2)
  * 
  * @param ms   miliseconds to sleep
  */
-void zrub_time_sleep(int ms)
+void zrub_time_sleep(i32 ms)
 {
     #if defined(__linux__)
     struct timespec ts;
@@ -180,8 +180,8 @@ void zrub_time_sleep(int ms)
  * 
  * @param time_data         zrub_time_t struct
  */
-void zrub_time_set(zrub_time_t *time_data, short day, short month, 
-    short year, short min, short sec, short hour)
+void zrub_time_set(zrub_time_t *time_data, i16 day, i16 month, 
+    i16 year, i16 min, i16 sec, i16 hour)
 {
     time_data->day = day;
     time_data->month = month;

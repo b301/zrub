@@ -9,5 +9,7 @@
 
 #include "zrub/utils/str.h"
 
+#include "zrub/cfg/kv.h"
+
 
 #endif // ZRUBLIB

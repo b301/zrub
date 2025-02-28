@@ -1,6 +1,7 @@
 #ifndef __ZRUB_GLOBAL_H__
 #define __ZRUB_GLOBAL_H__
 
+#include "zrub/core/types.h"
 #include "zrub/core/logger.h"
 extern zrub_logger_t g_zrub_global_logger;
 

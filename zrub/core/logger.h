@@ -6,7 +6,8 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
-#include "time.h"
+#include "zrub/core/time.h"
+#include "zrub/core/types.h"
 
 // flags for the zrub_logger_initialize(...) function.
 #define ZRUB_LOGGER_FLAG_DEBUG          (1 << 0)
@@ -35,8 +36,8 @@ typedef struct Logger {
     bool show_time;
 } zrub_logger_t;
 
-bool zrub_logger_initialize(zrub_logger_t *logger, char *logfile, int flags);
-void _zrub_log(zrub_logger_t *logger, short loglevel, char *format, ...);
+bool zrub_logger_initialize(zrub_logger_t *logger, char *logfile, i32 flags);
+void _zrub_log(zrub_logger_t *logger, i16 loglevel, char *format, ...);
 void zrub_logger_finalize(zrub_logger_t *logger);
 
 

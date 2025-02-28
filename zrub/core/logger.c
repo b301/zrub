@@ -48,7 +48,7 @@ static void g_zrub_global_logger_finalize()
  * @param flags     bit flags to configure the logger.
  * @return bool reflecting whether the struct was initialized successfully.
  */
-bool zrub_logger_initialize(zrub_logger_t *logger, char *logfile, int flags)
+bool zrub_logger_initialize(zrub_logger_t *logger, char *logfile, i32 flags)
 {
     logger->output_only = (flags & ZRUB_LOGGER_FLAG_OUTPUTONLY) != 0;
 
@@ -86,7 +86,7 @@ bool zrub_logger_initialize(zrub_logger_t *logger, char *logfile, int flags)
  * @param format    string format for fprintf.
  * @param va_args   passed onto fprintf.
  */
-void _zrub_log(zrub_logger_t *logger, short loglevel, char *format, ...)
+void _zrub_log(zrub_logger_t *logger, i16 loglevel, char *format, ...)
 {
     if (logger == NULL)
     {
@@ -170,7 +170,6 @@ got_time_false:
 
         fprintf(logger->file, "[%s]::", level_str);
         vfprintf(logger->file, format, args);
-        fprintf(logger->file, "\n");
     }
 
     if (logger->show_time && got_time == true)
@@ -180,7 +179,6 @@ got_time_false:
 
     fprintf(output_stream, "[%s]::", level_str);
     vfprintf(output_stream, format, args_copy);
-    fprintf(output_stream, "\n");
 
 cleanup:
     va_end(args_copy);

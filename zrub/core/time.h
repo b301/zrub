@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "zrub/core/types.h"
+
 #if defined(__linux__)
 #include <unistd.h>
 
@@ -27,26 +29,26 @@
  * @brief structure that represents time.
  */
 typedef struct Time {
-    short day;
-    short month;
-    short year;
-    short min;
-    short sec;
-    short hour;
+    i16 day;
+    i16 month;
+    i16 year;
+    i16 min;
+    i16 sec;
+    i16 hour;
 } zrub_time_t;
 
 bool zrub_time_get(zrub_time_t *time_data, time_t time_t_data);
 bool zrub_time_utcnow(zrub_time_t *time_data);
 
-bool zrub_time_set_str(const zrub_time_t time_data, short time_format, char *str, size_t strlen);
-void zrub_time_sleep(int seconds);
+bool zrub_time_set_str(const zrub_time_t time_data, i16 time_format, char *str, size_t strlen);
+void zrub_time_sleep(i32 seconds);
 
 bool zrub_time_gt(zrub_time_t t1, zrub_time_t t2);
 bool zrub_time_lt(zrub_time_t t1, zrub_time_t t2);
 bool zrub_time_eq(zrub_time_t t1, zrub_time_t t2);
 
-void zrub_time_set(zrub_time_t *time_data, short day, short month, 
-    short year, short min, short sec, short hour);
+void zrub_time_set(zrub_time_t *time_data, i16 day, i16 month, 
+    i16 year, i16 min, i16 sec, i16 hour);
 
 
 #endif // __ZRUB_TIME_H__

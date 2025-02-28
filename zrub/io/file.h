@@ -12,12 +12,10 @@
 #include <errno.h>
 #include <string.h>
 
-#include <ftw.h>
-
 #endif
 
-bool zrub_io_dir_size(const char *dirpath, long long *size);
-bool zrub_io_file_size(const char *filepath, long long *size);
+bool zrub_io_dir_size(const char *dirpath, i64 *size);
+bool zrub_io_file_size(const char *filepath, i64 *size);
 bool zrub_io_file_exists(const char *filepath);
 
 

@@ -18,6 +18,7 @@ set(SOURCE_FILES
     zrub/core/logger.c
     zrub/io/file.c
     zrub/utils/str.c
+    zrub/cfg/kv.c
 )
 
 # Compile the sources into object files
@@ -27,7 +28,8 @@ foreach(SRC ${SOURCE_FILES})
 endforeach()
 
 # Create the final static library from object files
-add_library(zrub STATIC $<TARGET_OBJECTS:time> $<TARGET_OBJECTS:logger> $<TARGET_OBJECTS:file> $<TARGET_OBJECTS:str>)
+add_library(zrub STATIC $<TARGET_OBJECTS:time> $<TARGET_OBJECTS:logger> $<TARGET_OBJECTS:file> $<TARGET_OBJECTS:str> 
+                        $<TARGET_OBJECTS:kv>)
 
 # Install the library
 install(TARGETS zrub DESTINATION lib)
