@@ -30,6 +30,7 @@ static inline bool kv_parse_u32(void *dataptr, char *data)
     // checks for invalid characters
     if (*ptr != '\0' && !isspace((unsigned char)*ptr)) 
     {
+        ZRUB_LOG_ERROR("invalid data for type u32 `%s`\n", data);
         return false;
     }
     if (val >= UINT32_MAX)
@@ -81,6 +82,7 @@ static bool kv_infer_data(void *dataptr, char *data)
         return kv_parse_u32(dataptr, value);
     }
 
+    ZRUB_LOG_ERROR("no handle for datatype `%s`\n", type);
     return false;
 }
 

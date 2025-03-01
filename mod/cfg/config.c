@@ -18,7 +18,8 @@ int main()
 
     if (!fptr)
     {
-        ZRUB_LOG_ERROR("couldnt open `config.ora`\n");
+        ZRUB_LOG_ERROR("couldn't open `config.ora`\n");
+
         return 1;
     }
 
@@ -26,13 +27,19 @@ int main()
 
     struct Settings st;
 
-    if (!zrub_get_kv_cfg(raw, st.app_name,  2, "app", "name")) { return 1; };
-    if (!zrub_get_kv_cfg(raw, st.web_fqdn,  2, "web", "fqdn")) { return 1; };
-    if (!zrub_get_kv_cfg(raw, st.web_host,  2, "web", "host")) { return 1; };
-    if (!zrub_get_kv_cfg(raw, &st.web_port, 2, "web", "port")) { return 1; };
+    if (!zrub_get_kv_cfg(raw, st.app_name,  2, "app", "name")) { goto cleanup; }
+    if (!zrub_get_kv_cfg(raw, st.web_fqdn,  2, "web", "fqdn")) { goto cleanup; }
+    if (!zrub_get_kv_cfg(raw, st.web_host,  2, "web", "host")) { goto cleanup; }
+    if (!zrub_get_kv_cfg(raw, &st.web_port, 2, "web", "port")) { goto cleanup; }
 
-    ZRUB_LOG_INFO("hosting app %s on fqdn %s on interface http://%s:%lu\n",
+    char empty[255];
+    if (!zrub_get_kv_cfg(raw, empty, 3, "test", "empty", "balls")) { goto cleanup; }
+
+    ZRUB_LOG_INFO("hosting app `%s` on fqdn `%s` on interface %s:%lu\n",
             st.app_name, st.web_fqdn, st.web_host, st.web_port);
+
+cleanup:
+    fclose(fptr);
 
     return 0;
 }

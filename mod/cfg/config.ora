@@ -2,4 +2,7 @@ app.name                str         oded-personal-blog
 
 web.fqdn                str         blog.zrubavel.org
 web.host                str         0.0.0.0
-web.port                u32         8080
+web.port                u32         5235
+
+test.empty              sigmaballs  cooljoe
+test.empty.balls        u32         cooljoe
