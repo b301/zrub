@@ -10,7 +10,7 @@ static inline bool kv_parse_bool(void *dataptr, char *data)
         *(bool*)dataptr = true;
         return true;
     }
-    else if (strnmp(data, "false") == 0 || 
+    else if (strcmp(data, "false") == 0 || 
             strcmp(data, "no") == 0 ||
             strcmp(data, "off") == 0)
     {
@@ -25,18 +25,16 @@ static inline bool kv_parse_bool(void *dataptr, char *data)
 static inline bool kv_parse_u32(void *dataptr, char *data)
 {
     char *ptr;
-    long val = strtol(data, &ptr, 10); 
+    u32 val = strtoul(data, &ptr, 10); 
 
     // checks for invalid characters
     if (*ptr != '\0' && !isspace((unsigned char)*ptr)) 
     {
         return false;
     }
-
-    // check if the value is in the range of u32
-    if (val < 0 || val > UINT_MAX) 
+    if (val >= UINT32_MAX)
     {
-        return false;
+        ZRUB_LOG_ERROR("value is probably too large\n");
     }
 
     *(u32*)dataptr = (u32)val;
