@@ -1,0 +1,6 @@
+app.name                str         oded-personal-blog
+
+web.fqdn                str         blog.zrubavel.org
+web.host                str         0.0.0.0
+web.port                u32         9231
+

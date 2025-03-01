@@ -3,16 +3,16 @@
 
 static inline bool kv_parse_bool(void *dataptr, char *data)
 {
-    if (strncmp(data, "true", strlen("true")) == 0 || 
-        strncmp(data, "yes", strlen("yes")) == 0 ||
-        strncmp(data, "on", strlen("on")) == 0)
+    if (strcmp(data, "true") == 0 || 
+        strcmp(data, "yes") == 0 ||
+        strcmp(data, "on") == 0)
     {
         *(bool*)dataptr = true;
         return true;
     }
-    else if (strncmp(data, "false", strlen("false")) == 0 || 
-            strncmp(data, "no", strlen("no")) == 0 ||
-            strncmp(data, "off", strlen("off")) == 0)
+    else if (strnmp(data, "false") == 0 || 
+            strcmp(data, "no") == 0 ||
+            strcmp(data, "off") == 0)
     {
         *(bool*)dataptr = false;
         return false;
@@ -25,8 +25,21 @@ static inline bool kv_parse_bool(void *dataptr, char *data)
 static inline bool kv_parse_u32(void *dataptr, char *data)
 {
     char *ptr;
-    *(u32*)dataptr = strtol(data, &ptr, 10);
-    
+    long val = strtol(data, &ptr, 10); 
+
+    // checks for invalid characters
+    if (*ptr != '\0' && !isspace((unsigned char)*ptr)) 
+    {
+        return false;
+    }
+
+    // check if the value is in the range of u32
+    if (val < 0 || val > UINT_MAX) 
+    {
+        return false;
+    }
+
+    *(u32*)dataptr = (u32)val;
     return true;
 }
 
@@ -52,7 +65,7 @@ static bool kv_infer_data(void *dataptr, char *data)
         return false;
     }
 
-    if (strncmp(type, "str", strlen(type)) == 0)
+    if (strcmp(type, "str") == 0)
     {
         snprintf(dataptr, strlen(value) + 1, "%s", value);
         ZRUB_LOG_DEBUG("set as `%s`\n", (char*)dataptr);
@@ -60,12 +73,12 @@ static bool kv_infer_data(void *dataptr, char *data)
         return true;
     }
 
-    else if (strncmp(type, "bool", strlen(type)) == 0)
+    else if (strcmp(type, "bool") == 0)
     {
         return kv_parse_bool(dataptr, value);
     }
 
-    else if (strncmp(type, "u32", strlen(type)) == 0)
+    else if (strcmp(type, "u32") == 0)
     {
         return kv_parse_u32(dataptr, value);
     }
@@ -87,7 +100,7 @@ static bool kv_infer_data(void *dataptr, char *data)
  * @param num_args          count of the va_args
  * @returns true if managed to find the key AND retrieve its value to dataptr
  */
-bool get_kv_cfg(char *raw_config, void *dataptr, i32 num_args, ...)
+bool zrub_get_kv_cfg(char *raw_config, void *dataptr, i32 num_args, ...)
 {
     va_list args;
     va_start(args, num_args);
