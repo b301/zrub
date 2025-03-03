@@ -2,12 +2,12 @@
 
 
 /**
- * @brief converts zrub_time_t to int64.
+ * @brief converts struct zrub_time to int64.
  * 
- * @param time      zrub_time_t struct
- * @returns zrub_time_t object converted to int64
+ * @param time      struct zrub_time
+ * @returns struct zrub_time value as int64
  */
-static i64 zrub_time_to_int64(zrub_time_t time)
+static i64 zrub_time_as_int64(const struct zrub_time time)
 {
     return ((i64)time.year * 10000000000LL) +
            ((i64)time.month * 100000000LL) +
@@ -20,11 +20,11 @@ static i64 zrub_time_to_int64(zrub_time_t time)
 /**
  * @brief gets the time as of now.
  * 
- * @param time_data     zrub_time_t struct
+ * @param time_data     struct zrub_time
  * @param time_t_data   time_t struct
- * @returns true if managed to set zrub_time_t
+ * @returns true if managed to set struct zrub_time
  */
-bool zrub_time_get(zrub_time_t *time_data, time_t time_t_data)
+bool zrub_time_get(struct zrub_time *time_data, time_t time_t_data)
 {
     struct tm *t = gmtime(&time_t_data);
 
@@ -47,10 +47,10 @@ bool zrub_time_get(zrub_time_t *time_data, time_t time_t_data)
 /**
  * @brief gets the universal time coordinated (utc).
  * 
- * @param time_data     zrub_time_t struct
+ * @param time_data     struct zrub_time
  * @returns true if managed to retrieve the time
  */
-bool zrub_time_utcnow(zrub_time_t *time_data) 
+bool zrub_time_utcnow(struct zrub_time *time_data) 
 {
     time_t ct = time(NULL);
     if (ct == -1) {
@@ -66,15 +66,15 @@ bool zrub_time_utcnow(zrub_time_t *time_data)
 }
 
 /**
- * @brief sets a zrub_time_t to a string.
+ * @brief sets a struct zrub_time to a string.
  * 
- * @param time_data     zrub_time_t struct
+ * @param time_data     struct zrub_time
  * @param time_format   time format code
  * @param str           string buffer
  * @param strlen        length of string buffer
  * @returns true if set the string, false otherwise. 
  */
-bool zrub_time_set_str(const zrub_time_t time_data, i16 time_format, char *str, size_t strlen)
+bool zrub_time_set_str(const struct zrub_time time_data, enum zrub_timeformat time_format, char *str, size_t strlen)
 {
     if (!str) 
     {
@@ -83,7 +83,7 @@ bool zrub_time_set_str(const zrub_time_t time_data, i16 time_format, char *str, 
 
     switch (time_format)
     {
-        case ZRUB_TIME_DEFAULT:
+        case TIMEDEFAULT:
             snprintf(str, strlen, __ZRUB_TIME_FORMAT_DEFAULT, 
                 time_data.day,
                 time_data.month,
@@ -93,14 +93,14 @@ bool zrub_time_set_str(const zrub_time_t time_data, i16 time_format, char *str, 
                 time_data.sec);
             break;
 
-        case ZRUB_TIME_DATEONLY:
+        case TIMEDATEONLY:
             snprintf(str, strlen, __ZRUB_TIME_FORMAT_DATEONLY, 
                 time_data.day,
                 time_data.month,
                 time_data.year);
             break;
 
-        case ZRUB_TIME_TIMEONLY:
+        case TIMETIMEONLY:
             snprintf(str, strlen, __ZRUB_TIME_FORMAT_TIMEONLY, 
                 time_data.hour,
                 time_data.min,
@@ -117,37 +117,37 @@ bool zrub_time_set_str(const zrub_time_t time_data, i16 time_format, char *str, 
 /**
  * @brief checks whether time is greater than another
  * 
- * @param t1        zrub_time_t struct
- * @param t2        zrub_time_t struct
+ * @param t1        struct zrub_time
+ * @param t2        struct zrub_time
  * @returns true if greater, false if equal or less
  */
-bool zrub_time_gt(zrub_time_t t1, zrub_time_t t2)
+bool zrub_time_gt(struct zrub_time t1, struct zrub_time t2)
 {
-    return zrub_time_to_int64(t1) > zrub_time_to_int64(t2);
+    return zrub_time_as_int64(t1) > zrub_time_as_int64(t2);
 }
 
 /**
  * @brief checks whether time is lesser than another
  * 
- * @param t1        zrub_time_t struct
- * @param t2        zrub_time_t struct
+ * @param t1        struct zrub_time
+ * @param t2        struct zrub_time
  * @returns true if lesser, false if equal or greater
  */
-bool zrub_time_lt(zrub_time_t t1, zrub_time_t t2)
+bool zrub_time_lt(struct zrub_time t1, struct zrub_time t2)
 {
-    return zrub_time_to_int64(t1) < zrub_time_to_int64(t2);
+    return zrub_time_as_int64(t1) < zrub_time_as_int64(t2);
 }
 
 /**
  * @brief checks whether time is equals to another
  * 
- * @param t1        zrub_time_t struct
- * @param t2        zrub_time_t struct
+ * @param t1        struct zrub_time
+ * @param t2        struct zrub_time
  * @returns true if equal, false if greater or lesser
  */
-bool zrub_time_eq(zrub_time_t t1, zrub_time_t t2)
+bool zrub_time_eq(struct zrub_time t1, struct zrub_time t2)
 {
-    return zrub_time_to_int64(t1) == zrub_time_to_int64(t2);
+    return zrub_time_as_int64(t1) == zrub_time_as_int64(t2);
 }
 
 /**
@@ -176,11 +176,11 @@ void zrub_time_sleep(i32 ms)
 }
 
 /**
- * @brief sets zrub_time_t struct data
+ * @brief sets struct zrub_time data
  * 
- * @param time_data         zrub_time_t struct
+ * @param time_data         struct zrub_time
  */
-void zrub_time_set(zrub_time_t *time_data, i16 day, i16 month, 
+void zrub_time_set(struct zrub_time *time_data, i16 day, i16 month, 
     i16 year, i16 min, i16 sec, i16 hour)
 {
     time_data->day = day;

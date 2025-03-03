@@ -20,34 +20,40 @@
 #define __ZRUB_TIME_FORMAT_DATEONLY "%02d-%02d-%04d" 
 #define __ZRUB_TIME_FORMAT_TIMEONLY "%02d:%02d:%02d"
 
-#define ZRUB_TIME_DEFAULT   0
-#define ZRUB_TIME_DATEONLY  1
-#define ZRUB_TIME_TIMEONLY  2
+/**
+ * @enum zrub_timeformat
+ * @brief specifies the time format when converting to a string
+ */
+enum zrub_timeformat {
+    TIMEDEFAULT,
+    TIMEDATEONLY,
+    TIMETIMEONLY
+};
 
 /**
- * @struct zrub_time_t
+ * @struct zrub_time
  * @brief structure that represents time.
  */
-typedef struct Time {
+struct zrub_time {
     i16 day;
     i16 month;
     i16 year;
     i16 min;
     i16 sec;
     i16 hour;
-} zrub_time_t;
+};
 
-bool zrub_time_get(zrub_time_t *time_data, time_t time_t_data);
-bool zrub_time_utcnow(zrub_time_t *time_data);
+bool zrub_time_get(struct zrub_time *time_data, time_t time_t_data);
+bool zrub_time_utcnow(struct zrub_time *time_data);
 
-bool zrub_time_set_str(const zrub_time_t time_data, i16 time_format, char *str, size_t strlen);
-void zrub_time_sleep(i32 seconds);
+bool zrub_time_set_str(const struct zrub_time time_data, enum zrub_timeformat time_format, char *str, size_t strlen);
+void zrub_time_sleep(i32 ms);
 
-bool zrub_time_gt(zrub_time_t t1, zrub_time_t t2);
-bool zrub_time_lt(zrub_time_t t1, zrub_time_t t2);
-bool zrub_time_eq(zrub_time_t t1, zrub_time_t t2);
+bool zrub_time_gt(struct zrub_time t1, struct zrub_time t2);
+bool zrub_time_lt(struct zrub_time t1, struct zrub_time t2);
+bool zrub_time_eq(struct zrub_time t1, struct zrub_time t2);
 
-void zrub_time_set(zrub_time_t *time_data, i16 day, i16 month, 
+void zrub_time_set(struct zrub_time *time_data, i16 day, i16 month, 
     i16 year, i16 min, i16 sec, i16 hour);
 
 

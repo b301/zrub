@@ -1,8 +1,8 @@
 #include "logger.h"
 
 
-// using the `constructor` and `destructor` attributes to generate a global logger for zrublib before and after main() calls.
-zrub_logger_t g_zrub_global_logger;
+// using the `constructor` and `destructor` attributes to initialize a global logger for zrublib before and after main() calls.
+struct zrub_logger g_zrub_global_logger;
 
 #ifdef ZRUBLIB_DEBUG
 __attribute__((constructor))
@@ -43,12 +43,12 @@ static void g_zrub_global_logger_finalize()
  *
  * TODO: implement `verbose_mode`
  * 
- * @param logger    zrub_logger_t struct to initialize.
+ * @param logger    struct zrub_logger to initialize.
  * @param logfile   path of the log file on the filesystem.
  * @param flags     bit flags to configure the logger.
  * @return bool reflecting whether the struct was initialized successfully.
  */
-bool zrub_logger_initialize(zrub_logger_t *logger, char *logfile, i32 flags)
+bool zrub_logger_initialize(struct zrub_logger *logger, char *logfile, i32 flags)
 {
     logger->output_only = (flags & ZRUB_LOGGER_FLAG_OUTPUTONLY) != 0;
 
@@ -81,12 +81,12 @@ bool zrub_logger_initialize(zrub_logger_t *logger, char *logfile, i32 flags)
 /**
  * @brief writes to the log.
  * 
- * @param logger    zrub_logger_t struct.
+ * @param logger    struct zrub_logger.
  * @param level     #ZRUB_LOG_CODE_XXX macro defined in logger.h.
  * @param format    string format for fprintf.
  * @param va_args   passed onto fprintf.
  */
-void _zrub_log(zrub_logger_t *logger, i16 loglevel, char *format, ...)
+void _zrub_log(struct zrub_logger *logger, enum zrub_loglevel loglevel, char *format, ...)
 {
     if (logger == NULL)
     {
@@ -98,7 +98,7 @@ void _zrub_log(zrub_logger_t *logger, i16 loglevel, char *format, ...)
         return;
     }
 
-    if (logger->debug_mode == false && loglevel == ZRUB_LOG_CODE_DEBUG)
+    if (logger->debug_mode == false && loglevel == LOGDEBUG)
     {
         return;
     }
@@ -114,27 +114,27 @@ void _zrub_log(zrub_logger_t *logger, i16 loglevel, char *format, ...)
 
     switch (loglevel)
     {
-        case ZRUB_LOG_CODE_ERROR:
+        case LOGERROR:
             level_str = "error";
             output_stream = stderr;
             break;
 
-        case ZRUB_LOG_CODE_INFO:
+        case LOGINFO:
             level_str = "info";
             output_stream = stdout;
             break;
 
-        case ZRUB_LOG_CODE_WARNING:
+        case LOGWARNING:
             level_str = "warning";
             output_stream = stdout;
             break;
 
-        case ZRUB_LOG_CODE_DEBUG:
+        case LOGDEBUG:
             level_str = "debug";
             output_stream = stdout;
             break;
         
-        case ZRUB_LOG_CODE_CHECK:
+        case LOGCHECK:
             level_str = "check";
             output_stream = stdout;
             break;
@@ -143,7 +143,7 @@ void _zrub_log(zrub_logger_t *logger, i16 loglevel, char *format, ...)
             goto cleanup;
     }
 
-    zrub_time_t time;
+    struct zrub_time time;
     char time_str[64];
     bool got_time = true;
 
@@ -157,10 +157,10 @@ void _zrub_log(zrub_logger_t *logger, i16 loglevel, char *format, ...)
             goto got_time_false;
         }
 
-        zrub_time_set_str(time, ZRUB_TIME_DEFAULT, time_str, 64);
+        zrub_time_set_str(time, TIMEDEFAULT, time_str, 64);
     }
-got_time_false:
 
+got_time_false:
     if (!logger->output_only)
     {
         if (logger->show_time)
@@ -188,9 +188,9 @@ cleanup:
 /**
  * @brief finalizes the logger.
  * 
- * @param logger    zrub_logger_t struct.
+ * @param logger    struct zrub_logger.
  */
-void zrub_logger_finalize(zrub_logger_t *logger)
+void zrub_logger_finalize(struct zrub_logger *logger)
 {
     if (!logger) return;
 
