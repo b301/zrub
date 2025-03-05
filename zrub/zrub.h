@@ -11,5 +11,4 @@
 
 #include "zrub/cfg/kv.h"
 
-
 #endif // ZRUBLIB
