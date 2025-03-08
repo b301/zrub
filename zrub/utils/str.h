@@ -1,5 +1,5 @@
-#ifndef __ZRUB_A_H__
-#define __ZRUB_A_H__
+#ifndef __ZRUB_USTR_H__
+#define __ZRUB_USTR_H__
 
 #include "zrub/global.h"
 #include <string.h>

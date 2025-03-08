@@ -18,6 +18,7 @@ set(SOURCE_FILES
     zrub/core/logger.c
     zrub/io/file.c
     zrub/utils/str.c
+    zrub/utils/iterators.c
     zrub/cfg/kv.c
     zrub/3p/uuid/uuid4.c
 )
@@ -29,8 +30,13 @@ foreach(SRC ${SOURCE_FILES})
 endforeach()
 
 # Create the final static library from object files
-add_library(zrub STATIC $<TARGET_OBJECTS:time> $<TARGET_OBJECTS:logger> $<TARGET_OBJECTS:file> $<TARGET_OBJECTS:str> 
-                        $<TARGET_OBJECTS:kv> $<TARGET_OBJECTS:uuid4>)
+add_library(zrub STATIC $<TARGET_OBJECTS:time> 
+                        $<TARGET_OBJECTS:logger> 
+                        $<TARGET_OBJECTS:file> 
+                        $<TARGET_OBJECTS:str> 
+                        $<TARGET_OBJECTS:iterators>
+                        $<TARGET_OBJECTS:kv> 
+                        $<TARGET_OBJECTS:uuid4>)
 
 # Install the library
 install(TARGETS zrub DESTINATION lib)

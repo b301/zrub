@@ -1,7 +1,7 @@
 #ifndef __ZRUB_LOGGER_H__
 #define __ZRUB_LOGGER_H__
 
-// TODO: IMPL THREAD SAFETY?
+// TODO: IMPL THREAD SAFETY FOR FILE?
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdbool.h>
