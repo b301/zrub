@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "nanopb.proto";
+
+
+enum echat_action {
+    USER_REGISTRATION_REQUEST = 0;
+    USER_REGISTRATION_RESPONSE = 1;
+}
+
+message echat_epkt {
+    bytes data = 1                      [(nanopb).max_size=975, (nanopb).fixed_length = true];
+    bytes nonce = 2                     [(nanopb).max_size=24, (nanopb).fixed_length = true];
+    uint32 data_length = 3;
+    uint32 total_data_length = 4;
+    uint32 offset = 5;
+    echat_action action = 6;
+}
+

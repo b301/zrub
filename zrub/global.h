@@ -27,5 +27,7 @@ if (!(statement)) {                             \
 }                                               \
 ZRUB_LOG_CHECK("%s passed", message)
 
+#define ZRUB_DEPRACATED     ZRUB_LOG_WARNING("this function is depracated")
+
 
 #endif // __ZRUB_GLOBAL_H__
