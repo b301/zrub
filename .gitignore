@@ -2,3 +2,7 @@ build*
 doodles
 programs
 out
+lib
+
+.vscode/settings.json
+.vscode/c_cpp_properties.json
