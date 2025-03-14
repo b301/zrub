@@ -1,3 +1,0 @@
-# ignore nanopb generated code
-*.pb.c
-*.pb.h

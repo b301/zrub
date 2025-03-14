@@ -1,5 +1,22 @@
-#include "time.h"
+#include "zrub/core/time.h"
 
+
+/**
+ * @brief returns the epoch time (seconds elapsed since jan 1, 1970) 
+ * @returns unsigned long long (64-bit) 
+ */
+u64 zrub_time_epoch(void)
+{
+    struct timespec ts;
+
+    if (clock_gettime(CLOCK_REALTIME, &ts) == -1)
+    {
+        fprintf(stderr, "clock_gettime failed to get CLOCK_REALTIME\n");
+        return 0;
+    }
+
+    return ts.tv_sec;
+}
 
 /**
  * @brief converts struct zrub_time to int64.
