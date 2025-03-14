@@ -11,14 +11,14 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 # Add source files for the library
 set(SOURCE_FILES
-    zrub/core/time.c
-    zrub/core/logger.c
-    zrub/core/bytes.c
-    zrub/io/file.c
-    zrub/utils/str.c
-    zrub/auth/oauth2.c
-    zrub/cfg/kv.c
-    zrub/3p/uuid/uuid4.c
+    src/zrub/core/time.c
+    src/zrub/core/logger.c
+    src/zrub/core/bytes.c
+    src/zrub/io/file.c
+    src/zrub/utils/str.c
+    src/zrub/auth/oauth2.c
+    src/zrub/cfg/kv.c
+    src/3p/uuid/uuid4.c
 )
 
 # Create the final static library directly from source files
