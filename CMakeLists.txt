@@ -7,37 +7,30 @@ project(Zrub VERSION 1.0)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -Wextra -pedantic -O3 -s -DZRUBLIB -DZRUBLIB_DEBUG")
 
 # Include directories
-include_directories(${CMAKE_SOURCE_DIR})
-
-# Create the build directories
-set(BUILD_DIR ${CMAKE_BINARY_DIR}/build)
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
 # Add source files for the library
 set(SOURCE_FILES
     zrub/core/time.c
     zrub/core/logger.c
+    zrub/core/bytes.c
     zrub/io/file.c
     zrub/utils/str.c
-    zrub/utils/iterators.c
+    zrub/auth/oauth2.c
     zrub/cfg/kv.c
     zrub/3p/uuid/uuid4.c
 )
 
-# Compile the sources into object files
-foreach(SRC ${SOURCE_FILES})
-    get_filename_component(FILE_NAME ${SRC} NAME_WE)
-    add_library(${FILE_NAME} OBJECT ${SRC})
-endforeach()
-
-# Create the final static library from object files
-add_library(zrub STATIC $<TARGET_OBJECTS:time> 
-                        $<TARGET_OBJECTS:logger> 
-                        $<TARGET_OBJECTS:file> 
-                        $<TARGET_OBJECTS:str> 
-                        $<TARGET_OBJECTS:iterators>
-                        $<TARGET_OBJECTS:kv> 
-                        $<TARGET_OBJECTS:uuid4>)
+# Create the final static library directly from source files
+add_library(zrub STATIC ${SOURCE_FILES})
 
 # Install the library
-install(TARGETS zrub DESTINATION lib)
-install(FILES zrub/zrub.h DESTINATION include)
+install(TARGETS zrub
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
+
+# Install the include directory recursively
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
+        DESTINATION include
+        FILES_MATCHING PATTERN "*.h")

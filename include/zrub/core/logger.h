@@ -1,12 +1,10 @@
-#ifndef __ZRUB_GLOBAL_H__
-#define __ZRUB_GLOBAL_H__
+#ifndef __ZRUB_LOGGER_H__
+#define __ZRUB_LOGGER_H__
 
-#include "zrub/core/types.h"
-#include "zrub/core/logger.h"
+
 extern struct zrub_logger g_zrub_global_logger;
 
 #define _ZRUB_LOG_FUNCMACRO "[%s]::"
-
 
 #define zrub_log(logger, code, format, ...) _zrub_log(logger, code, _ZRUB_LOG_FUNCMACRO format, __func__, ##__VA_ARGS__)
 #define zrub_log_info(logger, format, ...) _zrub_log(logger, LOGINFO, _ZRUB_LOG_FUNCMACRO format, __func__, ##__VA_ARGS__)
@@ -27,7 +25,46 @@ if (!(statement)) {                             \
 }                                               \
 ZRUB_LOG_CHECK("%s passed", message)
 
-#define ZRUB_DEPRACATED     ZRUB_LOG_WARNING("this function is depracated")
+// TODO: IMPL THREAD SAFETY FOR FILE?
+#include <stdio.h>
+#include <stdarg.h>
+#include <stdbool.h>
+
+#include "zrub/core/time.h"
+#include "zrub/core/types.h"
+
+// flags for the zrub_logger_initialize(...) function.
+#define ZRUB_LOGGER_FLAG_DEBUG          (1 << 0)
+#define ZRUB_LOGGER_FLAG_VERBOSE        (1 << 1)
+#define ZRUB_LOGGER_FLAG_OUTPUTONLY     (1 << 2)
+#define ZRUB_LOGGER_FLAG_TIME           (1 << 3)
+
+// codes for the _zrub_log(...)
+enum zrub_loglevel {
+    LOGINFO,
+    LOGERROR,
+    LOGWARNING,
+    LOGDEBUG,
+    LOGCHECK
+};
+
+/** 
+ * @struct zrub_logger
+ * @brief structure that represents a logger and it's configuration.
+ * 
+ * if the flag `OUTPUTONLY` is set then the file attribute will point to null.
+ */
+struct zrub_logger {
+    FILE *file;
+    bool debug_mode;
+    bool verbose_mode;
+    bool output_only;
+    bool show_time;
+};
+
+bool zrub_logger_initialize(struct zrub_logger *logger, char *logfile, i32 flags);
+void _zrub_log(struct zrub_logger *logger, enum zrub_loglevel loglevel, char *format, ...);
+void zrub_logger_finalize(struct zrub_logger *logger);
 
 
-#endif // __ZRUB_GLOBAL_H__
+#endif // __ZRUB_LOGGER_H__

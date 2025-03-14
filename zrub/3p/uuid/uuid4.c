@@ -11,7 +11,7 @@
 
 // in case you want to #include "uuid4.c" in a larger compilation unit
 #if !defined(UUID_4H)
-#include "uuid4.h"
+#include "zrub/3p/uuid/uuid4.h"   /* only modification */
 #endif
 
 #if !defined(UUID4_ASSERT)

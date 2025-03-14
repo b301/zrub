@@ -43,6 +43,7 @@ struct zrub_time {
     i16 hour;
 };
 
+u64 zrub_time_epoch(void);
 bool zrub_time_get(struct zrub_time *time_data, time_t time_t_data);
 bool zrub_time_utcnow(struct zrub_time *time_data);
 

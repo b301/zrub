@@ -1,5 +1,33 @@
-#include "iterators.h"
+#include "zrub/core/bytes.h"
 
+
+bool zrub_randombytes(u8 *bytes, u32 size)
+{
+    if (getrandom(bytes, size, 0) == -1)
+    {
+        ZRUB_LOG_ERROR("failed to generate random bytes\n");
+        return false;
+    }
+
+    return true;
+}
+
+bool zrub_bytes_as_hex(const u8 *bytes, const u32 bsize, char *hexstr, const u32 dsize)
+{
+    if (dsize < bsize * 2 + 1)
+    {
+        ZRUB_LOG_ERROR("hex string is too small to contain the bytes array, \
+            (%llu < %llu)\n", dsize, bsize * 2 +1);
+        return false;
+    }
+
+    for (u32 i = 0; i < bsize; i++)
+    {
+        snprintf(hexstr + 2 * i, 3, "%02x", bytes[i]);
+    }
+
+    return true;
+}
 
 /**
  * @brief beginning of the iterator
@@ -8,11 +36,11 @@
  * @param buf           buffer to set as data of blocksize
  * @param blocksize     length of data per iteration
  */
-bool zrub_byte_iter_begin(struct zrub_byte_iter *iter, u8 *buf, u32 *buflen, i32 blocksize)
+bool zrub_bytes_iter_begin(struct zrub_bytes_iter *iter, u8 *buf, u32 *buflen, i32 blocksize)
 {
     iter->ptr = 0;
 
-    return zrub_byte_iter_next(iter, buf, buflen, blocksize);
+    return zrub_bytes_iter_next(iter, buf, buflen, blocksize);
 }
 
 /**
@@ -22,7 +50,7 @@ bool zrub_byte_iter_begin(struct zrub_byte_iter *iter, u8 *buf, u32 *buflen, i32
  * @param buf           buffer to set as data of blocksize
  * @param blocksize     length of data per iteration
  */
-bool zrub_byte_iter_next(struct zrub_byte_iter *iter, u8 *buf, u32 *buflen, i32 blocksize)
+bool zrub_bytes_iter_next(struct zrub_bytes_iter *iter, u8 *buf, u32 *buflen, i32 blocksize)
 {
     if (iter->usage == iter->ptr)
     {
@@ -56,7 +84,7 @@ bool zrub_byte_iter_next(struct zrub_byte_iter *iter, u8 *buf, u32 *buflen, i32 
  * 
  * @param iter          the iterator to check
  */
-bool zrub_byte_iter_end(const struct zrub_byte_iter iter)
+bool zrub_bytes_iter_end(const struct zrub_bytes_iter iter)
 {
     return iter.usage == iter.ptr;
 }
@@ -68,7 +96,7 @@ bool zrub_byte_iter_end(const struct zrub_byte_iter iter)
  * @param blocksize     the size of each block
  * @returns size of iterator
  */
-u32 zrub_byte_iter_size(const struct zrub_byte_iter iter, i32 blocksize)
+u32 zrub_bytes_iter_size(const struct zrub_bytes_iter iter, i32 blocksize)
 {
     u32 len = iter.usage / blocksize;
 
