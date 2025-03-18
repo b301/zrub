@@ -34,16 +34,16 @@
  * @param usage         how much bytes written to the data buffer
  */
 struct zrub_bytes_iter {
-    u8 *data;
+    byte *data;
     i32 ptr;
     i32 usage;
 };
 
-bool zrub_randombytes(u8 *bytes, u32 size);
-bool zrub_bytes_as_hex(const u8 *bytes, const u32 bsize, char *hexstr, const u32 dsize);
+bool zrub_randombytes(byte *bytes, u32 size);
+bool zrub_bytes_as_hex(const byte *bytes, const u32 bsize, char *hexstr, const u32 dsize);
 
-bool zrub_bytes_iter_begin(struct zrub_bytes_iter *iter, u8 *buf, u32 *buflen, i32 blocksize);
-bool zrub_bytes_iter_next(struct zrub_bytes_iter *iter, u8 *buf, u32 *buflen, i32 blocksize);
+bool zrub_bytes_iter_begin(struct zrub_bytes_iter *iter, byte *buf, u32 *buflen, i32 blocksize);
+bool zrub_bytes_iter_next(struct zrub_bytes_iter *iter, byte *buf, u32 *buflen, i32 blocksize);
 bool zrub_bytes_iter_end(const struct zrub_bytes_iter iter);
 
 u32 zrub_bytes_iter_size(const struct zrub_bytes_iter iter, i32 blocksize);

@@ -1,7 +1,7 @@
 #include "zrub/core/bytes.h"
 
 
-bool zrub_randombytes(u8 *bytes, u32 size)
+bool zrub_randombytes(byte *bytes, u32 size)
 {
     if (getrandom(bytes, size, 0) == -1)
     {
@@ -12,7 +12,7 @@ bool zrub_randombytes(u8 *bytes, u32 size)
     return true;
 }
 
-bool zrub_bytes_as_hex(const u8 *bytes, const u32 bsize, char *hexstr, const u32 dsize)
+bool zrub_bytes_as_hex(const byte *bytes, const u32 bsize, char *hexstr, const u32 dsize)
 {
     if (dsize < bsize * 2 + 1)
     {
@@ -36,7 +36,7 @@ bool zrub_bytes_as_hex(const u8 *bytes, const u32 bsize, char *hexstr, const u32
  * @param buf           buffer to set as data of blocksize
  * @param blocksize     length of data per iteration
  */
-bool zrub_bytes_iter_begin(struct zrub_bytes_iter *iter, u8 *buf, u32 *buflen, i32 blocksize)
+bool zrub_bytes_iter_begin(struct zrub_bytes_iter *iter, byte *buf, u32 *buflen, i32 blocksize)
 {
     iter->ptr = 0;
 
@@ -50,7 +50,7 @@ bool zrub_bytes_iter_begin(struct zrub_bytes_iter *iter, u8 *buf, u32 *buflen, i
  * @param buf           buffer to set as data of blocksize
  * @param blocksize     length of data per iteration
  */
-bool zrub_bytes_iter_next(struct zrub_bytes_iter *iter, u8 *buf, u32 *buflen, i32 blocksize)
+bool zrub_bytes_iter_next(struct zrub_bytes_iter *iter, byte *buf, u32 *buflen, i32 blocksize)
 {
     if (iter->usage == iter->ptr)
     {
