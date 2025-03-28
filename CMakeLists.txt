@@ -17,7 +17,11 @@ set(SOURCE_FILES
     src/zrub/io/file.c
     src/zrub/utils/str.c
     src/zrub/auth/oauth2.c
-    src/zrub/cfg/kv.c
+    src/zrub/serializer/int32.c
+    src/zrub/serializer/uint32.c
+    src/zrub/serializer/float.c
+    src/zrub/serializer/string.c
+
     src/3p/uuid/uuid4.c
 )
 

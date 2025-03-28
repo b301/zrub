@@ -11,6 +11,7 @@
 #include "zrub/utils/str.h"
 
 #include "zrub/auth/oauth2.h"
-#include "zrub/cfg/kv.h"
+
+#include "zrub/serializer/interface.h"
 
 #endif // ZRUBLIB

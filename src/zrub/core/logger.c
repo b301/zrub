@@ -48,7 +48,7 @@ static void g_zrub_global_logger_finalize()
  * @param flags     bit flags to configure the logger.
  * @return bool reflecting whether the struct was initialized successfully.
  */
-bool zrub_logger_initialize(struct zrub_logger *logger, char *logfile, i32 flags)
+bool zrub_logger_initialize(struct zrub_logger *logger, char *logfile, int32_t flags)
 {
     logger->output_only = (flags & ZRUB_LOGGER_FLAG_OUTPUTONLY) != 0;
 

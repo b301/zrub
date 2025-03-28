@@ -4,7 +4,7 @@
 static inline bool generate_oauth2_token(struct zrub_oauth2_token *token)
 {
     /* access token */
-    u8 bytes[ZRUB_OAUTH2_TOKEN_BYTES];
+    uint8_t bytes[ZRUB_OAUTH2_TOKEN_BYTES];
     
     if (!zrub_randombytes(bytes, ZRUB_OAUTH2_TOKEN_BYTES))
     {
@@ -64,7 +64,7 @@ bool zrub_oauth2_append(struct zrub_oauth2_token *tokenlist)
     return zrub_oauth2_initialize(&tkn->next);
 }
 
-bool zrub_oauth2_remove(struct zrub_oauth2_token **tokenlist, i32 idx)
+bool zrub_oauth2_remove(struct zrub_oauth2_token **tokenlist, int32_t idx)
 {
     if (*tokenlist == NULL)
     {
@@ -72,7 +72,7 @@ bool zrub_oauth2_remove(struct zrub_oauth2_token **tokenlist, i32 idx)
         return false;
     }
 
-    i32 index = 0;
+    int32_t index = 0;
     struct zrub_oauth2_token *ptr = *tokenlist;
 
     /* [a] -> [b] -> ... ---> [b] -> ...*/
@@ -142,7 +142,7 @@ void zrub_oauth2_display(const struct zrub_oauth2_token *token)
 access: %s (expires: %lu)       \n\
 refresh: %s (expires: %lu)      \n";
 
-    u32 idx = 0;
+    uint32_t idx = 0;
 
     while (tkn != NULL)
     {

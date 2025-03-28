@@ -5,17 +5,24 @@
  * @brief returns the epoch time (seconds elapsed since jan 1, 1970) 
  * @returns unsigned long long (64-bit) 
  */
-u64 zrub_time_epoch(void)
+bool zrub_time_epoch(uint64_t *tv)
 {
+    #if defined(WIN32) || defined(_WIN32)
+    ZRUB_NOT_IMPLEMENTED(false);
+
+    #elif defined(__linux__)
     struct timespec ts;
 
     if (clock_gettime(CLOCK_REALTIME, &ts) == -1)
     {
         fprintf(stderr, "clock_gettime failed to get CLOCK_REALTIME\n");
-        return 0;
+        return false;
     }
 
-    return ts.tv_sec;
+    *tv = ts.tv_sec;
+
+    return true;
+    #endif
 }
 
 /**
@@ -24,14 +31,14 @@ u64 zrub_time_epoch(void)
  * @param time      struct zrub_time
  * @returns struct zrub_time value as int64
  */
-static i64 zrub_time_as_int64(const struct zrub_time time)
+static int64_t zrub_time_as_int64(const struct zrub_time time)
 {
-    return ((i64)time.year * 10000000000LL) +
-           ((i64)time.month * 100000000LL) +
-           ((i64)time.day * 1000000LL) +
-           ((i64)time.hour * 10000LL) +
-           ((i64)time.min * 100LL) +
-           (i64)time.sec;
+    return ((int64_t)time.year * 10000000000LL) +
+           ((int64_t)time.month * 100000000LL) +
+           ((int64_t)time.day * 1000000LL) +
+           ((int64_t)time.hour * 10000LL) +
+           ((int64_t)time.min * 100LL) +
+           (int64_t)time.sec;
 }
 
 /**
@@ -50,13 +57,13 @@ bool zrub_time_get(struct zrub_time *time_data, time_t time_t_data)
         return false;
     }
 
-    time_data->day = (i16)(t->tm_mday);
-    time_data->month = (i16)(t->tm_mon + 1);
-    time_data->year = (i16)(t->tm_year + 1900);
+    time_data->day = (int16_t)(t->tm_mday);
+    time_data->month = (int16_t)(t->tm_mon + 1);
+    time_data->year = (int16_t)(t->tm_year + 1900);
     
-    time_data->sec = (i16)(t->tm_sec);
-    time_data->min = (i16)(t->tm_min);
-    time_data->hour = (i16)(t->tm_hour);
+    time_data->sec = (int16_t)(t->tm_sec);
+    time_data->min = (int16_t)(t->tm_min);
+    time_data->hour = (int16_t)(t->tm_hour);
 
     return true;
 }
@@ -172,7 +179,7 @@ bool zrub_time_eq(struct zrub_time t1, struct zrub_time t2)
  * 
  * @param ms   miliseconds to sleep
  */
-void zrub_time_sleep(i32 ms)
+void zrub_time_sleep(int32_t ms)
 {
     #if defined(__linux__)
     struct timespec ts;
@@ -197,8 +204,8 @@ void zrub_time_sleep(i32 ms)
  * 
  * @param time_data         struct zrub_time
  */
-void zrub_time_set(struct zrub_time *time_data, i16 day, i16 month, 
-    i16 year, i16 min, i16 sec, i16 hour)
+void zrub_time_set(struct zrub_time *time_data, int16_t day, int16_t month, 
+    int16_t year, int16_t min, int16_t sec, int16_t hour)
 {
     time_data->day = day;
     time_data->month = month;

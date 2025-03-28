@@ -22,15 +22,15 @@ static inline bool kv_parse_bool(void *dataptr, char *data)
     return false;
 }
 
-static inline bool kv_parse_u32(void *dataptr, char *data)
+static inline bool kv_parse_uint32_t(void *dataptr, char *data)
 {
     char *ptr;
-    u32 val = strtoul(data, &ptr, 10); 
+    uint32_t val = strtoul(data, &ptr, 10); 
 
     // checks for invalid characters
     if (*ptr != '\0' && !isspace((unsigned char)*ptr)) 
     {
-        ZRUB_LOG_ERROR("invalid data for type u32 `%s`\n", data);
+        ZRUB_LOG_ERROR("invalid data for type uint32_t `%s`\n", data);
         return false;
     }
     if (val >= UINT32_MAX)
@@ -38,7 +38,7 @@ static inline bool kv_parse_u32(void *dataptr, char *data)
         ZRUB_LOG_ERROR("value is probably too large\n");
     }
 
-    *(u32*)dataptr = (u32)val;
+    *(uint32_t*)dataptr = (uint32_t)val;
     return true;
 }
 
@@ -77,9 +77,9 @@ static bool kv_infer_data(void *dataptr, char *data)
         return kv_parse_bool(dataptr, value);
     }
 
-    else if (strcmp(type, "u32") == 0)
+    else if (strcmp(type, "uint32_t") == 0)
     {
-        return kv_parse_u32(dataptr, value);
+        return kv_parse_uint32_t(dataptr, value);
     }
 
     ZRUB_LOG_ERROR("no handle for datatype `%s`\n", type);
@@ -100,7 +100,7 @@ static bool kv_infer_data(void *dataptr, char *data)
  * @param num_args          count of the va_args
  * @returns true if managed to find the key AND retrieve its value to dataptr
  */
-bool zrub_get_kv_cfg(char *raw_config, void *dataptr, i32 num_args, ...)
+bool zrub_get_kv_cfg(char *raw_config, void *dataptr, int32_t num_args, ...)
 {
     va_list args;
     va_start(args, num_args);
@@ -109,7 +109,7 @@ bool zrub_get_kv_cfg(char *raw_config, void *dataptr, i32 num_args, ...)
     char *tmp;
     char *dot = ".";
 
-    for (i32 i = 0; i < num_args; i++)
+    for (int32_t i = 0; i < num_args; i++)
     {
         tmp = va_arg(args, char*);
         strncat(opt, tmp, MAXLINE - strlen(tmp) - 1);
@@ -126,7 +126,7 @@ bool zrub_get_kv_cfg(char *raw_config, void *dataptr, i32 num_args, ...)
     char line[MAXLINE];
     char *start = raw_config;
     char *end;
-    u8 counter = 0;
+    uint8_t counter = 0;
 
     while (*start)
     {
@@ -134,7 +134,7 @@ bool zrub_get_kv_cfg(char *raw_config, void *dataptr, i32 num_args, ...)
 
         if (end)
         {
-            u16 len = end - start;
+            uint16_t len = end - start;
 
             // to avoid buffer overflows
             if (len >= MAXLINE)

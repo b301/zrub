@@ -6,12 +6,6 @@ extern struct zrub_logger g_zrub_global_logger;
 
 #define _ZRUB_LOG_FUNCMACRO "[%s]::"
 
-#define zrub_log(logger, code, format, ...) _zrub_log(logger, code, _ZRUB_LOG_FUNCMACRO format, __func__, ##__VA_ARGS__)
-#define zrub_log_info(logger, format, ...) _zrub_log(logger, LOGINFO, _ZRUB_LOG_FUNCMACRO format, __func__, ##__VA_ARGS__)
-#define zrub_log_error(logger, format, ...) _zrub_log(logger, LOGERROR, _ZRUB_LOG_FUNCMACRO format, __func__, ##__VA_ARGS__)
-#define zrub_log_warning(logger, format, ...) _zrub_log(logger, LOGWARNING, _ZRUB_LOG_FUNCMACRO format, __func__, ##__VA_ARGS__)
-#define zrub_log_debug(logger, format, ...) _zrub_log(logger, LOGDEBUG, _ZRUB_LOG_FUNCMACRO format, __func__, ##__VA_ARGS__)
-
 #define ZRUB_LOG_INFO(format, ...)      _zrub_log(&g_zrub_global_logger, LOGINFO, _ZRUB_LOG_FUNCMACRO format, __func__, ##__VA_ARGS__)
 #define ZRUB_LOG_ERROR(format, ...)     _zrub_log(&g_zrub_global_logger, LOGERROR, _ZRUB_LOG_FUNCMACRO format, __func__, ##__VA_ARGS__)
 #define ZRUB_LOG_WARNING(format, ...)   _zrub_log(&g_zrub_global_logger, LOGWARNING, _ZRUB_LOG_FUNCMACRO format, __func__, ##__VA_ARGS__)
@@ -62,7 +56,7 @@ struct zrub_logger {
     bool show_time;
 };
 
-bool zrub_logger_initialize(struct zrub_logger *logger, char *logfile, i32 flags);
+bool zrub_logger_initialize(struct zrub_logger *logger, char *logfile, int32_t flags);
 void _zrub_log(struct zrub_logger *logger, enum zrub_loglevel loglevel, char *format, ...);
 void zrub_logger_finalize(struct zrub_logger *logger);
 
