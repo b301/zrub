@@ -1,7 +1,7 @@
 #include "zrub/auth/oauth2.h"
 
 
-static inline bool generate_oauth2_token(struct zrub_oauth2_token *token)
+bool zrub_oauth2_gen_token(struct zrub_oauth2_token *token)
 {
     /* access token */
     uint8_t bytes[ZRUB_OAUTH2_TOKEN_BYTES];
@@ -10,12 +10,8 @@ static inline bool generate_oauth2_token(struct zrub_oauth2_token *token)
     {
         return false;
     }
-    
-    if (!zrub_bytes_as_hex(bytes, ZRUB_OAUTH2_TOKEN_BYTES,
-        token->access_token, ZRUB_OAUTH2_HEXSTR_LENGTH))
-    {
-        return false;
-    }
+
+    memcpy(token->access_token, bytes, ZRUB_OAUTH2_TOKEN_BYTES);
 
     token->access_expiry = ZRUB_OAUTH2_ACCESS_EXPIRY;
 
@@ -25,11 +21,7 @@ static inline bool generate_oauth2_token(struct zrub_oauth2_token *token)
         return false;
     }
 
-    if (!zrub_bytes_as_hex(bytes, ZRUB_OAUTH2_TOKEN_BYTES,
-        token->refresh_token, ZRUB_OAUTH2_HEXSTR_LENGTH))
-    {
-        return false;
-    }
+    memcpy(token->refresh_token, bytes, ZRUB_OAUTH2_TOKEN_BYTES);
 
     token->refresh_expiry = ZRUB_OAUTH2_REFRESH_EXPIRY;
     token->next = NULL;
@@ -42,7 +34,7 @@ bool zrub_oauth2_initialize(struct zrub_oauth2_token **token)
     *token = (struct zrub_oauth2_token*)ZRUB_MALLOC(
                 sizeof(struct zrub_oauth2_token));
 
-    return generate_oauth2_token(*token);
+    return zrub_oauth2_gen_token(*token);
 }
 
 bool zrub_oauth2_append(struct zrub_oauth2_token *tokenlist)
@@ -136,6 +128,9 @@ void zrub_oauth2_finalize(struct zrub_oauth2_token **token)
 
 void zrub_oauth2_display(const struct zrub_oauth2_token *token)
 {
+    ZRUB_TODO("refactor this\n");
+    ZRUB_NOT_IMPLEMENTED();
+
     const struct zrub_oauth2_token *tkn = token;
     const char *format = 
 "[[ index: %lu ]]               \n\

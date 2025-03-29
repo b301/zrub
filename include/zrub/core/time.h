@@ -57,5 +57,6 @@ bool zrub_time_eq(struct zrub_time t1, struct zrub_time t2);
 void zrub_time_set(struct zrub_time *time_data, int16_t day, int16_t month, 
     int16_t year, int16_t min, int16_t sec, int16_t hour);
 
+int64_t zrub_time_tsdiff(struct timespec *end, struct timespec *start);
 
 #endif // __ZRUB_TIME_H__

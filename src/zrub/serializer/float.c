@@ -1,7 +1,7 @@
 #include "zrub/serializer/interface.h"
 
 
-uint8_t oz_serialize_float(
+uint8_t zrub_serialize_float(
     uint8_t     *buf,
     uint32_t    bufsize,
     float       value,
@@ -12,7 +12,7 @@ uint8_t oz_serialize_float(
         return 0;
     }
 
-    oz_serializer_f32 converter;
+    zrub_serializer_f32 converter;
     converter.f32 = value;
 
     // Store in big-endian order
@@ -25,7 +25,7 @@ uint8_t oz_serialize_float(
 }
 
 // Deserializes a float from big-endian bytes
-uint8_t oz_deserialize_float(
+uint8_t zrub_deserialize_float(
     uint8_t     *buf,
     uint32_t    bufsize,
     float       *value,
@@ -36,7 +36,7 @@ uint8_t oz_deserialize_float(
         return 0;
     }
 
-    oz_serializer_f32 converter;
+    zrub_serializer_f32 converter;
 
     // Read in big-endian order
     converter.bytes[3] = buf[(*offset)++];

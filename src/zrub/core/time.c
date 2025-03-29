@@ -214,3 +214,17 @@ void zrub_time_set(struct zrub_time *time_data, int16_t day, int16_t month,
     time_data->sec = sec;
     time_data->hour = hour;
 }
+
+int64_t zrub_time_tsdiff(struct timespec *end, struct timespec *start)
+{
+    int64_t sec_diff = end->tv_sec - start->tv_sec;
+    int64_t nsec_diff = end->tv_nsec - start->tv_nsec;
+    
+    // Handle potential underflow in nanoseconds
+    if (nsec_diff < 0) {
+        sec_diff--;
+        nsec_diff += 1000000000L; // 1 second = 1e9 ns
+    }
+    
+    return sec_diff * 1000000000L + nsec_diff;
+}

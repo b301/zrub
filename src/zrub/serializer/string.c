@@ -1,7 +1,7 @@
 #include "zrub/serializer/interface.h"
 
 
-uint8_t oz_serialize_string(
+uint8_t zrub_serialize_string(
     uint8_t     *buf, 
     uint32_t    bufsize,
     char        *str, 
@@ -15,7 +15,7 @@ uint8_t oz_serialize_string(
     }
 
     // prepend the string size in big endian (uint32_t)
-    oz_serialize_unsigned_int32(buf, bufsize, strsize, offset);
+    zrub_serialize_unsigned_int32(buf, bufsize, strsize, offset);
     
     // copy the string to the buffer
     memcpy(buf + *offset, str, strsize);
@@ -24,7 +24,7 @@ uint8_t oz_serialize_string(
     return 0;
 }
 
-uint8_t oz_deserialize_string(
+uint8_t zrub_deserialize_string(
     uint8_t     *buf, 
     uint32_t    bufsize,
     char        *str, 
@@ -40,7 +40,7 @@ uint8_t oz_deserialize_string(
     // get the string size in big endian (uint32_t)
     uint32_t strsize = 0;
 
-    oz_deserialize_unsigned_int32(buf, bufsize, &strsize, offset);
+    zrub_deserialize_unsigned_int32(buf, bufsize, &strsize, offset);
 
     // string buffer too small
     if (strcap < strsize) {

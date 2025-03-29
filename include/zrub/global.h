@@ -10,6 +10,8 @@
     ZRUB_LOG_WARNING("this function is obsolete, you should use %s\n", repl)
 #define ZRUB_NOT_IMPLEMENTED(rc)    \
     ZRUB_LOG_ERROR("this function is not implemented\n"); return rc
+#define ZRUB_TODO(msg)  \
+    ZRUB_LOG_INFO("%s\n", msg)
 
 /* memory */
 #define ZRUB_MALLOC         malloc

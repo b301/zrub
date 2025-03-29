@@ -29,13 +29,6 @@ bool zrub_bytes_as_hex(const uint8_t *bytes, const uint32_t bsize, char *hexstr,
     return true;
 }
 
-/**
- * @brief beginning of the iterator
- * 
- * @param iter          the iterator to begin
- * @param buf           buffer to set as data of blocksize
- * @param blocksize     length of data per iteration
- */
 bool zrub_bytes_iter_begin(struct zrub_bytes_iter *iter, uint8_t *buf, uint32_t *buflen, int32_t blocksize)
 {
     iter->ptr = 0;
@@ -43,13 +36,6 @@ bool zrub_bytes_iter_begin(struct zrub_bytes_iter *iter, uint8_t *buf, uint32_t 
     return zrub_bytes_iter_next(iter, buf, buflen, blocksize);
 }
 
-/**
- * @brief get next iteration
- * 
- * @param iter          the iterator to iterate
- * @param buf           buffer to set as data of blocksize
- * @param blocksize     length of data per iteration
- */
 bool zrub_bytes_iter_next(struct zrub_bytes_iter *iter, uint8_t *buf, uint32_t *buflen, int32_t blocksize)
 {
     if (iter->usage == iter->ptr)
@@ -79,23 +65,11 @@ bool zrub_bytes_iter_next(struct zrub_bytes_iter *iter, uint8_t *buf, uint32_t *
     return true;
 }
 
-/**
- * @brief check if reached end-of-iterator
- * 
- * @param iter          the iterator to check
- */
 bool zrub_bytes_iter_end(const struct zrub_bytes_iter iter)
 {
     return iter.usage == iter.ptr;
 }
 
-/**
- * @brief get the iterator size
- * 
- * @param iter          the iterator whose size is checked
- * @param blocksize     the size of each block
- * @returns size of iterator
- */
 uint32_t zrub_bytes_iter_size(const struct zrub_bytes_iter iter, int32_t blocksize)
 {
     uint32_t len = iter.usage / blocksize;

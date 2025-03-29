@@ -1,7 +1,7 @@
 #include "zrub/serializer/interface.h"
 
 
-uint8_t oz_serialize_unsigned_int32(
+uint8_t zrub_serialize_unsigned_int32(
     uint8_t     *buf, 
     uint32_t    bufsize,
     uint32_t    value, 
@@ -26,7 +26,7 @@ uint8_t oz_serialize_unsigned_int32(
     return 0;
 }
 
-uint8_t oz_deserialize_unsigned_int32(
+uint8_t zrub_deserialize_unsigned_int32(
     uint8_t     *buf, 
     uint32_t    bufsize,
     uint32_t    *value, 

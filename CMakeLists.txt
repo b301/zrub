@@ -21,6 +21,7 @@ set(SOURCE_FILES
     src/zrub/serializer/uint32.c
     src/zrub/serializer/float.c
     src/zrub/serializer/string.c
+    src/zrub/serializer/bytes.c
 
     src/3p/uuid/uuid4.c
 )
