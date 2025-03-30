@@ -14,8 +14,8 @@
 
 #endif
 
-bool zrub_io_dir_size(const char *dirpath, i64 *size);
-bool zrub_io_file_size(const char *filepath, i64 *size);
+bool zrub_io_dir_size(const char *dirpath, int64_t *size);
+bool zrub_io_file_size(const char *filepath, int64_t *size);
 bool zrub_io_file_exists(const char *filepath);
 
 

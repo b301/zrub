@@ -48,7 +48,7 @@ static void g_zrub_global_logger_finalize()
  * @param flags     bit flags to configure the logger.
  * @return bool reflecting whether the struct was initialized successfully.
  */
-bool zrub_logger_initialize(struct zrub_logger *logger, char *logfile, i32 flags)
+bool zrub_logger_initialize(struct zrub_logger *logger, char *logfile, int32_t flags)
 {
     logger->output_only = (flags & ZRUB_LOGGER_FLAG_OUTPUTONLY) != 0;
 
@@ -115,29 +115,46 @@ void _zrub_log(struct zrub_logger *logger, enum zrub_loglevel loglevel, char *fo
     switch (loglevel)
     {
         case LOGERROR:
+        {
             level_str = "error";
-            output_stream = stderr;
-            break;
+            output_stream = stderr;    
+        }
+        break;
 
         case LOGINFO:
+        {
             level_str = "info";
             output_stream = stdout;
-            break;
+        }
+        break;
 
         case LOGWARNING:
+        {
             level_str = "warning";
             output_stream = stdout;
-            break;
+        }
+        break;
 
         case LOGDEBUG:
+        {
             level_str = "debug";
             output_stream = stdout;
-            break;
+        }
+        break;
         
         case LOGCHECK:
+        {
             level_str = "check";
+            output_stream = stdout;    
+        }
+        break;
+
+        case LOGPERF:
+        {
+            level_str = "perf";
             output_stream = stdout;
-            break;
+        }
+        break;
 
         default:
             goto cleanup;

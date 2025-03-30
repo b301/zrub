@@ -11,14 +11,13 @@
  * @param size          variable to set size to
  * @returns true if retrieved the directory size
  */
-bool zrub_io_dir_size(const char *dirpath, i64 *size)
+bool zrub_io_dir_size(const char *dirpath, int64_t *size)
 {
-    ZRUB_LOG_ERROR("not implemented\n");
+    ZRUB_NOT_IMPLEMENTED(false);
 
-    (void)dirpath;
-    (void)size;
+    ZRUB_UNUSED(dirpath);
+    ZRUB_UNUSED(size);
 
-    return false;
 }
 
 
@@ -29,7 +28,7 @@ bool zrub_io_dir_size(const char *dirpath, i64 *size)
  * @param size          pointer to assign the size to
  * @returns true if retrieved the file size
  */
-bool zrub_io_file_size(const char *filepath, i64 *size)
+bool zrub_io_file_size(const char *filepath, int64_t *size)
 {
     // TODO: work on win32
     #if defined(WIN32)
@@ -105,7 +104,7 @@ bool zrub_io_file_size(const char *filepath, i64 *size)
         ZRUB_LOG_INFO("%s is a directory\n", filepath);
     }
 
-    *size = (i64)st.st_size;
+    *size = (int64_t)st.st_size;
     return true;
 
     #endif
@@ -120,10 +119,8 @@ bool zrub_io_file_size(const char *filepath, i64 *size)
 bool zrub_io_file_exists(const char *filepath)
 {
     #if defined(WIN32)
-    ZRUB_LOG_INFO("checking if %s exists\n", filepath);
-    ZRUB_LOG_ERROR("not implemented\n");
-
-    return false;
+    ZRUB_NOT_IMPLEMENTED(false);
+    ZRUB_UNUSED(filepath);
 
     #elif defined(__linux__)
     if (access(filepath, F_OK) == 0)

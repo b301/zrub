@@ -16,7 +16,7 @@
 /**
  * @note the dataptr should be of the type set in the ORA config file
  */
-bool zrub_get_kv_cfg(char *raw_config, void *dataptr, i32 num_args, ...);
+bool zrub_get_kv_cfg(char *raw_config, void *dataptr, int32_t num_args, ...);
 
 
 #endif // __ZRUB_CFG_KV_H__
