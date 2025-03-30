@@ -43,6 +43,8 @@ set(SOURCE_FILES
     src/zrub/serializer/string.c
     src/zrub/serializer/bytes.c
 
+    src/zrub/net/epacket/epacket.c
+
     ${CMAKE_SOURCE_DIR}/dep/uuid4/src/uuid4.c
 )
 
