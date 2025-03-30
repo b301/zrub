@@ -41,13 +41,13 @@ uint8_t zrub_deserialize_unsigned_int32(
     // get the integer in big endian (uint32_t)
     *value = 0;
     
-    *value |= ((int32_t)buf[*offset]) << 24;
+    *value |= buf[*offset] << 24;
     (*offset)++;
-    *value |= ((int32_t)buf[*offset]) << 16;
+    *value |= buf[*offset] << 16;
     (*offset)++;
-    *value |= ((int32_t)buf[*offset]) << 8;
+    *value |= buf[*offset] << 8;
     (*offset)++;
-    *value |= ((int32_t)buf[*offset]);
+    *value |= buf[*offset];
     (*offset)++;
 
     return 0;

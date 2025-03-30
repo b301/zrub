@@ -76,5 +76,6 @@ bool zrub_bytes_iter_end(const struct zrub_bytes_iter iter);
  */
 uint32_t zrub_bytes_iter_size(const struct zrub_bytes_iter iter, int32_t blocksize);
 
+void zrub_bytes_print(const uint8_t *bytes, uint32_t bufsize);
 
 #endif /* __ZRUB_bytes_ITERATOR_H__ */

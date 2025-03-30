@@ -14,4 +14,7 @@
 
 #include "zrub/serializer/interface.h"
 
+#include "3p/uuid/uuid4.h"
+
+
 #endif // ZRUBLIB

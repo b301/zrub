@@ -11,6 +11,7 @@ extern struct zrub_logger g_zrub_global_logger;
 #define ZRUB_LOG_WARNING(format, ...)   _zrub_log(&g_zrub_global_logger, LOGWARNING, _ZRUB_LOG_FUNCMACRO format, __func__, ##__VA_ARGS__)
 #define ZRUB_LOG_DEBUG(format, ...)     _zrub_log(&g_zrub_global_logger, LOGDEBUG, _ZRUB_LOG_FUNCMACRO format, __func__, ##__VA_ARGS__)
 #define ZRUB_LOG_CHECK(format, ...)     _zrub_log(&g_zrub_global_logger, LOGCHECK, _ZRUB_LOG_FUNCMACRO format, __func__, ##__VA_ARGS__)
+#define ZRUB_LOG_PERF(format, ...)      _zrub_log(&g_zrub_global_logger, LOGPERF, _ZRUB_LOG_FUNCMACRO format, __func__, ##__VA_ARGS__)
 
 #define ZRUB_TESTS_CHECK(statement, message)    \
 if (!(statement)) {                             \
@@ -39,7 +40,8 @@ enum zrub_loglevel {
     LOGERROR,
     LOGWARNING,
     LOGDEBUG,
-    LOGCHECK
+    LOGCHECK,
+    LOGPERF
 };
 
 /** 

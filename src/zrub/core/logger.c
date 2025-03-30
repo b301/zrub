@@ -115,29 +115,46 @@ void _zrub_log(struct zrub_logger *logger, enum zrub_loglevel loglevel, char *fo
     switch (loglevel)
     {
         case LOGERROR:
+        {
             level_str = "error";
-            output_stream = stderr;
-            break;
+            output_stream = stderr;    
+        }
+        break;
 
         case LOGINFO:
+        {
             level_str = "info";
             output_stream = stdout;
-            break;
+        }
+        break;
 
         case LOGWARNING:
+        {
             level_str = "warning";
             output_stream = stdout;
-            break;
+        }
+        break;
 
         case LOGDEBUG:
+        {
             level_str = "debug";
             output_stream = stdout;
-            break;
+        }
+        break;
         
         case LOGCHECK:
+        {
             level_str = "check";
+            output_stream = stdout;    
+        }
+        break;
+
+        case LOGPERF:
+        {
+            level_str = "perf";
             output_stream = stdout;
-            break;
+        }
+        break;
 
         default:
             goto cleanup;

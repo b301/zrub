@@ -81,3 +81,18 @@ uint32_t zrub_bytes_iter_size(const struct zrub_bytes_iter iter, int32_t blocksi
 
     return len;
 }
+
+void zrub_bytes_print(const uint8_t *bytes, uint32_t bufsize)
+{
+    if (bytes == NULL)
+    {
+        ZRUB_LOG_ERROR("passed null bytes arg\n");
+        return;
+    }
+
+    for (uint32_t i = 0; i < bufsize; i++)
+    {
+        printf("%02x ", bytes[i]);
+    }
+    printf("\n");
+}

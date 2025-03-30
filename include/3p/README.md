@@ -1,2 +1,2 @@
 # README
-contains third-party code
+contains third-party code headers by soft-links

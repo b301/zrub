@@ -20,6 +20,10 @@ uint8_t zrub_deserialize_signed_int32(
     uint32_t    *offset
 );
 
+uint8_t *zrub_serialize_get_unsigned_int32(
+    uint32_t value
+);
+
 uint8_t zrub_serialize_unsigned_int32(
     uint8_t     *buf, 
     uint32_t    bufsize,
@@ -81,6 +85,12 @@ uint8_t zrub_deserialize_bytes(
     uint32_t    *offset
 );
 
+struct zrub_serializer {
+    uint8_t *buf;
+    uint32_t bufsize;
+    uint32_t offset;
+};
 
+void zrub_serializer_print(struct zrub_serializer *s);
 
 #endif // ZRUB_SERIALIZER_H

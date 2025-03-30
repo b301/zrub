@@ -1,0 +1,7 @@
+[submodule "dep/uuid4"]
+	path = dep/uuid4
+	url = https://github.com/gpakosz/uuid4.git
+[submodule "dep/libsodium"]
+	path = dep/libsodium
+	url = https://github.com/jedisct1/libsodium.git
+	branch = stable
