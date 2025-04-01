@@ -169,6 +169,11 @@ uint8_t zrub_epacket_recv(struct zrub_epacket *pkt, int32_t sockfd)
     return ZRUB_PKT_SUCCESS;
 }
 
+uint8_t zrub_epacket_send_nonblock(struct zrub_epacket *pkt, int32_t sockfd, uint32_t *recv_size, uint32_t *msg_size)
+{
+    ZRUB_NOT_IMPLEMENTED(0);
+}
+
 uint8_t zrub_epacket_recv_nonblock(struct zrub_epacket *pkt, int32_t sockfd, uint32_t *recv_size, uint32_t *msg_size)
 {
     uint8_t buf[4];
