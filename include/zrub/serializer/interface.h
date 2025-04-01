@@ -37,6 +37,19 @@ uint8_t zrub_deserialize_unsigned_int32(
     uint32_t    *offset
 );
 
+uint8_t zrub_serialize_unsigned_int64(
+    uint8_t     *buf, 
+    uint32_t    bufsize,
+    uint64_t    value, 
+    uint32_t    *offset
+);
+uint8_t zrub_deserialize_unsigned_int64(
+    uint8_t     *buf, 
+    uint32_t    bufsize,
+    uint64_t    *value, 
+    uint32_t    *offset
+);
+
 uint8_t zrub_serialize_string(
     uint8_t     *buf, 
     uint32_t    bufsize,

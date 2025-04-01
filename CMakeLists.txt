@@ -3,11 +3,16 @@ cmake_minimum_required(VERSION 3.10)
 # Set project name and version
 project(Zrub VERSION 1.0)
 
+# Set GNU standard installation directories
+include(GNUInstallDirs)
+
 # Include submodules
 include(ExternalProject)
 
+# Set libsodium installation prefix to match main project
+set(LIBSODIUM_PREFIX ${CMAKE_INSTALL_PREFIX})
+
 # Add libsodium as an external project
-set(LIBSODIUM_PREFIX ${CMAKE_BINARY_DIR}/libsodium)
 ExternalProject_Add(
     libsodium
     SOURCE_DIR ${CMAKE_SOURCE_DIR}/dep/libsodium
@@ -16,6 +21,7 @@ ExternalProject_Add(
     BUILD_COMMAND make
     INSTALL_COMMAND make install
     BUILD_IN_SOURCE TRUE
+    INSTALL_DIR ${LIBSODIUM_PREFIX}
 )
 
 # Set compiler flags
@@ -42,9 +48,7 @@ set(SOURCE_FILES
     src/zrub/serializer/float.c
     src/zrub/serializer/string.c
     src/zrub/serializer/bytes.c
-
     src/zrub/net/epacket/epacket.c
-
     ${CMAKE_SOURCE_DIR}/dep/uuid4/src/uuid4.c
 )
 
@@ -58,11 +62,24 @@ target_link_libraries(zrub PRIVATE sodium)
 
 # Install the library
 install(TARGETS zrub
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        RUNTIME DESTINATION bin)
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install the include directory recursively
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
         DESTINATION include
         FILES_MATCHING PATTERN "*.h")
+
+# Create pkg-config file
+configure_file(
+    "${CMAKE_SOURCE_DIR}/zrub.pc.in"
+    "${CMAKE_BINARY_DIR}/zrub.pc"
+    @ONLY
+)
+
+# Install the pkg-config file
+install(
+    FILES "${CMAKE_BINARY_DIR}/zrub.pc"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
+)

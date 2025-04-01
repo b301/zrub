@@ -20,7 +20,7 @@
     ZRUB_MEASURE_PERF(printf("hello, world!\n"), &total);
 }
 */ 
-#ifdef ZRUBLIB_DEBUG_PERF
+#if defined(ZRUBLIB_DEBUG) || defined(ZRUBLIB_DEBUG_PERF)
 #define ZRUB_MEASURE_PERF(__zperffunc, __total)                 \
 {                                                               \
     struct timespec __zperfpre, __zperfpost;                    \
@@ -45,6 +45,28 @@
 #else
 #define ZRUB_MEASURE_PERF(__zperffunc, __total) __zperffunc  
 #define ZRUB_JUST_MEASURE_PERF(__zperffunc) __zperffunc
+
+#endif
+
+#if defined(ZRUBLIB_DEBUG) || defined(ZRUBLIB_DEBUG_VARS)
+#define ZRUB_DVAR_STRING(var)           \
+    _zrub_log(&g_zrub_global_logger, LOGDEBUG, _ZRUB_LOG_FUNCMACRO "(length: %d) " #var ": %s\n", __func__, zrub_str_len(var), (var))
+#define ZRUB_DVAR_INT(var)              \
+    _zrub_log(&g_zrub_global_logger, LOGDEBUG, _ZRUB_LOG_FUNCMACRO #var " %lld\n", __func__, (int64_t)(var))
+#define ZRUB_DVAR_UINT(var)             \
+    _zrub_log(&g_zrub_global_logger, LOGDEBUG, _ZRUB_LOG_FUNCMACRO #var " %llu\n", __func__, (uint64_t)(var))
+#define ZRUB_DVAR_FLOAT(var)            \
+    _zrub_log(&g_zrub_global_logger, LOGDEBUG, _ZRUB_LOG_FUNCMACRO #var " %f\n", __func__, (double)(var))
+#define ZRUB_DVAR_BYTES(var, len)       \
+    _zrub_log(&g_zrub_global_logger, LOGDEBUG, _ZRUB_LOG_FUNCMACRO "(length: %u) " #var " ", __func__, (uint32_t)(len)); \
+    zrub_bytes_print(var, (uint32_t)(len));
+
+#else
+#define ZRUB_DVAR_STRING(var)
+#define ZRUB_DVAR_INT(var)
+#define ZRUB_DVAR_UINT(var)
+#define ZRUB_DVAR_FLOAT(var)
+#define ZRUB_DVAR_BYTES(var, len);
 
 #endif
 

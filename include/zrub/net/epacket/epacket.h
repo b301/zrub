@@ -13,12 +13,13 @@
 #define ZRUB_PKT_MACBYTES_LEN  crypto_box_MACBYTES
 #define ZRUB_PKT_DATA_MAX      ((int32_t)(1024 - sizeof(int32_t) - ZRUB_PKT_NONCE_LEN - ZRUB_PKT_MACBYTES_LEN))
 
-#define ZRUB_PKT_SUCCESS           0
-#define ZRUB_PKT_FAILED_MSG        1
-#define ZRUB_PKT_FAILED_NONCE      2
-#define ZRUB_PKT_FAILED_MACBYTES   3
-#define ZRUB_PKT_FAILED_SIZE       4
-#define ZRUB_PKT_FAILED_DATA       5
+#define ZRUB_PKT_SUCCESS            0
+#define ZRUB_PKT_FAILED_MSG         1
+#define ZRUB_PKT_FAILED_NONCE       2
+#define ZRUB_PKT_FAILED_MACBYTES    3
+#define ZRUB_PKT_FAILED_SIZE        4
+#define ZRUB_PKT_FAILED_DATA        5
+#define ZRUB_PKT_CLIENT_TERM        6
 
 // size of struct is 1024
 struct zrub_epacket

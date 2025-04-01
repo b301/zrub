@@ -13,7 +13,7 @@ bool zrub_oauth2_gen_token(struct zrub_oauth2_token *token)
 
     memcpy(token->access_token, bytes, ZRUB_OAUTH2_TOKEN_BYTES);
 
-    token->access_expiry = ZRUB_OAUTH2_ACCESS_EXPIRY;
+    token->access_expiry = (uint64_t)time(NULL) + ZRUB_OAUTH2_ACCESS_EXPIRY;
 
     /* refresh token */
     if (!zrub_randombytes(bytes, ZRUB_OAUTH2_TOKEN_BYTES))
@@ -23,7 +23,7 @@ bool zrub_oauth2_gen_token(struct zrub_oauth2_token *token)
 
     memcpy(token->refresh_token, bytes, ZRUB_OAUTH2_TOKEN_BYTES);
 
-    token->refresh_expiry = ZRUB_OAUTH2_REFRESH_EXPIRY;
+    token->refresh_expiry = (uint64_t)time(NULL) + ZRUB_OAUTH2_REFRESH_EXPIRY;
     token->next = NULL;
 
     return true;
