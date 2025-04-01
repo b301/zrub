@@ -75,13 +75,15 @@ uint8_t zrub_epacket_send(struct zrub_epacket *pkt, int sockfd)
     ZRUB_LOG_DEBUG("%10s: ", "message");
     zrub_bytes_print(buf, 4);
 
-    if ((rc = send(sockfd, buf, 4, 0)) != 4)
+    rc = send(sockfd, buf, 4, 0);
+    if (rc != 4)
     {
         ZRUB_LOG_ERROR("failed to send message-size, %d\n", rc);
         return ZRUB_PKT_FAILED_SIZE;
     }
 
-    if ((rc = send(sockfd, pkt->nonce, ZRUB_PKT_NONCE_LEN, 0)) != ZRUB_PKT_NONCE_LEN)
+    rc = send(sockfd, pkt->nonce, ZRUB_PKT_NONCE_LEN, 0);
+    if (rc != ZRUB_PKT_NONCE_LEN)
     {
         ZRUB_LOG_ERROR("failed to send nonce, %d\n", rc);
         return ZRUB_PKT_FAILED_NONCE;
@@ -90,7 +92,8 @@ uint8_t zrub_epacket_send(struct zrub_epacket *pkt, int sockfd)
     ZRUB_LOG_DEBUG("%10s: ", "nonce");
     zrub_bytes_print(pkt->nonce, ZRUB_PKT_NONCE_LEN);
 
-    if ((rc = send(sockfd, pkt->macbytes, ZRUB_PKT_MACBYTES_LEN, 0)) != ZRUB_PKT_MACBYTES_LEN)
+    rc = send(sockfd, pkt->macbytes, ZRUB_PKT_MACBYTES_LEN, 0);
+    if (rc != ZRUB_PKT_MACBYTES_LEN)
     {
         ZRUB_LOG_ERROR("failed to send macbytes, %d\n", rc);
         return ZRUB_PKT_FAILED_MACBYTES;
@@ -115,7 +118,13 @@ uint8_t zrub_epacket_recv(struct zrub_epacket *pkt, int sockfd)
     uint32_t offset = 0;
     int32_t rc = 0;
 
-    if ((rc = recv(sockfd, buf, 4, 0)) == -1)
+    rc = recv(sockfd, buf, 4, 0);
+    if (rc == 0)
+    {
+        ZRUB_LOG_INFO("client %d closed connection\n", sockfd);
+        return ZRUB_PKT_CLIENT_TERM;
+    }
+    if (rc == -1)
     {
         ZRUB_LOG_ERROR("failed to receive message size, %d\n", rc);
         return ZRUB_PKT_FAILED_SIZE;
@@ -125,7 +134,8 @@ uint8_t zrub_epacket_recv(struct zrub_epacket *pkt, int sockfd)
     ZRUB_LOG_DEBUG("%10s: ", "message");
     zrub_bytes_print(buf, 4);
 
-    if ((rc = recv(sockfd, pkt->nonce, ZRUB_PKT_NONCE_LEN, 0)) != ZRUB_PKT_NONCE_LEN)
+    rc = recv(sockfd, pkt->nonce, ZRUB_PKT_NONCE_LEN, 0);
+    if (rc != ZRUB_PKT_NONCE_LEN)
     {
         ZRUB_LOG_ERROR("failed receiving nonce, %d\n", rc);
         return ZRUB_PKT_FAILED_NONCE;
@@ -135,7 +145,8 @@ uint8_t zrub_epacket_recv(struct zrub_epacket *pkt, int sockfd)
     ZRUB_LOG_DEBUG("%10s: ", "nonce");
     zrub_bytes_print(pkt->nonce, ZRUB_PKT_NONCE_LEN);
 
-    if ((rc = recv(sockfd, pkt->macbytes, ZRUB_PKT_MACBYTES_LEN, 0)) != ZRUB_PKT_MACBYTES_LEN)
+    rc = recv(sockfd, pkt->macbytes, ZRUB_PKT_MACBYTES_LEN, 0);
+    if (rc != ZRUB_PKT_MACBYTES_LEN)
     {
         ZRUB_LOG_ERROR("failed receiving macbytes, %d\n", rc);
         return ZRUB_PKT_FAILED_MACBYTES;
@@ -145,14 +156,14 @@ uint8_t zrub_epacket_recv(struct zrub_epacket *pkt, int sockfd)
     ZRUB_LOG_DEBUG("%10s: ", "macbytes");
     zrub_bytes_print(pkt->macbytes, ZRUB_PKT_MACBYTES_LEN);
 
-    int32_t bytes_read = recv(sockfd, pkt->data, sizeof(pkt->data), 0);
+    int32_t bytes_read = recv(sockfd, pkt->data, message_size, 0);
     if ((uint32_t)bytes_read != message_size)
     {
         ZRUB_LOG_DEBUG("received %d expected %d\n", bytes_read, message_size);
         return ZRUB_PKT_FAILED_DATA;
     }
 
-    ZRUB_LOG_DEBUG("received extra %d bytes\n", bytes_read);
+    ZRUB_LOG_DEBUG("received data %d bytes\n", bytes_read);
     pkt->data_length = bytes_read;
 
     return ZRUB_PKT_SUCCESS;
