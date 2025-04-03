@@ -169,75 +169,18 @@ uint8_t zrub_epacket_recv(struct zrub_epacket *pkt, int32_t sockfd)
     return ZRUB_PKT_SUCCESS;
 }
 
-uint8_t zrub_epacket_send_nonblock(struct zrub_epacket *pkt, int32_t sockfd, uint32_t *recv_size, uint32_t *msg_size)
+uint8_t zrub_epacket_send_nonblock(struct zrub_epacket *pkt, int32_t sockfd, struct zrub_epacket_async_state *state)
 {
     ZRUB_NOT_IMPLEMENTED(0);
+    ZRUB_UNUSED(pkt);
+    ZRUB_UNUSED(sockfd);
+    ZRUB_UNUSED(state);
 }
 
-uint8_t zrub_epacket_recv_nonblock(struct zrub_epacket *pkt, int32_t sockfd, uint32_t *recv_size, uint32_t *msg_size)
+uint8_t zrub_epacket_recv_nonblock(struct zrub_epacket *pkt, int32_t sockfd, struct zrub_epacket_async_state *state)
 {
-    uint8_t buf[4];
-    uint32_t offset = 0;
-    int32_t rc = 0;
-
-    if (*recv_size == 0)
-    {
-        rc = recv(sockfd, buf, 4, 0);
-        if (rc == 0)
-        {
-            ZRUB_LOG_INFO("client %d closed connection\n", sockfd);
-            return ZRUB_PKT_CLIENT_TERM;
-        }
-        if (rc == -1)
-        {
-            ZRUB_LOG_ERROR("failed to receive message size, %d\n", rc);
-            return ZRUB_PKT_FAILED_SIZE;
-        }
-
-        *recv_size += rc;
-        zrub_deserialize_unsigned_int32(buf, 4, msg_size, &offset);
-        ZRUB_LOG_DEBUG("%10s: ", "message");
-        zrub_bytes_print(buf, 4);
-    }
-
-
-    if (*recv_size == 4)
-    {
-        rc = recv(sockfd, pkt->nonce, ZRUB_PKT_NONCE_LEN, 0);
-        if (rc != ZRUB_PKT_NONCE_LEN)
-        {
-            ZRUB_LOG_ERROR("failed receiving nonce, %d\n", rc);
-            return ZRUB_PKT_FAILED_NONCE;
-        }
-        *recv_size += rc;
-    }
-
-    ZRUB_LOG_DEBUG("%10s: ", "nonce");
-    zrub_bytes_print(pkt->nonce, ZRUB_PKT_NONCE_LEN);
-
-    if (*recv_size == 4 + ZRUB_PKT_NONCE_LEN)
-    {
-        rc = recv(sockfd, pkt->macbytes, ZRUB_PKT_MACBYTES_LEN, 0);
-        if (rc != ZRUB_PKT_MACBYTES_LEN)
-        {
-            ZRUB_LOG_ERROR("failed receiving macbytes, %d\n", rc);
-            return ZRUB_PKT_FAILED_MACBYTES;
-            recv_size += rc;
-        }
-    }
-
-    ZRUB_LOG_DEBUG("%10s: ", "macbytes");
-    zrub_bytes_print(pkt->macbytes, ZRUB_PKT_MACBYTES_LEN);
-
-    int32_t bytes_read = recv(sockfd, pkt->data, *msg_size - *recv_size, 0);
-
-    ZRUB_LOG_DEBUG("received data %d bytes from client %d\n", bytes_read, sockfd);
-    pkt->data_length += bytes_read;
-
-    if (pkt->data_length == *msg_size)
-    {
-        return ZRUB_PKT_SUCCESS;
-    }
-
-    return ZRUB_PKT_AWAITING_DATA;
+    ZRUB_NOT_IMPLEMENTED(0);
+    ZRUB_UNUSED(pkt);
+    ZRUB_UNUSED(sockfd);
+    ZRUB_UNUSED(state);
 }
