@@ -26,7 +26,6 @@ ZRUB_LOG_CHECK("%s passed", message)
 #include <stdbool.h>
 
 #include "zrub/core/time.h"
-#include "zrub/core/types.h"
 
 // flags for the zrub_logger_initialize(...) function.
 #define ZRUB_LOGGER_FLAG_DEBUG          (1 << 0)

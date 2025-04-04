@@ -193,11 +193,9 @@ void check_packet(uint8_t *buf, uint32_t bufsize);
 volatile sig_atomic_t stop_server = 0;
 
 struct client {
-    uint32_t            recv_size;
-    uint32_t            msg_size;
     int32_t             cfd;
     struct zrub_epacket pkt;
-    struct zrub_epacket_async_state state;
+    struct zrub_epacket_state state;
     struct client *next;
 };
 
@@ -207,17 +205,17 @@ struct client *create_state(int32_t cfd)
     struct client *s = (struct client*)ZRUB_MALLOC(sizeof(struct client));   
 
     s->cfd = cfd;
-    s->msg_size = 0;
-    s->recv_size = 0;
 
     memset(s->pkt.data, 0, ZRUB_PKT_DATA_MAX);
     memset(s->pkt.nonce, 0, ZRUB_PKT_NONCE_LEN);
     memset(s->pkt.macbytes, 0, ZRUB_PKT_MACBYTES_LEN);
     s->pkt.data_length = 0;
 
+    s->state.offset = 0;
+    s->state.msg_size = 0;
+
     s->next = NULL;
 }
-
 struct client *get_client_state(struct client **head, int32_t cfd)
 {
     if (head == NULL)
@@ -225,63 +223,72 @@ struct client *get_client_state(struct client **head, int32_t cfd)
         return NULL;
     }
 
-    if ((*head) == NULL)
+    if (*head == NULL)  // If the list is empty, create a new client state
     {
-        (*head) = create_state(cfd);
-        ZRUB_LOG_DEBUG("Creating %d on %p\n", cfd, (*head));
-        return (*head);
+        *head = create_state(cfd);
+        ZRUB_LOG_DEBUG("Creating %d on %p\n", cfd, *head);
+        return *head;
     }
 
-    while ((*head)->next == NULL)
+    struct client *current = *head;
+
+    // Traverse the list to find the client or end of the list
+    while (current != NULL)
     {
-        if ((*head)->cfd == cfd)
+        if (current->cfd == cfd)  // Client found, return it
         {
-            ZRUB_LOG_DEBUG("retrieving %d on %p\n", cfd, (*head));
-            return (*head);
+            ZRUB_LOG_DEBUG("retrieving %d on %p\n", cfd, current);
+            return current;
         }
-
-        (*head) = (*head)->next;
+        current = current->next;  // Move to the next client
     }
 
-    if ((*head)->cfd == cfd)
-    {
-        return (*head);
-    }
-
+    // If the client was not found, create a new one
     struct client *new_state = create_state(cfd);
+    current = *head;
 
-    (*head)->next = new_state;
+    // Traverse again to append the new client to the list
+    while (current->next != NULL)
+    {
+        current = current->next;
+    }
+
+    current->next = new_state;  // Append the new client to the list
     return new_state;
 }
 
-void delete_client_state(
-    struct client **headptr, 
-    int32_t cfd
-) 
+void delete_client_state(struct client **headptr, int32_t cfd)
 {
-    if (headptr == NULL || *headptr == NULL) {
+    if (headptr == NULL || *headptr == NULL)
+    {
         return;
     }
 
     struct client *current = *headptr;
     struct client *prev = NULL;
 
-    while (current != NULL && current->cfd != cfd) {
+    // Traverse the list to find the client to delete
+    while (current != NULL && current->cfd != cfd)
+    {
         prev = current;
         current = current->next;
     }
 
-    if (current == NULL) {
-        return; // Not found
+    if (current == NULL)
+    {
+        return;  // Client not found
     }
 
-    if (prev == NULL) {
-        *headptr = current->next; // Remove head
-    } else {
-        prev->next = current->next;
+    if (prev == NULL)
+    {
+        *headptr = current->next;  // Remove the head of the list
+    }
+    else
+    {
+        prev->next = current->next;  // Bypass the current node
     }
 
-    free(current);
+    free(current);  // Free the memory of the deleted client
 }
 
 void cleanup_state_head(struct client **headptr)
@@ -291,18 +298,18 @@ void cleanup_state_head(struct client **headptr)
         return;
     }
 
-    struct client *head = *headptr;
-    struct client *torm = NULL;
+    struct client *current = *headptr;
+    struct client *next = NULL;
 
-    while (head != NULL)
+    // Traverse the list and free each client
+    while (current != NULL)
     {
-        torm = head;
-        head = head->next;
-
-        free(torm);
+        next = current->next;  // Save the next client
+        free(current);  // Free the current client
+        current = next;  // Move to the next client
     }
 
-    *headptr = NULL;
+    *headptr = NULL;  // Set the head pointer to NULL, indicating the list is empty
 }
 
 static struct client *state_head = NULL;
@@ -329,6 +336,9 @@ bool handle_client(int32_t efd, int32_t cfd, struct epoll_event *e)
         case ZRUB_PKT_SUCCESS:
         {
             ZRUB_LOG_INFO("FINALLY GOT ALL THE DATA\n");
+
+            zrub_epacket_decrypt(&state->pkt, generic_key);
+            ZRUB_DVAR_BYTES(state->pkt.data, state->pkt.data_length);
         }
         break;
 
@@ -378,25 +388,16 @@ bool handle_client(int32_t efd, int32_t cfd, struct epoll_event *e)
 
         else if (state->pkt.data_length < 0)
         {
-            // no more data available
-            if (errno == EAGAIN || errno == EWOULDBLOCK)
+            ZRUB_LOG_ERROR("error reading from client %d: %s\n", cfd, strerror(errno));
+
+            if (epoll_ctl(efd, EPOLL_CTL_DEL, cfd, e) == -1)
             {
-                ZRUB_LOG_DEBUG("finished reading %d\n", cfd);
+                ZRUB_LOG_ERROR("error manipulating epoll instance DEL: %s\n", strerror(errno));
+                return false;
             }
 
-            else
-            {
-                ZRUB_LOG_ERROR("error reading from client %d: %s\n", cfd, strerror(errno));
-
-                if (epoll_ctl(efd, EPOLL_CTL_DEL, cfd, e) == -1)
-                {
-                    ZRUB_LOG_ERROR("error manipulating epoll instance DEL: %s\n", strerror(errno));
-                    return false;
-                }
-
-                ZRUB_LOG_INFO("deleted %d from epoll\n", cfd);
-                close(cfd);
-            }
+            ZRUB_LOG_INFO("deleted %d from epoll\n", cfd);
+            close(cfd);
 
             // break either way
             break;

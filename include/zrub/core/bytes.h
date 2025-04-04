@@ -5,6 +5,7 @@
 #include "zrub/core/time.h"
 
 #include <string.h>             /* for: memcpy */
+#include <stdint.h>
 
 #if defined(__linux__)
 #include <sys/random.h>         /* for: getrandom */

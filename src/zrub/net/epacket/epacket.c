@@ -122,6 +122,9 @@ uint8_t zrub_epacket_recv(struct zrub_epacket *pkt, int32_t sockfd)
     if (rc == 0)
     {
         ZRUB_LOG_INFO("client %d closed connection\n", sockfd);
+
+        pkt->data_length = 0;
+
         return ZRUB_PKT_CLIENT_TERM;
     }
     if (rc == -1)
@@ -133,6 +136,11 @@ uint8_t zrub_epacket_recv(struct zrub_epacket *pkt, int32_t sockfd)
     zrub_deserialize_unsigned_int32(buf, 4, &message_size, &offset);
     ZRUB_LOG_DEBUG("%10s: ", "message");
     zrub_bytes_print(buf, 4);
+
+    if (message_size > ZRUB_PKT_DATA_MAX)
+    {
+        return ZRUB_PKT_MSG_TOO_LARGE;
+    }
 
     rc = recv(sockfd, pkt->nonce, ZRUB_PKT_NONCE_LEN, 0);
     if (rc != ZRUB_PKT_NONCE_LEN)
@@ -169,7 +177,7 @@ uint8_t zrub_epacket_recv(struct zrub_epacket *pkt, int32_t sockfd)
     return ZRUB_PKT_SUCCESS;
 }
 
-uint8_t zrub_epacket_send_nonblock(struct zrub_epacket *pkt, int32_t sockfd, struct zrub_epacket_async_state *state)
+uint8_t zrub_epacket_async_send(struct zrub_epacket *pkt, int32_t sockfd, struct zrub_epacket_state *state)
 {
     ZRUB_NOT_IMPLEMENTED(0);
     ZRUB_UNUSED(pkt);
@@ -177,10 +185,101 @@ uint8_t zrub_epacket_send_nonblock(struct zrub_epacket *pkt, int32_t sockfd, str
     ZRUB_UNUSED(state);
 }
 
-uint8_t zrub_epacket_recv_nonblock(struct zrub_epacket *pkt, int32_t sockfd, struct zrub_epacket_async_state *state)
+uint8_t zrub_epacket_async_recv(struct zrub_epacket *pkt, int32_t sockfd, struct zrub_epacket_state *state)
 {
-    ZRUB_NOT_IMPLEMENTED(0);
-    ZRUB_UNUSED(pkt);
-    ZRUB_UNUSED(sockfd);
-    ZRUB_UNUSED(state);
+    // ZRUB_NOT_IMPLEMENTED(0);
+    // ZRUB_UNUSED(pkt);
+    // ZRUB_UNUSED(sockfd);
+    // ZRUB_UNUSED(state);
+
+    uint8_t data[ sizeof(struct zrub_epacket) ] = { 0 };
+    int32_t rc = recv(sockfd, data, sizeof(struct zrub_epacket), MSG_DONTWAIT);
+
+    if (rc < 0)
+    {
+        if (errno == EAGAIN || errno == EWOULDBLOCK)
+        {
+            return ZRUB_PKT_NO_DATA_AVAILABLE;
+        }
+
+        return ZRUB_PKT_FAILED_RECV;
+    }
+
+    if (rc == 0)
+    {
+        return ZRUB_PKT_CLIENT_TERM;
+    }
+
+    uint32_t idx = 0;
+    for (; idx < (uint32_t)rc; idx++)
+    {
+        // TODO - OPTIMIZE THIS!
+        if (state->offset < 4)
+        {
+            ZRUB_LOG_DEBUG("setting %02x as %u\n", data[idx], 8 * (3 - state->offset));
+            state->msg_size |= data[idx] << (8 * (3 - state->offset));
+            state->offset++;
+
+            if (state->offset == 4)
+            {
+                ZRUB_LOG_DEBUG("setting data_length as %u\n", state->msg_size);
+                pkt->data_length = state->msg_size - 4 - ZRUB_PKT_NONCE_LEN - ZRUB_PKT_MACBYTES_LEN;
+            }
+
+            continue;
+        }
+
+        // reaches this only after state->msg_size is set!
+        if (state->msg_size > ZRUB_PKT_DATA_MAX)
+        {
+            return ZRUB_PKT_MSG_TOO_LARGE;
+        }
+
+        // TODO - OPTIMIZE THIS!
+        if (state->offset < 4 + ZRUB_PKT_NONCE_LEN)
+        {
+            ZRUB_LOG_DEBUG("(%u) setting %02x as nonce %u\n",
+                1 + state->offset, data[idx], state->offset - 4);
+
+            pkt->nonce[state->offset - 4] = data[idx];
+
+            state->offset++;
+            continue;
+        }
+
+        // TODO - OPTIMIZE THIS!
+        if (state->offset < 4 + ZRUB_PKT_NONCE_LEN + ZRUB_PKT_MACBYTES_LEN)
+        {
+            ZRUB_LOG_DEBUG("(%u) setting %02x as macbytes %u\n",
+                1 + state->offset, data[idx], state->offset - 4 - ZRUB_PKT_NONCE_LEN);
+
+            pkt->macbytes[state->offset - 4 - ZRUB_PKT_NONCE_LEN] = data[idx];
+
+            state->offset++;
+            continue;
+        }
+
+        // TODO - OPTIMIZE THIS!
+        if (state->offset < 4 + ZRUB_PKT_NONCE_LEN + ZRUB_PKT_MACBYTES_LEN + ZRUB_PKT_DATA_MAX)
+        {
+            ZRUB_LOG_DEBUG("(%u) setting %02x as data %u\n",
+                1 + state->offset, data[idx], state->offset - 4 - ZRUB_PKT_NONCE_LEN - ZRUB_PKT_MACBYTES_LEN);
+
+            pkt->data[state->offset - 4 - ZRUB_PKT_NONCE_LEN - ZRUB_PKT_MACBYTES_LEN] = data[idx];
+
+            state->offset++;
+            continue;
+        }
+    }
+
+    ZRUB_DVAR_BYTES(pkt->nonce, ZRUB_PKT_NONCE_LEN);
+    ZRUB_DVAR_BYTES(pkt->macbytes, ZRUB_PKT_MACBYTES_LEN);
+    ZRUB_DVAR_BYTES(pkt->data, pkt->data_length);
+
+    if (state->offset != state->msg_size)
+    {
+        return ZRUB_PKT_AWAITING_DATA;
+    }
+
+    return ZRUB_PKT_SUCCESS;
 }

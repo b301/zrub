@@ -158,6 +158,9 @@ int32_t main(int32_t argc, char **argv)
         struct zrub_epacket pkt = { 0 };
         zrub_epacket_encrypt(&pkt, serializer.buf, serializer.offset, generic_key);
 
+        ZRUB_LOG_DEBUG("encrypted: ");
+        zrub_bytes_print(pkt.data, pkt.data_length);
+
         uint8_t buf[4];
         uint32_t offset = 0;
 
@@ -192,7 +195,7 @@ int32_t main(int32_t argc, char **argv)
 
         if (zrub_bytes_iter_begin(&iteration, buffer, &buflen, blocksize)) {
             do {
-                count += send(sockfd, buf, buflen, 0);
+                count += send(sockfd, buffer, buflen, 0);
 
                 ZRUB_DVAR_BYTES(buffer, buflen);
                 zrub_time_sleep(1000);

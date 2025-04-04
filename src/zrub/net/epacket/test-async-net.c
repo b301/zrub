@@ -6,7 +6,7 @@
 
 uint8_t gkey[32] = { 0 };
 
-uint8_t async_recv(struct zrub_epacket *pkt, uint8_t *data, int32_t data_recv, struct zrub_epacket_async_state *state)
+uint8_t async_recv(struct zrub_epacket *pkt, uint8_t *data, int32_t data_recv, struct zrub_epacket_state *state)
 {
     ZRUB_DVAR_BYTES(data, data_recv);
 
@@ -100,7 +100,7 @@ int main()
     // simulate receiving one byte at a time
     ZRUB_LOG_DEBUG("========== SIMLUATE_BODY ============\n");    
     {
-        struct zrub_epacket_async_state state = { 0 };
+        struct zrub_epacket_state state = { 0 };
 
         // send partition of msg_size
         uint8_t msg_size_buf[4] = { 0 };
