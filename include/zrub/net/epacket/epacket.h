@@ -21,14 +21,23 @@
 #define ZRUB_PKT_FAILED_SIZE        4
 #define ZRUB_PKT_FAILED_DATA        5
 #define ZRUB_PKT_CLIENT_TERM        6
+#define ZRUB_PKT_MSG_TOO_LARGE      10
 
 // for async
-#define ZRUB_PKT_AWAITING_DATA      7
+#define ZRUB_PKT_RECV_INCOMPLETE    7
 #define ZRUB_PKT_NO_DATA_AVAILABLE  8
 #define ZRUB_PKT_FAILED_RECV        9
+#define ZRUB_PKT_FAILED_SEND        11
+#define ZRUB_PKT_SEND_INCOMPLETE    12
+#define ZRUB_PKT_SEND_WOULDBLOCK    13
 
-#define ZRUB_PKT_MSG_TOO_LARGE      10
 #define ZRUB_PKT_O_NON_BLOCKING     (1 << 0)
+
+#define ZRUB_PKT_MODE_NEUTRAL       0
+#define ZRUB_PKT_MODE_SEND          1
+#define ZRUB_PKT_MODE_RECV          2
+#define ZRUB_PKT_MODE_SEND_INPROG   3
+#define ZRUB_PKT_MODE_RECV_INPROG   4
 
 // size of struct is 1024
 struct zrub_epacket
@@ -72,6 +81,8 @@ uint8_t zrub_epacket_recv(struct zrub_epacket *pkt, int32_t sockfd);
 struct zrub_epacket_state {
     uint32_t    offset;
     uint32_t    msg_size;
+    uint8_t     sendbuf[ZRUB_PKT_DATA_MAX];
+    uint8_t     mode;
 };
 
 uint8_t zrub_epacket_async_send(struct zrub_epacket *pkt, int32_t sockfd, struct zrub_epacket_state *state);

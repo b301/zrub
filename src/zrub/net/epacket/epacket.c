@@ -65,7 +65,7 @@ bool zrub_epacket_decrypt(struct zrub_epacket *pkt, uint8_t *key)
 
 uint8_t zrub_epacket_send(struct zrub_epacket *pkt, int sockfd)
 {
-    int32_t message_size = ZRUB_PKT_NONCE_LEN + ZRUB_PKT_MACBYTES_LEN + pkt->data_length;
+    int32_t message_size = ZRUB_PKT_NONCE_LEN + ZRUB_PKT_MACBYTES_LEN + pkt->data_length + 4;
     uint8_t buf[4];
     uint32_t offset = 0;
     int32_t rc = 0;
@@ -165,7 +165,7 @@ uint8_t zrub_epacket_recv(struct zrub_epacket *pkt, int32_t sockfd)
     zrub_bytes_print(pkt->macbytes, ZRUB_PKT_MACBYTES_LEN);
 
     int32_t bytes_read = recv(sockfd, pkt->data, message_size, 0);
-    if ((uint32_t)bytes_read != message_size)
+    if ((uint32_t)bytes_read != message_size - sizeof(uint32_t) )
     {
         ZRUB_LOG_DEBUG("received %d expected %d\n", bytes_read, message_size);
         return ZRUB_PKT_FAILED_DATA;
@@ -177,21 +177,117 @@ uint8_t zrub_epacket_recv(struct zrub_epacket *pkt, int32_t sockfd)
     return ZRUB_PKT_SUCCESS;
 }
 
-uint8_t zrub_epacket_async_send(struct zrub_epacket *pkt, int32_t sockfd, struct zrub_epacket_state *state)
+static uint8_t epacket_internal_prep_sendbuf(struct zrub_epacket *pkt, struct zrub_epacket_state *state) 
 {
-    ZRUB_NOT_IMPLEMENTED(0);
-    ZRUB_UNUSED(pkt);
-    ZRUB_UNUSED(sockfd);
-    ZRUB_UNUSED(state);
+    // empty the buffer
+    memset(state->sendbuf, 0, sizeof(state->sendbuf));
+    state->offset = 0;
+    state->msg_size = 0;
+
+    // calculate total message size (4 bytes size + nonce + mac + data)
+    state->msg_size = 4 + ZRUB_PKT_NONCE_LEN + ZRUB_PKT_MACBYTES_LEN + pkt->data_length;
+    
+    // verify message isn't too large
+    if (state->msg_size > sizeof(state->sendbuf)) 
+    {
+        ZRUB_LOG_ERROR("message too large: %u > %u\n", 
+                      state->msg_size, sizeof(state->sendbuf));
+        
+        return ZRUB_PKT_MSG_TOO_LARGE;
+    }
+    
+    // pack message size (network byte order - big-endian)
+    state->sendbuf[0] = (state->msg_size >> 24) & 0xFF;
+    state->sendbuf[1] = (state->msg_size >> 16) & 0xFF;
+    state->sendbuf[2] = (state->msg_size >> 8) & 0xFF;
+    state->sendbuf[3] = state->msg_size & 0xFF;
+    
+    // copy packet components
+    uint8_t *ptr = state->sendbuf + 4;
+    memcpy(ptr, pkt->nonce, ZRUB_PKT_NONCE_LEN);
+    ptr += ZRUB_PKT_NONCE_LEN;
+    
+    memcpy(ptr, pkt->macbytes, ZRUB_PKT_MACBYTES_LEN);
+    ptr += ZRUB_PKT_MACBYTES_LEN;
+    
+    memcpy(ptr, pkt->data, pkt->data_length);
+    ZRUB_LOG_DEBUG("Prepared %u bytes for sending\n", state->msg_size);
+    ZRUB_DVAR_BYTES(state->sendbuf, state->msg_size);
+
+    state->mode = ZRUB_PKT_MODE_SEND_INPROG;
+    
+    return ZRUB_PKT_SUCCESS;
+}
+
+uint8_t 
+zrub_epacket_async_send(struct zrub_epacket *pkt, int sockfd, struct zrub_epacket_state *state) 
+{
+    // first time sending - prepare the message
+    if (state->mode == ZRUB_PKT_MODE_SEND || state->mode == ZRUB_PKT_MODE_NEUTRAL) 
+    {
+        uint8_t prep_result = epacket_internal_prep_sendbuf(pkt, state);
+
+        if (prep_result != ZRUB_PKT_SUCCESS) 
+        {
+            return prep_result;
+        }
+    }
+
+    // send data in non-blocking mode
+    ZRUB_LOG_DEBUG("sending %u bytes from offset %u\n", 
+                  state->msg_size - state->offset, state->offset);
+    ssize_t rc = send(sockfd,
+                     state->sendbuf + state->offset,
+                     state->msg_size - state->offset,
+                     MSG_NOSIGNAL | MSG_DONTWAIT);
+    ZRUB_DVAR_INT(rc);
+
+    if (rc < 0) 
+    {
+        switch (errno) 
+        {
+            case EAGAIN:    // EAGAIN AND EWOULDBLOCK are the same number
+            {
+                return ZRUB_PKT_SEND_WOULDBLOCK;
+            }
+            break;
+
+            case EPIPE:
+            case ECONNRESET:
+            {
+                ZRUB_LOG_ERROR("send failed: %s (%d)\n", strerror(errno), errno);
+                return ZRUB_PKT_CLIENT_TERM;
+            }
+            break;
+
+            default:
+            {
+                ZRUB_LOG_ERROR("send failed: %s (%d)\n", strerror(errno), errno);
+                return ZRUB_PKT_FAILED_SEND;
+            }
+            break;
+        }
+    }
+
+    // update send position
+    state->offset += rc;
+    ZRUB_LOG_DEBUG("Sent %d bytes, %u remaining\n", 
+                  rc, state->msg_size - state->offset);
+
+    // check if we've sent everything
+    if (state->offset == state->msg_size) 
+    {
+        ZRUB_LOG_DEBUG("Completed sending %u bytes\n", state->msg_size);
+        memset(state, 0, sizeof(*state));  // Reset state
+        return ZRUB_PKT_SUCCESS;
+    }
+
+    // more data remains to be sent
+    return ZRUB_PKT_SEND_INCOMPLETE;
 }
 
 uint8_t zrub_epacket_async_recv(struct zrub_epacket *pkt, int32_t sockfd, struct zrub_epacket_state *state)
 {
-    // ZRUB_NOT_IMPLEMENTED(0);
-    // ZRUB_UNUSED(pkt);
-    // ZRUB_UNUSED(sockfd);
-    // ZRUB_UNUSED(state);
-
     uint8_t data[ sizeof(struct zrub_epacket) ] = { 0 };
     int32_t rc = recv(sockfd, data, sizeof(struct zrub_epacket), MSG_DONTWAIT);
 
@@ -202,6 +298,10 @@ uint8_t zrub_epacket_async_recv(struct zrub_epacket *pkt, int32_t sockfd, struct
             return ZRUB_PKT_NO_DATA_AVAILABLE;
         }
 
+        ZRUB_LOG_DEBUG("failed to receive data, %d\n", rc);
+        ZRUB_LOG_DEBUG("errno: %s\n", strerror(errno));
+
+        pkt->data_length = 0;
         return ZRUB_PKT_FAILED_RECV;
     }
 
@@ -278,7 +378,7 @@ uint8_t zrub_epacket_async_recv(struct zrub_epacket *pkt, int32_t sockfd, struct
 
     if (state->offset != state->msg_size)
     {
-        return ZRUB_PKT_AWAITING_DATA;
+        return ZRUB_PKT_RECV_INCOMPLETE;
     }
 
     return ZRUB_PKT_SUCCESS;

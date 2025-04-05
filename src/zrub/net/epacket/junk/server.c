@@ -122,6 +122,12 @@ bool initialize_server(const char *addr, const char *port, int32_t *sockfd, uint
         return false;
     }
 
+    if (setsockopt(*sockfd, SOL_SOCKET, SO_KEEPALIVE, &opt, sizeof(opt)))                   // allows reuse of port
+    {
+        ZRUB_LOG_ERROR("error setting sock opt `SO_REUSEPORT`: %s\n", strerror(errno));
+        return false;
+    }
+
     char addr_str[INET6_ADDRSTRLEN];
     void *_addr = &(((struct sockaddr_in *)res->ai_addr)->sin_addr);            // point addr to sockaddr_in to sockaddr_in of the server res
     inet_ntop(res->ai_family, _addr, addr_str, sizeof(addr_str));               // convert network to presentation
@@ -153,9 +159,9 @@ bool initialize_server(const char *addr, const char *port, int32_t *sockfd, uint
  * @brief initializes an epoll socket
  * 
  * @param server_sockfd     a server socket
- * @param epoll_fd          address of int32_t
+ * @param epfd          address of int32_t
  */
-bool initialize_epoll(int32_t server_sockfd, int32_t *epoll_fd)
+bool initialize_epoll(int32_t server_sockfd, int32_t *epfd)
 {
     struct epoll_event event;
 
@@ -163,7 +169,7 @@ bool initialize_epoll(int32_t server_sockfd, int32_t *epoll_fd)
     if (_epoll_fd == -1)
     {
         ZRUB_LOG_ERROR("failed creating epoll: %s\n", strerror(errno));
-        *epoll_fd = -1;
+        *epfd = -1;
         return false;
     }
 
@@ -173,11 +179,11 @@ bool initialize_epoll(int32_t server_sockfd, int32_t *epoll_fd)
     if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, server_sockfd, &event) == -1)
     {
         ZRUB_LOG_ERROR("failed to manipulate epoll instance: %s\n", strerror(errno));
-        *epoll_fd = -1;
+        *epfd = -1;
         return false;
     }
 
-    *epoll_fd = _epoll_fd;
+    *epfd = _epoll_fd;
     return true;
 }
 
@@ -186,7 +192,8 @@ uint8_t generic_key[32] = {
     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
     0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10,
     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-    0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20};
+    0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20
+};
 
 void check_packet(uint8_t *buf, uint32_t bufsize);
 
@@ -213,6 +220,7 @@ struct client *create_state(int32_t cfd)
 
     s->state.offset = 0;
     s->state.msg_size = 0;
+    s->state.mode = ZRUB_PKT_MODE_NEUTRAL;
 
     s->next = NULL;
 }
@@ -323,13 +331,66 @@ void handle_shutdown(int32_t signum)
     stop_server = 1;
 }
 
-bool handle_client(int32_t efd, int32_t cfd, struct epoll_event *e)
+bool handle_client(int32_t epfd, int32_t cfd, struct epoll_event *e)
 {
-    while (1)
-    {
-        struct client *state = get_client_state(&state_head, cfd);
+    struct client *cli = get_client_state(&state_head, cfd);
 
-        uint8_t rc = zrub_epacket_recv_nonblock(&state->pkt, cfd, &state->state);
+    // send - TODO: FIGURE OUT WHY EPOLLOUT IS NOT CALLED (EDGE-TRIGGERED)
+    while 
+    (
+        e->events & EPOLLOUT &&    // if cfd write is ready
+        (cli->state.mode == ZRUB_PKT_MODE_SEND || cli->state.mode == ZRUB_PKT_MODE_NEUTRAL ||
+        cli->state.mode == ZRUB_PKT_MODE_SEND_INPROG)
+    )
+    {
+        ZRUB_LOG_DEBUG("============= ON EPOLLOUT!\n");
+        uint8_t rc = zrub_epacket_async_send(&cli->pkt, cfd, &cli->state);
+
+        switch (rc)
+        {
+        case ZRUB_PKT_SUCCESS:
+        {
+            ZRUB_LOG_DEBUG("FINALLY SENT ALL THE DATA\n");
+
+            cli->state.mode = ZRUB_PKT_MODE_NEUTRAL;
+        }
+        break;
+        
+        case ZRUB_PKT_CLIENT_TERM:
+        case ZRUB_PKT_FAILED_SEND:
+        {
+            return false;
+        }
+        break;
+
+        case ZRUB_PKT_SEND_INCOMPLETE:
+        {
+            ZRUB_LOG_DEBUG("WE ARE AWAITING DATA!!\n");
+            return true;
+        }
+        break;
+
+        case ZRUB_PKT_SEND_WOULDBLOCK:
+        {
+            ZRUB_LOG_DEBUG("SEND WOULDBLOCK\n");
+            return true;
+        }
+        break;
+
+        } // switch (rc)
+
+    } // send
+
+    // recv
+    while 
+    (
+        e->events & EPOLLIN &&      // if cfd read is ready
+        (cli->state.mode == ZRUB_PKT_MODE_RECV || cli->state.mode == ZRUB_PKT_MODE_NEUTRAL ||
+        cli->state.mode == ZRUB_PKT_MODE_RECV_INPROG)
+    )
+    {
+        ZRUB_LOG_DEBUG("============= ON EPOLLIN!\n");
+        uint8_t rc = zrub_epacket_async_recv(&cli->pkt, cfd, &cli->state);
         
         switch (rc)
         {
@@ -337,42 +398,98 @@ bool handle_client(int32_t efd, int32_t cfd, struct epoll_event *e)
         {
             ZRUB_LOG_INFO("FINALLY GOT ALL THE DATA\n");
 
-            zrub_epacket_decrypt(&state->pkt, generic_key);
-            ZRUB_DVAR_BYTES(state->pkt.data, state->pkt.data_length);
+            zrub_epacket_decrypt(&cli->pkt, generic_key);
+            ZRUB_DVAR_BYTES(cli->pkt.data, cli->pkt.data_length);
+
+            cli->state.mode = ZRUB_PKT_MODE_NEUTRAL;
         }
         break;
 
         case ZRUB_PKT_CLIENT_TERM:
+        case ZRUB_PKT_FAILED_RECV:
         {
+            return false;
         }
         break;
 
-        case ZRUB_PKT_AWAITING_DATA:
+        case ZRUB_PKT_RECV_INCOMPLETE:
         {
-            ZRUB_LOG_INFO("WE ARE AWAITING DATA!!\n");
+            ZRUB_LOG_DEBUG("WE ARE AWAITING DATA!!\n");
             return true;
         }
         break;
 
         default:
         {
-            ZRUB_LOG_INFO("failure code %u\n", rc);
+            ZRUB_LOG_ERROR("failure code %u\n", rc);
             return false;
         }
         break;
-        }
+        } // switch (rc)
 
         uint32_t action = 0;
-        if (state->pkt.data_length > 0)
+        if (cli->pkt.data_length > 0)
         {
+            struct zrub_serializer des = {
+                .buf = cli->pkt.data,
+                .bufsize = cli->pkt.data_length,
+                .offset = 0
+            };
+
+            uint8_t serbuf[512] = { 0 };
+            struct zrub_serializer ser = {
+                .buf = serbuf,
+                .bufsize = sizeof(serbuf),
+                .offset = 0
+            };
+
+            zrub_deserialize_unsigned_int32(des.buf, des.bufsize, &action, &des.offset);
+            ZRUB_LOG_DEBUG("action: %u\n", action);
+
+            // expect action 0
+            if (action == 0)
+            {
+                // TODO - handle action 0
+                ZRUB_LOG_DEBUG("action 0\n");
+
+                char name[64] = { 0 };
+                zrub_deserialize_string(des.buf, des.bufsize, name, sizeof(name) - 1, &des.offset);
+                ZRUB_LOG_DEBUG("name: %s\n", name);
+
+                char passwd[64] = { 0 };
+                zrub_deserialize_string(des.buf, des.bufsize, passwd, sizeof(passwd) - 1, &des.offset);
+                ZRUB_LOG_DEBUG("passwd: %s\n", passwd);
+
+                // TODO - send response - use state->pkt
+                zrub_serialize_string(des.buf, des.bufsize, "hello", zrub_str_len("hello"), &des.offset);
+
+                ZRUB_LOG_DEBUG("sending response\n");
+                zrub_epacket_encrypt(&cli->pkt, des.buf, des.offset, generic_key);
+                ZRUB_DVAR_BYTES(cli->pkt.data, cli->pkt.data_length);
+
+                cli->state.mode = ZRUB_PKT_MODE_SEND;
+            }
+
+            // expect action 1
+            else if (action == 1)
+            {
+                // TODO - handle action 1
+                ZRUB_LOG_DEBUG("action 1\n");
+            }
+            
+            else
+            {
+                ZRUB_LOG_ERROR("unknown action %u\n", action);
+            }
+
             return true;
         }
 
-        else if (state->pkt.data_length == 0)
+        else if (cli->pkt.data_length == 0)
         {
             ZRUB_LOG_INFO("client disconnected: %d\n", cfd);
 
-            if (epoll_ctl(efd, EPOLL_CTL_DEL, cfd, e) == -1)
+            if (epoll_ctl(epfd, EPOLL_CTL_DEL, cfd, e) == -1)
             {
                 ZRUB_LOG_ERROR("error manipulating epoll instance DEL: %s\n", strerror(errno));
                 return false;
@@ -386,11 +503,11 @@ bool handle_client(int32_t efd, int32_t cfd, struct epoll_event *e)
             break;
         }
 
-        else if (state->pkt.data_length < 0)
+        else if (cli->pkt.data_length < 0)
         {
             ZRUB_LOG_ERROR("error reading from client %d: %s\n", cfd, strerror(errno));
 
-            if (epoll_ctl(efd, EPOLL_CTL_DEL, cfd, e) == -1)
+            if (epoll_ctl(epfd, EPOLL_CTL_DEL, cfd, e) == -1)
             {
                 ZRUB_LOG_ERROR("error manipulating epoll instance DEL: %s\n", strerror(errno));
                 return false;
@@ -402,22 +519,22 @@ bool handle_client(int32_t efd, int32_t cfd, struct epoll_event *e)
             // break either way
             break;
         }
-
-        // zrub_time_sleep(10);
-    }
+    } // recv
 
     return true;
 }
+
+
 /**
  * @brief function that handles connections for the server
  *
  * @details manages non-blocking sockets using the linux epoll API
  *
  * @param server_sockfd     a server socket fd
- * @param epoll_fd          an epoll fd
+ * @param epfd              an epoll fd
  * @param max_events        max events size
  */
-bool handle_connections(int32_t server_sockfd, int32_t epoll_fd, uint32_t max_events)
+bool handle_connections(int32_t server_sockfd, int32_t epfd, uint32_t max_events)
 {
     struct sockaddr_storage client_addr;
     socklen_t client_addr_size = sizeof(client_addr);
@@ -436,7 +553,7 @@ bool handle_connections(int32_t server_sockfd, int32_t epoll_fd, uint32_t max_ev
 
     while (1)
     {
-        num_events = epoll_wait(epoll_fd, events, max_events, -1);
+        num_events = epoll_wait(epfd, events, max_events, -1);
 
         if (num_events == -1)
         {
@@ -474,7 +591,7 @@ bool handle_connections(int32_t server_sockfd, int32_t epoll_fd, uint32_t max_ev
                 e.events = EPOLLIN | EPOLLET;
                 e.data.fd = nfd;
 
-                if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, nfd, &e) == -1)
+                if (epoll_ctl(epfd, EPOLL_CTL_ADD, nfd, &e) == -1)
                 {
                     ZRUB_LOG_ERROR("error manipulating epoll instance ADD: %s\n", strerror(errno));
                     close(nfd);
@@ -498,7 +615,7 @@ bool handle_connections(int32_t server_sockfd, int32_t epoll_fd, uint32_t max_ev
 
                 // handle client
                 ZRUB_JUST_MEASURE_PERF(
-                    res = handle_client(epoll_fd, cfd, &e));
+                    res = handle_client(epfd, cfd, &e));
 
                 if (res == false)
                 {
@@ -550,8 +667,8 @@ int main(int argc, char **argv)
     /* EPOL INITIALIZATION STARTING */
     ZRUB_LOG_INFO("epoll initialization starting...\n");
 
-    int32_t epoll_fd;
-    if (!initialize_epoll(server_sockfd, &epoll_fd))
+    int32_t epfd;
+    if (!initialize_epoll(server_sockfd, &epfd))
     {
         ZRUB_LOG_ERROR("failed to initialize epoll\n");
         return 1;
@@ -562,7 +679,7 @@ int main(int argc, char **argv)
 
     while (!stop_server)
     {
-        if (handle_connections(server_sockfd, epoll_fd, MAX_EPOLL_EVENTS))
+        if (handle_connections(server_sockfd, epfd, MAX_EPOLL_EVENTS))
         {
             ZRUB_LOG_INFO("ended gracefully\n");
         }
@@ -575,7 +692,7 @@ int main(int argc, char **argv)
     }
 
     /* CLEANUP */
-    close(epoll_fd);
+    close(epfd);
     close(server_sockfd);
 
     return 0;

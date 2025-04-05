@@ -22,7 +22,6 @@ uint8_t generic_key[32] = {
     0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20
 };
 
-
 /**
  * @brief converts to  sockaddr_in for ip v4 or v6
  * 
@@ -126,7 +125,7 @@ int32_t main(int32_t argc, char **argv)
         zrub_serialize_unsigned_int32(
             serializer.buf,
             serializer.bufsize,
-            0xffffffff,
+            0,
             &serializer.offset
         );
         ZRUB_DVAR_INT(serializer.offset);
@@ -172,11 +171,7 @@ int32_t main(int32_t argc, char **argv)
         ZRUB_DVAR_BYTES(pkt.macbytes, ZRUB_PKT_MACBYTES_LEN);
 
         send(sockfd, buf, 4, 0);
-
-        zrub_time_sleep(1000);
         send(sockfd, pkt.nonce, ZRUB_PKT_NONCE_LEN, 0);
-
-        zrub_time_sleep(1000);
         send(sockfd, pkt.macbytes, ZRUB_PKT_MACBYTES_LEN, 0);
 
         uint32_t count = 0;
@@ -198,7 +193,6 @@ int32_t main(int32_t argc, char **argv)
                 count += send(sockfd, buffer, buflen, 0);
 
                 ZRUB_DVAR_BYTES(buffer, buflen);
-                zrub_time_sleep(1000);
             } while (!zrub_bytes_iter_end(iteration) && zrub_bytes_iter_next(&iteration, buffer, &buflen, blocksize));
         }
 
@@ -208,6 +202,23 @@ int32_t main(int32_t argc, char **argv)
         {
             printf("all is well\n");
         }
+
+        struct zrub_epacket rpkt = { 0 };
+
+        // await whatever data
+        int32_t rc = zrub_epacket_recv(&rpkt, sockfd);
+        ZRUB_DVAR_BYTES(rpkt.data, rpkt.data_length);
+        ZRUB_DVAR_BYTES(rpkt.nonce, ZRUB_PKT_NONCE_LEN);
+        ZRUB_DVAR_BYTES(rpkt.macbytes, ZRUB_PKT_MACBYTES_LEN);
+
+        if (rc > 0)
+        {
+            ZRUB_DVAR_BYTES(buffer, rc);
+            ZRUB_LOG_DEBUG("received %d bytes\n", rc);
+        }
+
+        zrub_epacket_decrypt(&rpkt, generic_key);
+        ZRUB_DVAR_BYTES(rpkt.data, rpkt.data_length);
     }
 
     close(sockfd);

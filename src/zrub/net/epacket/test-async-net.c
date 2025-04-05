@@ -41,7 +41,7 @@ uint8_t async_recv(struct zrub_epacket *pkt, uint8_t *data, int32_t data_recv, s
             continue;
         }
 
-    // TODO - OPTIMIZE THIS!
+        // TODO - OPTIMIZE THIS!
         if (state->offset < 4 + ZRUB_PKT_NONCE_LEN + ZRUB_PKT_MACBYTES_LEN)
         {
             ZRUB_LOG_DEBUG("(%u) setting %02x as macbytes %u\n", 
